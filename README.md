@@ -1,8 +1,8 @@
-Today's News App (Flutter)
+## Today's News App (Flutter)
 
-📰 A modern news application delivering personalized content with smooth browsing and smart features to boost user engagement.
+## 📰 A modern news application delivering personalized content with smooth browsing and smart features to boost user engagement.
 
-🚀 Key Achievements
+## 🚀 Key Achievements
 
 • 35% increase in user engagement after implementing bookmark/save-for-later functionality
 
@@ -10,7 +10,7 @@ Today's News App (Flutter)
 
 • Seamless reading experience with pagination and smooth scroll performance
 
-⚙️ Technical Implementation
+## ⚙️ Technical Implementation
 
 • State Management: BLoC pattern for efficient data flow
 
@@ -22,7 +22,7 @@ Today's News App (Flutter)
 
 • Local Storage: Hive or SharedPreferences for bookmarks/offline reading
 
-📱 Core Features
+##📱 Core Features
 
 • Trending, breaking, and category-based news
 
@@ -34,7 +34,7 @@ Today's News App (Flutter)
 
 • Clean, responsive UI with smooth animations
 
-🌟 Why This App Stands Out
+## 🌟 Why This App Stands Out
 
 • Focus on performance (no lag when loading new pages)
 
