@@ -1,6 +1,6 @@
 ## Today's News App (Flutter)
 
-## 📰 A modern news application delivering personalized content with smooth browsing and smart features to boost user engagement.
+📰 A modern news application delivering personalized content with smooth browsing and smart features to boost user engagement.
 
 ## 🚀 Key Achievements
 
