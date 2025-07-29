@@ -22,7 +22,7 @@
 
 • Local Storage: Hive or SharedPreferences for bookmarks/offline reading
 
-##📱 Core Features
+## 📱 Core Features
 
 • Trending, breaking, and category-based news
 
