@@ -6,6 +6,7 @@ import 'package:todays_news/layout/business.dart';
 import 'package:todays_news/layout/science.dart';
 import 'package:todays_news/layout/sport.dart';
 import 'package:todays_news/modules/states.dart';
+import 'package:todays_news/shared/components/components.dart';
 import '../shared/networks/local/cacheHelper.dart';
 import '../shared/networks/remote/dio_helper.dart';
 //https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=d1412c4e454044d481709aad5ec6c572
@@ -74,22 +75,21 @@ class TodayNewsCubit extends Cubit<TodayNewsStates> {
     }
   }
 
-
   void changeIndex(int index) {
     currentIndex = index;
 
     if (index == 0) {
-      if(businessList.isEmpty) {
+      if (businessList.isEmpty) {
         getBusiness();
       }
     }
     if (index == 1) {
-      if(sportList.isEmpty) {
+      if (sportList.isEmpty) {
         getSport();
       }
     }
     if (index == 2) {
-      if(scienceList.isEmpty) {
+      if (scienceList.isEmpty) {
         getScience();
       }
     }
@@ -128,7 +128,7 @@ class TodayNewsCubit extends Cubit<TodayNewsStates> {
   }
 
 
-  void getBusiness({bool loadMore = false}) {
+  Future<void> getBusiness({bool loadMore = false}) async {
     if (isBusinessLoadingMore) return;
 
     if (loadMore) {
@@ -138,27 +138,18 @@ class TodayNewsCubit extends Cubit<TodayNewsStates> {
       currentBusinessPage = 1;
       emit(BusinessLoadingState());
     }
-
-    DioHelper.getData(
-        url: 'v2/top-headlines',
-        query: {
-          'country': 'us',
-          'category': 'business',
-          'page': currentBusinessPage,
-          'pageSize': pageSize,
-          'sortBy': 'publishedAt',
-          'apiKey': 'd1412c4e454044d481709aad5ec6c572',
-        }).then((value) {
-      final data = value.data['articles'];
-      print(currentBusinessPage);
-      print(data);
-      if(loadMore && data.isEmpty){
+    await getCategoryData(
+        category: 'business',
+        pageSize: pageSize,
+        currentBusinessPage: currentBusinessPage
+    ).then((data) {
+      if (loadMore && data.isEmpty) {
         isBusinessLoadingMore = true;
         emit(BusinessSuccessState());
         return;
       }
-        businessList.addAll(data);
-        isBusinessLoadingMore = false;
+      businessList.addAll(data);
+      isBusinessLoadingMore = false;
       emit(BusinessSuccessState());
     }).catchError((error) {
       if (loadMore) currentBusinessPage--;
@@ -167,7 +158,7 @@ class TodayNewsCubit extends Cubit<TodayNewsStates> {
     });
   }
 
-  void getSport({bool loadMore = false}) {
+  Future<void> getSport({bool loadMore = false}) async {
     if (isSportLoadingMore) return;
 
     if (loadMore) {
@@ -177,27 +168,18 @@ class TodayNewsCubit extends Cubit<TodayNewsStates> {
       currentSportPage = 1;
       emit(SportLoadingState());
     }
-
-    DioHelper.getData(
-        url: 'v2/top-headlines',
-        query: {
-          'country': 'us',
-          'category': 'sport',
-          'page': currentSportPage,
-          'pageSize': pageSize,
-          'sortBy': 'publishedAt',
-          'apiKey': 'd1412c4e454044d481709aad5ec6c572',
-        }).then((value) {
-      final data = value.data['articles'];
-      print(currentSportPage);
-      print(data);
-      if(loadMore && data.isEmpty){
+    await getCategoryData(
+        category: 'sport',
+        pageSize: pageSize,
+        currentBusinessPage: currentBusinessPage
+    ).then((data) {
+      if (loadMore && data.isEmpty) {
         isSportLoadingMore = true;
         emit(SportSuccessState());
         return;
       }
-        sportList.addAll(data);
-        isSportLoadingMore = false;
+      sportList.addAll(data);
+      isSportLoadingMore = false;
       emit(SportSuccessState());
     }).catchError((error) {
       if (loadMore) currentSportPage--;
@@ -206,7 +188,7 @@ class TodayNewsCubit extends Cubit<TodayNewsStates> {
     });
   }
 
-  void getScience({bool loadMore = false}) {
+  Future<void> getScience({bool loadMore = false}) async {
     if (isScienceLoadingMore) return;
 
     if (loadMore) {
@@ -216,27 +198,18 @@ class TodayNewsCubit extends Cubit<TodayNewsStates> {
       currentSciencePage = 1;
       emit(ScienceLoadingState());
     }
-
-    DioHelper.getData(
-        url: 'v2/top-headlines',
-        query: {
-          'country': 'us',
-          'category': 'science',
-          'page': currentSciencePage,
-          'pageSize': pageSize,
-          'sortBy': 'publishedAt',
-          'apiKey': 'd1412c4e454044d481709aad5ec6c572',
-        }).then((value) {
-      final data = value.data['articles'];
-      print(currentSciencePage);
-      print(data);
-      if(loadMore && data.isEmpty){
+    await getCategoryData(
+        category: 'science',
+        pageSize: pageSize,
+        currentBusinessPage: currentBusinessPage
+    ).then((data) {
+      if (loadMore && data.isEmpty) {
         isScienceLoadingMore = true;
         emit(ScienceSuccessState());
         return;
       }
-        scienceList.addAll(data);
-        isScienceLoadingMore = false;
+      scienceList.addAll(data);
+      isScienceLoadingMore = false;
       emit(ScienceSuccessState());
     }).catchError((error) {
       if (loadMore) currentSciencePage--;

@@ -3,6 +3,25 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../modules/cubit.dart';
 import '../../modules/states.dart';
+import '../networks/remote/dio_helper.dart';
+
+Future<List<dynamic>> getCategoryData({
+  required String category,
+  required int pageSize,
+  required int currentBusinessPage,
+}) async {
+  final response = await DioHelper.getData(
+      url: 'v2/top-headlines',
+      query: {
+        'country': 'us',
+        'category': currentBusinessPage,
+        'page': currentBusinessPage,
+        'pageSize': pageSize,
+        'sortBy': 'publishedAt',
+        'apiKey': 'd1412c4e454044d481709aad5ec6c572',
+      });
+  return response.data['articles'];
+}
 
 Widget buildNewsItem(Map<String, dynamic> article, BuildContext context) {
   final String imageUrl = article['urlToImage'] ??
@@ -82,12 +101,10 @@ class ConditionalBuilder extends StatefulWidget {
   final List<dynamic> list;
   final bool isLoadingMore;
   final VoidCallback onPressed;
-  final int? length;
   const ConditionalBuilder({
     required this.list,
     required this.isLoadingMore,
     required this.onPressed,
-    this.length,
     super.key
   });
 
