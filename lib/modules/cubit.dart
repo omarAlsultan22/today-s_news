@@ -122,7 +122,7 @@ class TodayNewsCubit extends Cubit<TodayNewsStates> {
         searchList = response.data['articles'];
         emit(SearchSuccessState());
       }).catchError((error) {
-        emit(SearchErrorState(error.toString()));
+        emit(SearchErrorState(error: error.toString()));
       });
     });
   }
@@ -154,7 +154,7 @@ class TodayNewsCubit extends Cubit<TodayNewsStates> {
     }).catchError((error) {
       if (loadMore) currentBusinessPage--;
       isBusinessLoadingMore = true;
-      emit(BusinessErrorState(error.toString()));
+      emit(BusinessErrorState(error: error.toString()));
     });
   }
 
@@ -184,7 +184,7 @@ class TodayNewsCubit extends Cubit<TodayNewsStates> {
     }).catchError((error) {
       if (loadMore) currentSportPage--;
       isSportLoadingMore = true;
-      emit(SportErrorState(error.toString()));
+      emit(SportErrorState(error: error.toString()));
     });
   }
 
@@ -214,7 +214,7 @@ class TodayNewsCubit extends Cubit<TodayNewsStates> {
     }).catchError((error) {
       if (loadMore) currentSciencePage--;
       isScienceLoadingMore = true;
-      emit(ScienceErrorState(error.toString()));
+      emit(ScienceErrorState(error: error.toString()));
     });
   }
 }

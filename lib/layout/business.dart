@@ -13,7 +13,7 @@ class BusinessScreen extends StatelessWidget {
       listener: (context, state) {
         if (state is BusinessErrorState) {
           ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.error)));
+              SnackBar(content: Text(state.error!)));
         }
       },
       builder: (context, state) {
