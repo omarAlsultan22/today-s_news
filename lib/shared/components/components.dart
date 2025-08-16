@@ -14,7 +14,7 @@ Future<List<dynamic>> getCategoryData({
       url: 'v2/top-headlines',
       query: {
         'country': 'us',
-        'category': currentBusinessPage,
+        'category': category,
         'page': currentBusinessPage,
         'pageSize': pageSize,
         'sortBy': 'publishedAt',
