@@ -169,8 +169,8 @@ Widget conditionalBuilder({
               } else {
                 return Center(
                   child: !isLoadingMore!
-                      ? const CircularProgressIndicator()
-                      : const SizedBox(),
+                      ? const SizedBox() :
+                  const CircularProgressIndicator(),
                 );
               }
             },

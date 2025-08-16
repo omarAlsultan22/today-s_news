@@ -132,8 +132,9 @@ class TodayNewsCubit extends Cubit<TodayNewsStates> {
     if (isBusinessLoadingMore) return;
 
     if (loadMore) {
-      currentBusinessPage++;
+      currentBusinessPage ++;
       isBusinessLoadingMore = true;
+      emit(BusinessLoadingState());
     } else {
       currentBusinessPage = 1;
       emit(BusinessLoadingState());
@@ -162,8 +163,9 @@ class TodayNewsCubit extends Cubit<TodayNewsStates> {
     if (isSportLoadingMore) return;
 
     if (loadMore) {
-      currentSportPage++;
+      currentSportPage ++;
       isSportLoadingMore = true;
+      emit(SportLoadingState());
     } else {
       currentSportPage = 1;
       emit(SportLoadingState());
@@ -171,7 +173,7 @@ class TodayNewsCubit extends Cubit<TodayNewsStates> {
     await getCategoryData(
         category: 'sport',
         pageSize: pageSize,
-        currentBusinessPage: currentBusinessPage
+        currentBusinessPage: currentSportPage
     ).then((data) {
       if (loadMore && data.isEmpty) {
         isSportLoadingMore = true;
@@ -192,8 +194,9 @@ class TodayNewsCubit extends Cubit<TodayNewsStates> {
     if (isScienceLoadingMore) return;
 
     if (loadMore) {
-      currentSciencePage++;
+      currentSciencePage ++;
       isScienceLoadingMore = true;
+      emit(ScienceLoadingState());
     } else {
       currentSciencePage = 1;
       emit(ScienceLoadingState());
@@ -201,7 +204,7 @@ class TodayNewsCubit extends Cubit<TodayNewsStates> {
     await getCategoryData(
         category: 'science',
         pageSize: pageSize,
-        currentBusinessPage: currentBusinessPage
+        currentBusinessPage: currentSciencePage
     ).then((data) {
       if (loadMore && data.isEmpty) {
         isScienceLoadingMore = true;
