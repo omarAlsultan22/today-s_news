@@ -1,10 +1,11 @@
+import '../shared/cubit/cubit.dart';
+import '../shared/cubit/states.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
-import 'package:todays_news/layout/search.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:todays_news/modules/search.dart';
 import 'package:todays_news/shared/components/components.dart';
-import '../modules/cubit.dart';
-import '../modules/states.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -15,10 +16,10 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer <TodayNewsCubit, TodayNewsStates>(
+    return BlocConsumer <TodaysNewsCubit, TodaysNewsStates>(
             listener: (context, state) {},
             builder: (context, state) {
-              var cubit = TodayNewsCubit.get(context);
+              var cubit = TodaysNewsCubit.get(context);
               return Scaffold(
                 appBar: AppBar(
                   title: const Text("Today's News",

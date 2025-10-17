@@ -1,37 +1,37 @@
 class Article {
-  final String? title;
-  final String? description;
-  final String? url;
-  final String? urlToImage;
-  final DateTime? publishedAt;
+  final String title;
+  final String description;
+  final String url;
+  final String urlToImage;
+  final String publishedAt;
 
   Article({
-    this.title,
-    this.description,
-    this.url,
-    this.urlToImage,
-    this.publishedAt,
+    required this.title,
+    required this.description,
+    required this.url,
+    required this.urlToImage,
+    required this.publishedAt,
   });
 
-  // طريقة لتحويل JSON إلى كائن Article
   factory Article.fromJson(Map<String, dynamic> json) {
     return Article(
-      title: json['title'],
-      description: json['description'],
-      url: json['url'],
-      urlToImage: json['urlToImage'],
-      publishedAt: json['publishedAt'] != null
-          ? DateTime.parse(json['publishedAt'])
-          : null,
+      title: json['title'] ?? '',
+      description: json['description'] ?? '',
+      url: json['url'] ?? '',
+      urlToImage: json['urlToImage'] ?? '',
+      publishedAt: json['publishedAt'] ?? ''
     );
   }
+}
 
-  // طريقة لتحويل الكائن إلى JSON
-  Map<String, dynamic> toJson() => {
-    'title': title,
-    'description': description,
-    'url': url,
-    'urlToImage': urlToImage,
-    'publishedAt': publishedAt?.toIso8601String(),
-  };
+class ListConvertor {
+  final List<Article> data;
+
+  ListConvertor(this.data);
+
+  factory ListConvertor.fromJson(List<dynamic> jsonData){
+    List<Article> data = [];
+    data = jsonData.map((item) => Article.fromJson(item)).toList();
+    return ListConvertor(data);
+  }
 }

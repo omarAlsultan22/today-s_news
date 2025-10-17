@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:todays_news/shared/cubit/states.dart';
+import 'package:todays_news/model/dataModel.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../modules/cubit.dart';
-import '../../modules/states.dart';
 import '../networks/remote/dio_helper.dart';
+import 'package:flutter/material.dart';
+
 
 Future<List<dynamic>> getCategoryData({
   required String category,
@@ -23,12 +23,30 @@ Future<List<dynamic>> getCategoryData({
   return response.data['articles'];
 }
 
-Widget buildNewsItem(Map<String, dynamic> article, BuildContext context) {
-  final String imageUrl = article['urlToImage'] ??
-      'https://placeholder.com/image';
-  final String publishedAt = article['publishedAt'] ?? 'No Title';
-  final String title = article['title'] ?? 'No Title';
-  final String url = article['url'] ?? '';
+
+Future<List<dynamic>> getSearchData({
+  required String value,
+  required int pageSize,
+  required int currentSearchPage,
+}) async {
+  final response = await DioHelper.getData(
+    url: 'v2/everything',
+    query: {
+      'q': value,
+      'pageSize': pageSize,
+      'page': currentSearchPage,
+      'apiKey': 'd1412c4e454044d481709aad5ec6c572',
+    },
+  );
+  return response.data['articles'];
+}
+
+
+Widget buildNewsItem(Article article, BuildContext context) {
+  final String publishedAt = article.publishedAt;
+  final String imageUrl = article.urlToImage;
+  final String title = article.title;
+  final String url = article.url;
 
   return InkWell(
     onTap: () {
@@ -49,12 +67,12 @@ Widget buildNewsItem(Map<String, dynamic> article, BuildContext context) {
             child: Image.network(
               imageUrl,
               fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) => Icon(Icons.error),
+              errorBuilder: (context, error, stackTrace) => const Icon(Icons.error),
             ),
           ),
           const SizedBox(width: 20.0),
           Expanded(
-            child: Container(
+            child: SizedBox(
               height: 120.0,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -97,11 +115,24 @@ void navPush(BuildContext context, Widget widget){
 }
 
 
-class ConditionalBuilder extends StatefulWidget {
-  final List<dynamic> list;
-  final bool isLoadingMore;
+ScaffoldFeatureController<SnackBar, SnackBarClosedReason>? scaffoldMessenger({
+  required TodaysNewsStates state,
+  required BuildContext context,
+  required StatesKeys key,
+}) {
+  if (state is ErrorState && state.key == key) {
+    return ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(state.error!)));
+  }
+  return null;
+}
+
+
+class ListBuilder extends StatefulWidget {
+  final List<Article> list;
+  bool isLoadingMore;
   final VoidCallback onPressed;
-  const ConditionalBuilder({
+  ListBuilder({
     required this.list,
     required this.isLoadingMore,
     required this.onPressed,
@@ -109,10 +140,10 @@ class ConditionalBuilder extends StatefulWidget {
   });
 
   @override
-  State<ConditionalBuilder> createState() => _ConditionalBuilderState();
+  State<ListBuilder> createState() => _ListBuilderState();
 }
 
-class _ConditionalBuilderState extends State<ConditionalBuilder> {
+class _ListBuilderState extends State<ListBuilder> {
   final ScrollController _scrollController = ScrollController();
 
   @override
@@ -138,43 +169,36 @@ class _ConditionalBuilderState extends State<ConditionalBuilder> {
 
   @override
   Widget build(BuildContext context) {
-    return conditionalBuilder(
-      list: widget.list,
-      isLoadingMore: widget.isLoadingMore,
-      scrollController: _scrollController
+    return listBuilder(
+        data: widget.list,
+        isLoadingMore: widget.isLoadingMore,
+        scrollController: _scrollController
     );
   }
 }
 
-Widget conditionalBuilder({
+Widget listBuilder({
   int? length,
   bool? isLoadingMore,
-  required List<dynamic> list,
+  required List<Article> data,
   ScrollController? scrollController
 }) {
-  return BlocConsumer<TodayNewsCubit, TodayNewsStates>(
-      listener: (context, state) {},
-      builder: (context, state) {
-        if (list.isEmpty) {
-          return const Center(
-              child: CircularProgressIndicator());
-        }
-        return Scaffold(
-          body: ListView.builder(
-            controller: scrollController,
-            itemCount: length ?? list.length + 1,
-            itemBuilder: (context, index) {
-              if (index < list.length) {
-                return buildNewsItem(list[index], context);
-              } else {
-                return Center(
-                  child: !isLoadingMore!
-                      ? const SizedBox() :
-                  const CircularProgressIndicator(),
-                );
-              }
-            },
-          ),
+  return data.isNotEmpty ?
+  ListView.builder(
+    controller: scrollController,
+    itemCount: length ?? data.length + 1,
+    itemBuilder: (context, index) {
+      if (index < data.length) {
+        return buildNewsItem(data[index], context);
+      } else {
+        return Center(
+          child: !isLoadingMore!
+              ? const SizedBox() :
+          const CircularProgressIndicator(),
         );
-      });
+      }
+    },
+  ) : const Center(
+    child: CircularProgressIndicator(),
+  );
 }

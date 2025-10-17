@@ -45,8 +45,6 @@ dependencies:
   date_format: ^2.0.9
   provider: ^6.1.2
 
-
-
 dev_dependencies:
   flutter_test:
     sdk: flutter

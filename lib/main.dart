@@ -1,21 +1,25 @@
+import 'modules/home.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
-import 'package:todays_news/layout/home.dart';
-import 'package:todays_news/modules/cubit.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:todays_news/shared/cubit/cubit.dart';
 import 'package:todays_news/shared/bloc_observer.dart';
 import 'package:todays_news/shared/networks/local/cacheHelper.dart';
 import 'package:todays_news/shared/networks/remote/dio_helper.dart';
 
+
 void main() async {
+  await DioHelper.init();
+  WidgetsFlutterBinding.ensureInitialized();
   Bloc.observer = MyBlocObserver();
   CacheHelper.init();
-  await DioHelper.init();
 
   runApp(
       MultiBlocProvider(providers: [
         BlocProvider(
-          create: (context) => TodayNewsCubit(),)
+            create: (context) =>
+            TodaysNewsCubit()
+              ..getBusiness())
       ], child: const MyApp(),)
   );
 }
