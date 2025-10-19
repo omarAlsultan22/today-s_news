@@ -35,7 +35,7 @@ class _SearchScreenState extends State<SearchScreen> {
     _currentCubit.getSearch(text: searchController.text.trim());
   }
 
-  AppBar _buildAppBar(List<Article> data) =>
+  AppBar _buildAppBar(List<ArticleModel> data) =>
       AppBar(
         elevation: 0.0,
         scrolledUnderElevation: 0.0,
@@ -109,7 +109,7 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  Widget _buildSearchResults(List<Article> data) {
+  Widget _buildSearchResults(List<ArticleModel> data) {
     if (searchController.text.isEmpty) {
       return const Expanded(
           child: Center(child: Text('Type to start searching')));

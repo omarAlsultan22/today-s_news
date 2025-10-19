@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 
 
 Future<List<dynamic>> getCategoryData({
-  required String category,
   required int pageSize,
+  required String category,
   required int currentBusinessPage,
 }) async {
   final response = await DioHelper.getData(
@@ -42,7 +42,7 @@ Future<List<dynamic>> getSearchData({
 }
 
 
-Widget buildNewsItem(Article article, BuildContext context) {
+Widget buildNewsItem(ArticleModel article, BuildContext context) {
   final String publishedAt = article.publishedAt;
   final String imageUrl = article.urlToImage;
   final String title = article.title;
@@ -101,6 +101,7 @@ Widget buildNewsItem(Article article, BuildContext context) {
   );
 }
 
+
 void launchURL(String url) async {
   final Uri uri = Uri.parse(Uri.encodeFull(url));
   if (await canLaunchUrl(uri)) {
@@ -129,7 +130,7 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason>? scaffoldMessenger({
 
 
 class ListBuilder extends StatefulWidget {
-  final List<Article> list;
+  final List<ArticleModel> list;
   bool isLoadingMore;
   final VoidCallback onPressed;
   ListBuilder({
@@ -180,7 +181,7 @@ class _ListBuilderState extends State<ListBuilder> {
 Widget listBuilder({
   int? length,
   bool? isLoadingMore,
-  required List<Article> data,
+  required List<ArticleModel> data,
   ScrollController? scrollController
 }) {
   return data.isNotEmpty ?

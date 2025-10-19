@@ -35,10 +35,10 @@ class TodaysNewsCubit extends Cubit<TodaysNewsStates> {
   ];
 
 
-  List <Article> searchList = [];
-  List <Article> businessList = [];
-  List <Article> sportList = [];
-  List <Article> scienceList = [];
+  List <ArticleModel> searchList = [];
+  List <ArticleModel> businessList = [];
+  List <ArticleModel> sportList = [];
+  List <ArticleModel> scienceList = [];
 
 
   bool isBusinessLoadingMore = false;
@@ -150,7 +150,6 @@ class TodaysNewsCubit extends Cubit<TodaysNewsStates> {
 
     if (loadMore!) {
       currentSearchPage ++;
-      isSearchLoadingMore = true;
       emit(LoadingState());
     } else {
       currentSearchPage = 1;
@@ -173,6 +172,7 @@ class TodaysNewsCubit extends Cubit<TodaysNewsStates> {
       isSearchLoadingMore = false;
       emit(SuccessState());
     }).catchError((error) {
+      isSearchLoadingMore = true;
       emit(ErrorState(key: StatesKeys.search, error: error.toString()));
     });
   }
@@ -183,7 +183,6 @@ class TodaysNewsCubit extends Cubit<TodaysNewsStates> {
 
     if (loadMore) {
       currentBusinessPage ++;
-      isBusinessLoadingMore = true;
       emit(LoadingState());
 
     } else {
@@ -217,7 +216,6 @@ class TodaysNewsCubit extends Cubit<TodaysNewsStates> {
 
     if (loadMore) {
       currentSportPage ++;
-      isSportLoadingMore = true;
     } else {
       currentSportPage = 1;
       emit(LoadingState());
@@ -249,7 +247,6 @@ class TodaysNewsCubit extends Cubit<TodaysNewsStates> {
 
     if (loadMore) {
       currentSciencePage ++;
-      isScienceLoadingMore = true;
     } else {
       currentSciencePage = 1;
       emit(LoadingState());
@@ -277,24 +274,21 @@ class TodaysNewsCubit extends Cubit<TodaysNewsStates> {
   }
 }
 
-bool toggle = true;
 
 class ThemeNotifier extends ChangeNotifier {
   ThemeMode _themeMode = ThemeMode.light;
+  bool _toggle = true;
 
   ThemeMode get themeMode => _themeMode;
+  bool get toggle => _toggle;
 
   void toggleTheme() {
-    _themeMode =
-    _themeMode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
-    if (_themeMode == ThemeMode.light) {
-      toggle = true;
-      CacheHelper.setDate(key: 'theme', value: 'light');
-    }
-    else {
-      toggle = false;
-      CacheHelper.setDate(key: 'theme', value: 'dark');
-    }
+    _themeMode = _themeMode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
+    _toggle = _themeMode == ThemeMode.light;
+
+    String themeValue = _themeMode == ThemeMode.light ? 'light' : 'dark';
+    CacheHelper.setDate(key: 'theme', value: themeValue);
+
     notifyListeners();
   }
 
@@ -306,12 +300,17 @@ class ThemeNotifier extends ChangeNotifier {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? theme = prefs.getString('theme');
-      if (theme == ThemeMode.dark.toString()) {
+
+      if (theme == 'dark') {
         _themeMode = ThemeMode.dark;
-      } else if (theme == ThemeMode.light.toString()) {
+        _toggle = false;
+      } else if (theme == 'light') {
         _themeMode = ThemeMode.light;
+        _toggle = true;
       } else {
         _themeMode = ThemeMode.system;
+        // يمكنك تحديد قيمة افتراضية لـ toggle للنظام
+        _toggle = true;
       }
       notifyListeners();
     } catch (e) {

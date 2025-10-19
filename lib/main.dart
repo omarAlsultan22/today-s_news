@@ -41,6 +41,7 @@ class MyApp extends StatelessWidget {
       progressIndicatorTheme: const ProgressIndicatorThemeData(
           color: Colors.black),
     );
+
     final ThemeData darkTheme = ThemeData(
       primarySwatch: Colors.amber,
       brightness: Brightness.dark,
@@ -52,6 +53,7 @@ class MyApp extends StatelessWidget {
       progressIndicatorTheme: const ProgressIndicatorThemeData(
           color: Colors.white),
     );
+
     return ChangeNotifierProvider(
       create: (_) => ThemeNotifier(),
       child: Consumer<ThemeNotifier>(

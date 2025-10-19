@@ -1,11 +1,11 @@
-class Article {
+class ArticleModel {
   final String title;
   final String description;
   final String url;
   final String urlToImage;
   final String publishedAt;
 
-  Article({
+  ArticleModel({
     required this.title,
     required this.description,
     required this.url,
@@ -13,8 +13,8 @@ class Article {
     required this.publishedAt,
   });
 
-  factory Article.fromJson(Map<String, dynamic> json) {
-    return Article(
+  factory ArticleModel.fromJson(Map<String, dynamic> json) {
+    return ArticleModel(
       title: json['title'] ?? '',
       description: json['description'] ?? '',
       url: json['url'] ?? '',
@@ -25,13 +25,13 @@ class Article {
 }
 
 class ListConvertor {
-  final List<Article> data;
+  final List<ArticleModel> data;
 
   ListConvertor(this.data);
 
   factory ListConvertor.fromJson(List<dynamic> jsonData){
-    List<Article> data = [];
-    data = jsonData.map((item) => Article.fromJson(item)).toList();
+    List<ArticleModel> data = [];
+    data = jsonData.map((item) => ArticleModel.fromJson(item)).toList();
     return ListConvertor(data);
   }
 }
