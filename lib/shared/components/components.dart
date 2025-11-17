@@ -141,9 +141,9 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason>? scaffoldMessenger({
 
 class ListBuilder extends StatefulWidget {
   final List<ArticleModel> list;
-  bool isLoadingMore;
+  final bool isLoadingMore;
   final VoidCallback onPressed;
-  ListBuilder({
+  const ListBuilder({
     required this.list,
     required this.isLoadingMore,
     required this.onPressed,
@@ -191,8 +191,8 @@ class _ListBuilderState extends State<ListBuilder> {
 
 
 Widget listBuilder({
-  int? length,
-  bool? isLoadingMore,
+  final int? length,
+  final bool? isLoadingMore,
   required List<ArticleModel> data,
   ScrollController? scrollController
 }) {
