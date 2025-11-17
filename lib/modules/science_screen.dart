@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../shared/components/components.dart';
+import '../models/states_keys_model.dart';
 import 'package:flutter/material.dart';
 import '../shared/cubit/states.dart';
 import '../shared/cubit/cubit.dart';

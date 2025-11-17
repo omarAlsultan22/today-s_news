@@ -1,8 +1,9 @@
 import 'package:todays_news/shared/cubit/states.dart';
-import 'package:todays_news/model/dataModel.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../models/states_keys_model.dart';
 import '../networks/remote/dio_helper.dart';
 import 'package:flutter/material.dart';
+import '../../models/data_Model.dart';
 
 
 Future<List<dynamic>> getCategoryData({
@@ -40,6 +41,7 @@ Future<List<dynamic>> getSearchData({
   );
   return response.data['articles'];
 }
+
 
 
 Widget buildNewsItem(ArticleModel article, BuildContext context) {
@@ -102,6 +104,7 @@ Widget buildNewsItem(ArticleModel article, BuildContext context) {
 }
 
 
+
 void launchURL(String url) async {
   final Uri uri = Uri.parse(Uri.encodeFull(url));
   if (await canLaunchUrl(uri)) {
@@ -111,9 +114,15 @@ void launchURL(String url) async {
   }
 }
 
-void navPush(BuildContext context, Widget widget){
-  Navigator.push(context, MaterialPageRoute(builder: (context) => widget));
+
+
+void navPush(BuildContext context, Widget widget) {
+  Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => widget));
 }
+
 
 
 ScaffoldFeatureController<SnackBar, SnackBarClosedReason>? scaffoldMessenger({
@@ -127,6 +136,7 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason>? scaffoldMessenger({
   }
   return null;
 }
+
 
 
 class ListBuilder extends StatefulWidget {
@@ -178,6 +188,8 @@ class _ListBuilderState extends State<ListBuilder> {
   }
 }
 
+
+
 Widget listBuilder({
   int? length,
   bool? isLoadingMore,
@@ -203,3 +215,5 @@ Widget listBuilder({
     child: CircularProgressIndicator(),
   );
 }
+
+

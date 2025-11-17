@@ -1,5 +1,5 @@
+import '../../models/states_keys_model.dart';
 
-enum StatesKeys{business, sports, science, search}
 
 abstract class TodaysNewsStates {
   final String? error;
