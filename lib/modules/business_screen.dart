@@ -1,6 +1,6 @@
 import '../shared/cubit/states.dart';
 import 'package:flutter/material.dart';
-import '../models/states_keys_model.dart';
+import '../shared/constants/state_keys.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todays_news/shared/cubit/cubit.dart';
 import 'package:todays_news/shared/components/components.dart';

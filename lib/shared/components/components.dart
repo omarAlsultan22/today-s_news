@@ -1,8 +1,8 @@
 import 'package:todays_news/shared/cubit/states.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../models/states_keys_model.dart';
 import '../networks/remote/dio_helper.dart';
 import 'package:flutter/material.dart';
+import '../constants/state_keys.dart';
 import '../../models/data_Model.dart';
 
 

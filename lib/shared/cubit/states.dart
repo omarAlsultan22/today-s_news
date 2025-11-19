@@ -1,4 +1,4 @@
-import '../../models/states_keys_model.dart';
+import '../constants/state_keys.dart';
 
 
 abstract class TodaysNewsStates {
