@@ -1,10 +1,10 @@
 import 'dart:async';
+import '../../states/news_states.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../themes/screen_theme.dart';
-import '../../../presentation/states/news_states.dart';
-import '../../../presentation/screens/search_screen.dart';
-import '../../../presentation/cubits/categories_cubit.dart';
+import '../../screens/search_screen.dart';
+import '../../cubits/categories_cubit.dart';
+import '../../../core/themes/screen_theme.dart';
 import 'package:todays_news/data/repositories_impl/api_repository.dart';
 import '../../../domain/useCases/tab_useCases/load_tab_data_useCase.dart';
 
