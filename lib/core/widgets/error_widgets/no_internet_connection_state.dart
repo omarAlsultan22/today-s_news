@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 
 
 class NoInternetConnection extends StatelessWidget {
+  final String error;
   final VoidCallback? onRetry;
 
-  const NoInternetConnection({this.onRetry, super.key});
+  const NoInternetConnection({required this.error, this.onRetry, super.key});
 
   Widget retryButton() {
     return Column(
@@ -22,12 +23,12 @@ class NoInternetConnection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const Row(
+        Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.wifi_off),
-            SizedBox(width: 10.0),
-            Text('No internet connection')
+            const Icon(Icons.wifi_off),
+            const SizedBox(width: 10.0),
+            Text(error)
           ],
         ),
         onRetry != null ? retryButton() : const SizedBox()

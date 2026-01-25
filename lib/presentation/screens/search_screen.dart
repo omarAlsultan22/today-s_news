@@ -94,11 +94,14 @@ class _SearchScreenState extends State<SearchScreen> {
                             }
                         ),
                     error: (errorText, errorType) =>
-                    errorType ? TasksErrorStateWidget(error: errorText,
+                    errorType ? TasksErrorStateWidget(
+                        error: errorText,
                         onRetry: () =>
                             _currentCubit.getSearch(
                                 query: searchController.text)) :
-                    const Center(child: NoInternetConnection()),
+                    Center(child: NoInternetConnection(
+                        error: errorText)
+                    ),
                   )
                 ],
               ),

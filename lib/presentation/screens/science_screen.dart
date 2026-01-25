@@ -39,10 +39,12 @@ class ScienceScreen extends StatelessWidget {
                       isLoadingMore: currentTabData!.hasMore,
                       onPressed: () => currentCubit.getMoreData()),
               error: (errorText, errorType) =>
-              errorType ? TasksErrorStateWidget(error: errorText,
+              errorType ? TasksErrorStateWidget(
+                  error: errorText,
                   onRetry: () =>
                       currentCubit.changeScreen(state.currentIndex)) :
               Center(child: NoInternetConnection(
+                  error: errorText,
                   onRetry: () => currentCubit.changeScreen(state.currentIndex)
               ))
           );
