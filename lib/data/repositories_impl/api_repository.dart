@@ -1,3 +1,4 @@
+import 'package:todays_news/domain/repository/data_repository.dart';
 import 'package:todays_news/core/constants/api/search_config.dart';
 import '../../core/utils/helpers/list_convertor.dart';
 import '../../core/constants/api/news_config.dart';
@@ -5,8 +6,9 @@ import '../datasources/remote/dio_helper.dart';
 import '../models/article_Model.dart';
 
 
-class NewsApiRepository {
+class NewsApiRepository implements DataRepository{
 
+  @override
   Future<List<Article>> fetchCategoryArticles({
     required String category,
     required int page,
@@ -29,6 +31,7 @@ class NewsApiRepository {
   }
 
 
+  @override
   Future<List<Article>> fetchSearchArticles({
     required String value,
     required int currentSearchPage,

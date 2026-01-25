@@ -1,10 +1,10 @@
 import '../../../data/models/tab_data.dart';
-import '../../../data/repositories_impl/api_repository.dart';
+import 'package:todays_news/domain/repository/data_repository.dart';
 import 'package:todays_news/features/home/constants/home_screen_constants.dart';
 
 
 class LoadDataUseCase {
-  final NewsApiRepository repository;
+  final DataRepository repository;
 
   const LoadDataUseCase(this.repository);
 
