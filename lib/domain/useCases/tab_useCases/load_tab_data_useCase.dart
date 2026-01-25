@@ -1,5 +1,5 @@
 import '../../../data/models/tab_data.dart';
-import 'package:todays_news/domain/repository/data_repository.dart';
+import '../../repositories/data_repository.dart';
 import 'package:todays_news/features/home/constants/home_screen_constants.dart';
 
 
