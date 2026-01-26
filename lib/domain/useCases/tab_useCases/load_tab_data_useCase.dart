@@ -10,15 +10,16 @@ class LoadDataUseCase {
 
   Future<TabData> execute({
     int? tabIndex,
+    String? query,
     required TabData currentData,
   }) async {
     try {
       if (!currentData.hasMore) return currentData;
 
-      final category = HomeScreenConstants.categories[tabIndex!];
+      final value = query ?? HomeScreenConstants.categories[tabIndex!];
 
-      final articles = await repository.fetchCategoryArticles(
-        category: category,
+      final articles = await repository.fetchArticles(
+        value: value,
         page: currentData.page,
       );
 

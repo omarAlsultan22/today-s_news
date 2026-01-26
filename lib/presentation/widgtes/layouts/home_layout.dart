@@ -5,8 +5,9 @@ import 'package:provider/provider.dart';
 import '../../screens/search_screen.dart';
 import '../../cubits/categories_cubit.dart';
 import '../../../core/themes/screen_theme.dart';
-import 'package:todays_news/data/repositories_impl/api_repository.dart';
+import '../../../domain/repositories/data_repository.dart';
 import '../../../domain/useCases/tab_useCases/load_tab_data_useCase.dart';
+import 'package:todays_news/data/repositories_impl/articles_repository.dart';
 
 
 class HomeLayout extends StatelessWidget {
@@ -15,8 +16,8 @@ class HomeLayout extends StatelessWidget {
   const HomeLayout(this._cubit,this._state, {super.key});
 
   void _navPushSearchScreen(BuildContext context) {
-    final newsApiRepository = NewsApiRepository();
-    final loadDataUseCase = LoadDataUseCase(newsApiRepository);
+    final DataRepository repository = ArticlesRepository();
+    final loadDataUseCase = LoadDataUseCase(repository);
     Navigator.push(context, MaterialPageRoute(
         builder: (context) => SearchScreen(loadDataUseCase: loadDataUseCase)));
   }
