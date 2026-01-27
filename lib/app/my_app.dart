@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'core/themes/screen_theme.dart';
 import 'package:provider/provider.dart';
+import '../core/themes/screen_theme.dart';
 import 'package:todays_news/presentation/screens/home_screen.dart';
 
 
@@ -10,7 +10,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final ThemeData lightTheme = ThemeData(
       primarySwatch: Colors.amber,
       brightness: Brightness.light,
@@ -18,10 +17,6 @@ class MyApp extends StatelessWidget {
           selectedItemColor: Color(0xFFFF3D00),
           unselectedIconTheme: IconThemeData(color: Color(0xFF000000))
       ),
-      /*
-        400: Color(0xFFFF3D00),
-        700: Color(0xFFDD2C00),
-        */
       iconButtonTheme: const IconButtonThemeData(
           style: ButtonStyle(iconColor: WidgetStatePropertyAll(Colors.black))),
       progressIndicatorTheme: const ProgressIndicatorThemeData(
