@@ -1,17 +1,17 @@
 import '../../data/models/tab_data.dart';
 
 
-class SearchStates {
+class SearchState {
   final String query;
   final TabData tabData;
 
-  SearchStates({required this.query, required this.tabData});
+  SearchState({required this.query, required this.tabData});
 
-  SearchStates copyWith({
+  SearchState copyWith({
     String? query,
     TabData? tabData,
   }) {
-    return SearchStates(
+    return SearchState(
       query: query ?? this.query,
       tabData: tabData ?? this.tabData,
     );

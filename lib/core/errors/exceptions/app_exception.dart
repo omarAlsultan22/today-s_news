@@ -1,7 +1,7 @@
 abstract class AppException implements Exception {
   final String message;
-  final bool isConnection;
+  final bool isConnectionError;
   final StackTrace? stackTrace;
 
-  const AppException(this.message, this.isConnection, [this.stackTrace]);
+  const AppException(this.message, this.isConnectionError, [this.stackTrace]);
 }

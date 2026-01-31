@@ -1,12 +1,12 @@
 import 'package:todays_news/core/errors/exceptions/app_exception.dart';
 import '../../data/models/tab_data.dart';
-import '../states/news_states.dart';
+import '../states/news_state.dart';
 
 
 abstract class NewsStateMapper {
 
   static R when<R>({
-    required NewsStates state,
+    required NewsState state,
     required R Function() initial,
     required R Function() loading,
     required R Function(TabData? tabData) loaded,

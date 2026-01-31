@@ -1,4 +1,4 @@
-import '../states/news_states.dart';
+import '../states/news_state.dart';
 import 'package:flutter/material.dart';
 import '../cubits/categories_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,7 +14,7 @@ class BusinessScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CategoriesCubit, NewsStates>(
+    return BlocBuilder<CategoriesCubit, NewsState>(
         builder: (context, state) {
           final currentTabData = state.currentTabData;
           final currentCubit = CategoriesCubit.get(context);
@@ -41,7 +41,7 @@ class BusinessScreen extends StatelessWidget {
                       isLoadingMore: currentTabData!.hasMore,
                       onPressed: () => currentCubit.getMoreData()),
               onError: (error) =>
-              error.isConnection ? TasksErrorStateWidget(
+              error.isConnectionError ? TasksErrorStateWidget(
                   error: error.message,
                   onRetry: () =>
                       currentCubit.changeScreen(state.currentIndex)) :

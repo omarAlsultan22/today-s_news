@@ -1,5 +1,5 @@
 import 'dart:async';
-import '../../states/news_states.dart';
+import '../../states/news_state.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../screens/search_screen.dart';
@@ -12,7 +12,7 @@ import 'package:todays_news/data/repositories_impl/articles_repository.dart';
 
 class HomeLayout extends StatelessWidget {
   final CategoriesCubit _cubit;
-  final NewsStates _state;
+  final NewsState _state;
   const HomeLayout(this._cubit,this._state, {super.key});
 
   void _navPushSearchScreen(BuildContext context) {

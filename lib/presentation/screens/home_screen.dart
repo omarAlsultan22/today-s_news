@@ -1,4 +1,4 @@
-import '../states/news_states.dart';
+import '../states/news_state.dart';
 import 'package:flutter/material.dart';
 import '../cubits/categories_cubit.dart';
 import '../widgtes/layouts/home_layout.dart';
@@ -10,7 +10,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext? context) {
-    return BlocBuilder<CategoriesCubit, NewsStates>(
+    return BlocBuilder<CategoriesCubit, NewsState>(
       builder: (context, state) {
         final cubit = CategoriesCubit.get(context);
         return HomeLayout(cubit, state);

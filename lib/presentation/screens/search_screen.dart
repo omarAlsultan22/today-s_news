@@ -1,5 +1,5 @@
 import '../cubits/search_cubit.dart';
-import '../states/search_states.dart';
+import '../states/search_state.dart';
 import 'package:flutter/material.dart';
 import '../../data/models/article_Model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -68,7 +68,7 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget build(BuildContext context) {
     return BlocProvider(create: (context) =>
         SearchCubit(loadDataUseCase: widget._loadDataUseCase),
-        child: BlocBuilder<SearchCubit, SearchStates>(
+        child: BlocBuilder<SearchCubit, SearchState>(
           builder: (context, state) {
             _currentCubit = SearchCubit.get(context);
             final tabData = state.tabData;
@@ -96,7 +96,7 @@ class _SearchScreenState extends State<SearchScreen> {
                             }
                         ),
                     onError: (error) =>
-                    error.isConnection ? TasksErrorStateWidget(
+                    error.isConnectionError ? TasksErrorStateWidget(
                         error: error.message,
                         onRetry: () =>
                             _currentCubit.getSearch(

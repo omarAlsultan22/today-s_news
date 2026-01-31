@@ -1,5 +1,5 @@
 import 'dart:async';
-import '../states/news_states.dart';
+import '../states/news_state.dart';
 import 'package:flutter/material.dart';
 import '../../data/models/tab_data.dart';
 import '../../core/errors/error_handler.dart';
@@ -11,7 +11,7 @@ import 'package:todays_news/presentation/navigation/screen_items.dart';
 import 'package:todays_news/presentation/navigation/bottom_navigation_bar_items.dart';
 
 
-class CategoriesCubit extends Cubit<NewsStates> {
+class CategoriesCubit extends Cubit<NewsState> {
   final LoadDataUseCase _loadDataUseCase;
   final ChangeTabUseCase _changeTabUseCase;
 
@@ -25,7 +25,7 @@ class CategoriesCubit extends Cubit<NewsStates> {
       : _loadDataUseCase = loadDataUseCase,
         _changeTabUseCase = changeTabUseCase,
         super(
-        NewsStates(
+        NewsState(
           currentIndex: kInitialTabIndex,
           tabsData: {
             for (var i = 0; i < kInitialTabCount; i++)

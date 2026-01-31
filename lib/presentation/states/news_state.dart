@@ -1,11 +1,11 @@
 import '../../data/models/tab_data.dart';
 
 
-class NewsStates {
+class NewsState {
   final int currentIndex;
   final Map<int, TabData> tabsData;
 
-  const NewsStates({
+  const NewsState({
     required this.currentIndex,
     required this.tabsData,
   });
@@ -14,7 +14,7 @@ class NewsStates {
 
   bool get isLoadingMore => tabsData[currentIndex]!.isLoading;
 
-  NewsStates updateTab(int index, TabData newTabData) {
+  NewsState updateTab(int index, TabData newTabData) {
     return copyWith(
       tabsData: {
         ...tabsData,
@@ -23,11 +23,11 @@ class NewsStates {
     );
   }
 
-  NewsStates copyWith({
+  NewsState copyWith({
     int? currentIndex,
     Map<int, TabData>? tabsData,
   }) {
-    return NewsStates(
+    return NewsState(
       currentIndex: currentIndex ?? this.currentIndex,
       tabsData: tabsData ?? this.tabsData,
     );

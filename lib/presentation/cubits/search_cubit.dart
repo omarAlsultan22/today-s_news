@@ -1,5 +1,5 @@
 import 'dart:async';
-import '../states/search_states.dart';
+import '../states/search_state.dart';
 import '../../data/models/tab_data.dart';
 import '../../core/errors/error_handler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,14 +8,14 @@ import '../../domain/useCases/tab_useCases/load_tab_data_useCase.dart';
 import 'package:todays_news/core/errors/exceptions/app_exception.dart';
 
 
-class SearchCubit extends Cubit<SearchStates> {
+class SearchCubit extends Cubit<SearchState> {
   final LoadDataUseCase _loadDataUseCase;
 
   SearchCubit({
     required LoadDataUseCase loadDataUseCase
   })
       : _loadDataUseCase = loadDataUseCase,
-        super(SearchStates(query: '', tabData: const TabData()));
+        super(SearchState(query: '', tabData: const TabData()));
 
   static SearchCubit get(context) => BlocProvider.of(context);
 
