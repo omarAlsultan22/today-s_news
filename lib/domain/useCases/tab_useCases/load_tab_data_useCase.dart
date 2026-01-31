@@ -13,27 +13,20 @@ class LoadDataUseCase {
     String? query,
     required TabData currentData,
   }) async {
-    try {
-      if (!currentData.hasMore) return currentData;
+    if (!currentData.hasMore) return currentData;
 
-      final value = query ?? HomeScreenConstants.categories[tabIndex!];
+    final value = query ?? HomeScreenConstants.categories[tabIndex!];
 
-      final articles = await repository.fetchArticles(
-        value: value,
-        page: currentData.page,
-      );
+    final articles = await repository.fetchArticles(
+      value: value,
+      page: currentData.page,
+    );
 
-      return currentData.copyWith(
-        products: [...currentData.products, ...articles],
-        page: currentData.page + 1,
-        isLoading: false,
-        hasMore: articles.isNotEmpty,
-      );
-    } catch (e) {
-      return currentData.copyWith(
-        isLoading: false,
-        error: e.toString(),
-      );
-    }
+    return currentData.copyWith(
+      products: [...currentData.products, ...articles],
+      page: currentData.page + 1,
+      isLoading: false,
+      hasMore: articles.isNotEmpty,
+    );
   }
 }

@@ -45,8 +45,7 @@ class SearchCubit extends Cubit<SearchStates> {
         final failure = ErrorHandler.handleException(e);
         final newTabData = currentTabData.copyWith(
           isLoading: false,
-          error: failure.message,
-          isConnection: failure.isConnection,
+          error: failure,
         );
         emit(state.copyWith(tabData: newTabData));
       }

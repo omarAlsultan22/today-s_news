@@ -1,6 +1,7 @@
 import '../states/news_states.dart';
 import 'package:flutter/material.dart';
 import '../cubits/categories_cubit.dart';
+import '../mappers/news_state_mapper.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../core/widgets/lists/list_builder.dart';
 import 'package:todays_news/core/widgets/error_widgets/error_state.dart';
@@ -30,7 +31,8 @@ class ScienceScreen extends StatelessWidget {
                 onPressed: () {});
           }
 
-          return state.when(
+          return NewsStateMapper.when(
+              state: state,
               initial: () => const SizedBox(),
               loading: () => const Center(child: CircularProgressIndicator()),
               loaded: (newTabData) =>
@@ -38,13 +40,13 @@ class ScienceScreen extends StatelessWidget {
                       list: newTabData!.products,
                       isLoadingMore: currentTabData!.hasMore,
                       onPressed: () => currentCubit.getMoreData()),
-              error: (errorText, errorType) =>
-              errorType ? TasksErrorStateWidget(
-                  error: errorText,
+              onError: (error) =>
+              error.isConnection ? TasksErrorStateWidget(
+                  error: error.message,
                   onRetry: () =>
                       currentCubit.changeScreen(state.currentIndex)) :
               Center(child: NoInternetConnection(
-                  error: errorText,
+                  error: error.message,
                   onRetry: () => currentCubit.changeScreen(state.currentIndex)
               ))
           );

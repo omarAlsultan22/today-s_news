@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../core/widgets/lists/list_builder.dart';
 import '../../domain/useCases/tab_useCases/load_tab_data_useCase.dart';
 import 'package:todays_news/core/widgets/error_widgets/error_state.dart';
+import 'package:todays_news/presentation/mappers/search_state_mapper.dart';
 import '../../core/widgets/error_widgets/no_internet_connection_state.dart';
 
 
@@ -78,7 +79,8 @@ class _SearchScreenState extends State<SearchScreen> {
                 children: [
                   _buildSearchField(),
                   const SizedBox(height: 10.0),
-                  state.when(
+                  SearchStateMapper.when(
+                    state: state,
                     initial: () =>
                     const Expanded(
                         child: Center(child: Text('Type to start searching'))),
@@ -93,14 +95,14 @@ class _SearchScreenState extends State<SearchScreen> {
                                   query: searchController.text);
                             }
                         ),
-                    error: (errorText, errorType) =>
-                    errorType ? TasksErrorStateWidget(
-                        error: errorText,
+                    onError: (error) =>
+                    error.isConnection ? TasksErrorStateWidget(
+                        error: error.message,
                         onRetry: () =>
                             _currentCubit.getSearch(
                                 query: searchController.text)) :
                     Center(child: NoInternetConnection(
-                        error: errorText)
+                        error: error.message)
                     ),
                   )
                 ],

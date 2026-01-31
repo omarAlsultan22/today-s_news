@@ -61,8 +61,7 @@ class CategoriesCubit extends Cubit<NewsStates> {
       final failure = ErrorHandler.handleException(e);
       final newTabData = currentTabData.copyWith(
         isLoading: false,
-        error: failure.message,
-        isConnection: failure.isConnection,
+        error: failure,
       );
       emit(state.updateTab(index, newTabData));
     }
@@ -84,8 +83,7 @@ class CategoriesCubit extends Cubit<NewsStates> {
       final failure = ErrorHandler.handleException(e);
       final newTabData = currentTabData.copyWith(
         isLoading: false,
-        error: failure.message,
-        isConnection: failure.isConnection,
+        error: failure,
       );
       emit(state.updateTab(index, newTabData));
     }
