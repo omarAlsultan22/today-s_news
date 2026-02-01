@@ -3,9 +3,9 @@ import 'load_tab_data_useCase.dart';
 
 
 class ChangeTabUseCase {
-  Future<TabData> execute({
+  Future<CategoryData> execute({
     required int tabIndex,
-    required TabData currentData,
+    required CategoryData currentData,
     required LoadDataUseCase loadDataUseCase,
   }) async {
     if (currentData.products.isEmpty) {

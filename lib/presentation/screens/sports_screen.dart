@@ -1,7 +1,6 @@
 import '../states/news_state.dart';
 import 'package:flutter/material.dart';
 import '../cubits/categories_cubit.dart';
-import '../mappers/news_state_mapper.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../core/widgets/lists/list_builder.dart';
 import 'package:todays_news/core/widgets/error_widgets/error_state.dart';
@@ -31,8 +30,7 @@ class SportsScreen extends StatelessWidget {
                 onPressed: () {});
           }
 
-          return NewsStateMapper.when(
-              state: state,
+          return state.when(
               initial: () => const SizedBox(),
               loading: () => const Center(child: CircularProgressIndicator()),
               loaded: (newTabData) =>

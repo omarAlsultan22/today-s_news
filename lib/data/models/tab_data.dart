@@ -1,16 +1,15 @@
+import 'article_Model.dart';
 import 'package:todays_news/core/errors/exceptions/app_exception.dart';
 
-import 'article_Model.dart';
 
-
-class TabData {
+class CategoryData {
   final List<Article> products;
   final AppException? error;
   final bool isLoading;
   final bool hasMore;
   final int page;
 
-  const TabData({
+  const CategoryData({
     this.products = const [],
     this.isLoading = false,
     this.hasMore = true,
@@ -18,14 +17,14 @@ class TabData {
     this.page = 1,
   });
 
-  TabData copyWith({
+  CategoryData copyWith({
     List<Article>? products,
     AppException? error,
     bool? isLoading,
     bool? hasMore,
     int? page
   }) {
-    return TabData(
+    return CategoryData(
         products: products ?? this.products,
         isLoading: isLoading ?? this.isLoading,
         error: error ?? this.error,

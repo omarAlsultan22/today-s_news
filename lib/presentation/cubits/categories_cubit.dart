@@ -29,7 +29,7 @@ class CategoriesCubit extends Cubit<NewsState> {
           currentIndex: kInitialTabIndex,
           tabsData: {
             for (var i = 0; i < kInitialTabCount; i++)
-              i: const TabData()
+              i: const CategoryData()
           },
         ),
       );

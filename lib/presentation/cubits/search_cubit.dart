@@ -15,7 +15,7 @@ class SearchCubit extends Cubit<SearchState> {
     required LoadDataUseCase loadDataUseCase
   })
       : _loadDataUseCase = loadDataUseCase,
-        super(SearchState(query: '', tabData: const TabData()));
+        super(SearchState(query: '', tabData: const CategoryData()));
 
   static SearchCubit get(context) => BlocProvider.of(context);
 

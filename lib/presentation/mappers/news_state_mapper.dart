@@ -5,23 +5,5 @@ import '../states/news_state.dart';
 
 abstract class NewsStateMapper {
 
-  static R when<R>({
-    required NewsState state,
-    required R Function() initial,
-    required R Function() loading,
-    required R Function(TabData? tabData) loaded,
-    required R Function(AppException error) onError,
-  }) {
-    final currentTabData = state.currentTabData!;
-    if (currentTabData.error != null) {
-        return onError(currentTabData.error!);
-    }
-    if (currentTabData.isLoading) {
-      return loading();
-    }
-    if (currentTabData.products.isNotEmpty) {
-      return loaded(currentTabData);
-    }
-    return initial();
-  }
+
 }

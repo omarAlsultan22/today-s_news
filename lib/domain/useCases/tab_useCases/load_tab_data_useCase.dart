@@ -8,10 +8,10 @@ class LoadDataUseCase {
 
   const LoadDataUseCase(this.repository);
 
-  Future<TabData> execute({
+  Future<CategoryData> execute({
     int? tabIndex,
     String? query,
-    required TabData currentData,
+    required CategoryData currentData,
   }) async {
     if (!currentData.hasMore) return currentData;
 
