@@ -14,6 +14,8 @@ class NewsState implements CategoryDataWhenStrategy{
 
   CategoryData? get currentTabData => tabsData[currentIndex];
 
+  bool get isProductsEmpty => currentTabData!.products.isNotEmpty;
+
   bool get isLoadingMore => tabsData[currentIndex]!.isLoading;
 
   NewsState updateTab(int index, CategoryData newTabData) {
@@ -42,13 +44,14 @@ class NewsState implements CategoryDataWhenStrategy{
     required R Function(CategoryData? tabData) loaded,
     required R Function(AppException error) onError,
   }) {
+
     if (currentTabData!.error != null) {
       return onError(currentTabData!.error!);
     }
     if (currentTabData!.isLoading) {
       return loading();
     }
-    if (currentTabData!.products.isNotEmpty) {
+    if (isProductsEmpty) {
       return loaded(currentTabData);
     }
     return initial();

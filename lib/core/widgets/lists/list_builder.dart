@@ -5,12 +5,12 @@ import '../../../features/news/widgets/build_news_item.dart';
 
 class ListBuilder extends StatefulWidget {
   final List<Article> list;
-  final bool isLoadingMore;
-  final VoidCallback onPressed;
+  final bool hasMore;
+  final VoidCallback onScroll;
   const ListBuilder({
     required this.list,
-    required this.isLoadingMore,
-    required this.onPressed,
+    required this.hasMore,
+    required this.onScroll,
     super.key
   });
 
@@ -30,8 +30,8 @@ class _ListBuilderState extends State<ListBuilder> {
   void _onScrollData() {
     if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent - 50.0 &&
-        !widget.isLoadingMore) {
-      widget.onPressed();
+        !widget.hasMore) {
+      widget.onScroll();
     }
   }
 
@@ -46,14 +46,14 @@ class _ListBuilderState extends State<ListBuilder> {
   Widget build(BuildContext context) {
     return _listBuilder(
         data: widget.list,
-        isLoadingMore: widget.isLoadingMore,
+        hasMore: widget.hasMore,
         scrollController: _scrollController
     );
   }
 
   Widget _listBuilder({
     final int? length,
-    final bool? isLoadingMore,
+    final bool? hasMore,
     required List<Article> data,
     ScrollController? scrollController
   }) {
@@ -67,9 +67,9 @@ class _ListBuilderState extends State<ListBuilder> {
           return BuildNewsItem(data[index]);
         } else {
           return Center(
-            child: isLoadingMore!
-                ? const SizedBox() :
-            const CircularProgressIndicator(),
+            child: hasMore!
+                ? const CircularProgressIndicator() :
+            const SizedBox(),
           );
         }
       },

@@ -24,10 +24,6 @@ class ScienceScreen extends StatelessWidget {
             if (products.isEmpty) {
               const Center(child: CircularProgressIndicator());
             }
-            return ListBuilder(
-                list: products,
-                isLoadingMore: false,
-                onPressed: () {});
           }
 
           return state.when(
@@ -36,8 +32,8 @@ class ScienceScreen extends StatelessWidget {
               loaded: (newTabData) =>
                   ListBuilder(
                       list: newTabData!.products,
-                      isLoadingMore: currentTabData!.hasMore,
-                      onPressed: () => currentCubit.getMoreData()),
+                      hasMore: currentTabData!.hasMore,
+                      onScroll: () => currentCubit.getMoreData()),
               onError: (error) =>
               error.isConnectionError ? TasksErrorStateWidget(
                   error: error.message,

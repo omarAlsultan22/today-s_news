@@ -47,6 +47,7 @@ class BuildNewsItem extends StatelessWidget {
             ),
             const SizedBox(width: 20.0),
             Expanded(
+              flex: 1,
               child: SizedBox(
                 height: 120.0,
                 child: Column(
@@ -54,6 +55,7 @@ class BuildNewsItem extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Expanded(
+                      flex: 1,
                       child: Text(
                         title,
                         style: const TextStyle(

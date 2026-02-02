@@ -15,7 +15,7 @@ class SearchCubit extends Cubit<SearchState> {
     required LoadDataUseCase loadDataUseCase
   })
       : _loadDataUseCase = loadDataUseCase,
-        super(SearchState(query: '', tabData: const CategoryData()));
+        super(SearchState(query: '', categoryData: const CategoryData()));
 
   static SearchCubit get(context) => BlocProvider.of(context);
 
@@ -30,16 +30,26 @@ class SearchCubit extends Cubit<SearchState> {
 
     timer = Timer(
         const Duration(milliseconds: SearchConfig.searchDebounceMs), () async {
-      final currentTabData = state.tabData;
+      final currentTabData = state.categoryData;
 
-      emit(state.copyWith(query: query,
-          tabData: currentTabData.copyWith(isLoading: true, error: null)));
+      emit(state.copyWith(
+          query: query,
+          categoryData: currentTabData.copyWith(
+              products: const [],
+              isLoading: true,
+              error: null
+          )));
 
       try {
         final newTabData = await _loadDataUseCase.execute(
-          currentData: currentTabData.copyWith(isLoading: false),
+          query: query,
+          currentData: currentTabData,
         );
-        emit(state.copyWith(tabData: newTabData));
+
+        emit(state.copyWith(
+            query: query,
+            categoryData: newTabData
+        ));
       }
       on AppException catch (e) {
         final failure = ErrorHandler.handleException(e);
@@ -47,7 +57,7 @@ class SearchCubit extends Cubit<SearchState> {
           isLoading: false,
           error: failure,
         );
-        emit(state.copyWith(tabData: newTabData));
+        emit(state.copyWith(categoryData: newTabData));
       }
     });
   }

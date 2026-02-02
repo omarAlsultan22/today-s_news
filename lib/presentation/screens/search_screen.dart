@@ -20,9 +20,10 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  final TextEditingController searchController = TextEditingController();
+
   late SearchCubit _currentCubit;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final TextEditingController searchController = TextEditingController();
 
 
   @override
@@ -70,7 +71,7 @@ class _SearchScreenState extends State<SearchScreen> {
         child: BlocBuilder<SearchCubit, SearchState>(
           builder: (context, state) {
             _currentCubit = SearchCubit.get(context);
-            final tabData = state.tabData;
+            final tabData = state.categoryData;
             return Scaffold(
               appBar: _buildAppBar(tabData.products),
               body: Column(
@@ -78,29 +79,32 @@ class _SearchScreenState extends State<SearchScreen> {
                 children: [
                   _buildSearchField(),
                   const SizedBox(height: 10.0),
-                  state.when(
-                    initial: () =>
-                    const Expanded(
-                        child: Center(child: Text('Type to start searching'))),
-                    loading: () =>
-                    const Center(child: CircularProgressIndicator()),
-                    loaded: (newTabData) =>
-                        ListBuilder(
-                            list: tabData.products,
-                            isLoadingMore: tabData.hasMore,
-                            onPressed: () {
+                  Expanded(
+                    child: state.when(
+                      initial: () =>
+                      const Expanded(
+                          child: Center(child: Text('Type to start searching'))),
+                      loading: () =>
+                      const Center(child: CircularProgressIndicator()),
+                      loaded: (newTabData) =>
+                          ListBuilder(
+                              list: newTabData!.products,
+                              hasMore: tabData.hasMore,
+                              onScroll: () {
+                                _currentCubit.getSearch(
+                                    query: searchController.text
+                                );
+                              }
+                          ),
+                      onError: (error) =>
+                      error.isConnectionError ? TasksErrorStateWidget(
+                          error: error.message,
+                          onRetry: () =>
                               _currentCubit.getSearch(
-                                  query: searchController.text);
-                            }
-                        ),
-                    onError: (error) =>
-                    error.isConnectionError ? TasksErrorStateWidget(
-                        error: error.message,
-                        onRetry: () =>
-                            _currentCubit.getSearch(
-                                query: searchController.text)) :
-                    Center(child: NoInternetConnection(
-                        error: error.message)
+                                  query: searchController.text)) :
+                      Center(child: NoInternetConnection(
+                          error: error.message)
+                      ),
                     ),
                   )
                 ],

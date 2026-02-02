@@ -78,6 +78,7 @@ class CategoriesCubit extends Cubit<NewsState> {
         currentData: currentTabData,
       );
       emit(state.updateTab(index, newTabData));
+      print('im here.......................');
     }
     on AppException catch (e) {
       final failure = ErrorHandler.handleException(e);

@@ -4,17 +4,19 @@ import '../../core/errors/exceptions/app_exception.dart';
 
 class SearchState {
   final String query;
-  final CategoryData tabData;
+  final CategoryData categoryData;
 
-  SearchState({required this.query, required this.tabData});
+  SearchState({required this.query, required this.categoryData});
+
+  bool get isCategoryData => categoryData.products.isNotEmpty;
 
   SearchState copyWith({
     String? query,
-    CategoryData? tabData,
+    CategoryData? categoryData,
   }) {
     return SearchState(
       query: query ?? this.query,
-      tabData: tabData ?? this.tabData,
+      categoryData: categoryData ?? this.categoryData,
     );
   }
 
@@ -24,14 +26,14 @@ class SearchState {
     required R Function(CategoryData? tabData) loaded,
     required R Function(AppException error) onError}) {
 
-    if (tabData.error != null) {
-      return onError(tabData.error!);
+    if (categoryData.error != null) {
+      return onError(categoryData.error!);
     }
-    if (tabData.isLoading && query.isNotEmpty) {
+    if (categoryData.isLoading && query.isNotEmpty) {
       return loading();
     }
-    if (tabData.products.isNotEmpty) {
-      return loaded(tabData);
+    if (isCategoryData) {
+      return loaded(categoryData);
     }
     return initial();
   }
