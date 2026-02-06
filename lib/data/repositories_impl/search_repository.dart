@@ -9,14 +9,14 @@ class SearchRepository implements DataRepository {
 
   @override
   Future<List<Article>> fetchArticles(
-      {required String value, required int page}) async {
+      {required String key, required int currentPage}) async {
     final response = await DioHelper.getData(
       url: SearchConfig.searchUrl,
       query: {
-        'q': value,
+        'q': key,
         'apiKey': NewsConfig.apiKey,
         'pageSize': NewsConfig.pageSize,
-        'page': page,
+        'page': currentPage,
         'sortBy': NewsConfig.sortBy
       },
     );

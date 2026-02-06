@@ -1,6 +1,6 @@
+import '../cubits/news_cubit.dart';
 import '../states/news_state.dart';
 import 'package:flutter/material.dart';
-import '../cubits/categories_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../core/widgets/lists/list_builder.dart';
 import 'package:todays_news/core/widgets/error_widgets/error_state.dart';
@@ -13,10 +13,10 @@ class ScienceScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CategoriesCubit, NewsState>(
+    return BlocBuilder<NewsCubit, NewsState>(
         builder: (context, state) {
           final currentTabData = state.currentTabData;
-          final currentCubit = CategoriesCubit.get(context);
+          final currentCubit = NewsCubit.get(context);
           const screenIndex = HomeScreenConstants.screenScienceIndex;
 
           if (state.currentIndex != screenIndex) {

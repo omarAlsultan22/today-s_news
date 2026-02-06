@@ -11,14 +11,14 @@ import 'package:todays_news/presentation/navigation/screen_items.dart';
 import 'package:todays_news/presentation/navigation/bottom_navigation_bar_items.dart';
 
 
-class CategoriesCubit extends Cubit<NewsState> {
+class NewsCubit extends Cubit<NewsState> {
   final LoadDataUseCase _loadDataUseCase;
   final ChangeTabUseCase _changeTabUseCase;
 
   static const int kInitialTabIndex = 0;
   static const int kInitialTabCount = 3;
 
-  CategoriesCubit({
+  NewsCubit({
     required LoadDataUseCase loadDataUseCase,
     required ChangeTabUseCase changeTabUseCase
   })
@@ -35,7 +35,7 @@ class CategoriesCubit extends Cubit<NewsState> {
       );
 
 
-  static CategoriesCubit get(context) => BlocProvider.of(context);
+  static NewsCubit get(context) => BlocProvider.of(context);
 
   List<Widget> get screenItems => ScreenItems.screenItems;
 

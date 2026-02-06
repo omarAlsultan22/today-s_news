@@ -18,8 +18,8 @@ class LoadDataUseCase {
     final value = query ?? HomeScreenConstants.categories[tabIndex!];
 
     final articles = await repository.fetchArticles(
-      value: value,
-      page: currentData.page,
+      key: value,
+      currentPage: currentData.page,
     );
 
     return currentData.copyWith(

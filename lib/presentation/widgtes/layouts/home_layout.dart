@@ -1,22 +1,32 @@
 import 'dart:async';
+import '../../cubits/News_cubit.dart';
 import '../../states/news_state.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../screens/search_screen.dart';
-import '../../cubits/categories_cubit.dart';
 import '../../../core/themes/screen_theme.dart';
 import '../../../domain/repositories/data_repository.dart';
 import '../../../domain/useCases/tab_useCases/load_tab_data_useCase.dart';
-import 'package:todays_news/data/repositories_impl/articles_repository.dart';
+import 'package:todays_news/data/repositories_impl/api_articles_repository.dart';
+import '../../../domain/services/connectivity_service/connectivity_provider.dart';
 
 
 class HomeLayout extends StatelessWidget {
-  final CategoriesCubit _cubit;
+  final NewsCubit _cubit;
   final NewsState _state;
-  const HomeLayout(this._cubit,this._state, {super.key});
+  final ConnectivityProvider _connectivityService;
+  const HomeLayout({super.key,
+    required NewsCubit cubit,
+    required NewsState state,
+    required ConnectivityProvider connectivityService,
+  })
+      : _cubit = cubit,
+        _state = state,
+        _connectivityService = connectivityService;
+
 
   void _navPushSearchScreen(BuildContext context) {
-    final DataRepository repository = ArticlesRepository();
+    final DataRepository repository = ApiArticlesRepository();
     final loadDataUseCase = LoadDataUseCase(repository);
     Navigator.push(context, MaterialPageRoute(
         builder: (context) => SearchScreen(loadDataUseCase: loadDataUseCase)));
@@ -24,6 +34,7 @@ class HomeLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isConnected = _connectivityService.isConnected;
     return Scaffold(
       appBar: AppBar(
         title: const Text("Today's News"),
@@ -41,10 +52,20 @@ class HomeLayout extends StatelessWidget {
           ),
         ],
       ),
-      body: Expanded(child: _cubit.screenItems[_state.currentIndex]),
+      body: Column(
+          children: [
+            ConnectionBanner(
+                isVisible: isConnected,
+                bgColor: isConnected? Colors.green.shade700 : Colors.red.shade700,
+                icon: isConnected? Icons.wifi : Icons.signal_wifi_off,
+                text: isConnected? 'online' : 'offline'),
+            Expanded(
+                child: _cubit.screenItems[_state.currentIndex])
+          ]
+      ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _state.currentIndex,
-        onTap: (index)=> _cubit.changeScreen(index),
+        onTap: (index) => _cubit.changeScreen(index),
         items: _cubit.barItems,
       ),
     );
@@ -54,7 +75,7 @@ class HomeLayout extends StatelessWidget {
 
 class ConnectionBanner extends StatefulWidget {
   final bool isVisible;
-  final Color color;
+  final Color bgColor;
   final IconData icon;
   final String text;
   final int duration;
@@ -63,7 +84,7 @@ class ConnectionBanner extends StatefulWidget {
   const ConnectionBanner({
     super.key,
     required this.isVisible,
-    required this.color,
+    required this.bgColor,
     required this.icon,
     required this.text,
     this.duration = 0,
@@ -118,7 +139,7 @@ class _ConnectionBannerState extends State<ConnectionBanner> {
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
       height: _height,
-      color: widget.color,
+      color: widget.bgColor,
       child: _height > 0
           ? Center(
         child: Row(
