@@ -58,7 +58,6 @@ class _ListBuilderState extends State<ListBuilder> {
     ScrollController? scrollController
   }) {
 
-
     return ListView.builder(
       controller: scrollController,
       itemCount: length ?? data.length + 1,

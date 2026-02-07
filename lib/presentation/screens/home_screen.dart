@@ -11,15 +11,17 @@ class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext? context) {
-    return BlocBuilder<NewsCubit, NewsState>(
-        builder: (context, state) {
-          final cubit = NewsCubit.get(context);
-          return Consumer<ConnectivityProvider>(
-              builder: (context, connectivityService, child) =>
-                  HomeLayout(state: state,
-                      cubit: cubit,
-                      connectivityService: connectivityService)
+  Widget build(BuildContext context) {
+    return Consumer<ConnectivityProvider>(
+        builder: (context, connectivityService, child) {
+          return BlocBuilder<NewsCubit, NewsState>(
+              builder: (context, state) {
+                final cubit = NewsCubit.get(context);
+                return HomeLayout(state: state,
+                    cubit: cubit,
+                    connectivityService: connectivityService
+                );
+              }
           );
         }
     );
