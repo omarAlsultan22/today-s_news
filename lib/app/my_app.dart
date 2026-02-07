@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../core/themes/screen_theme.dart';
+import '../core/managers/app_lifecycle_manager.dart';
 import 'package:todays_news/presentation/screens/home_screen.dart';
 
 
@@ -40,12 +41,14 @@ class MyApp extends StatelessWidget {
       create: (_) => ThemeNotifier(),
       child: Consumer<ThemeNotifier>(
         builder: (context, themeNotifier, child) {
-          return MaterialApp(
-              theme: lightTheme,
-              darkTheme: darkTheme,
-              themeMode: themeNotifier.themeMode,
-              debugShowCheckedModeBanner: false,
-              home: const HomeScreen()
+          return AppLifecycleManager(
+            child: MaterialApp(
+                theme: lightTheme,
+                darkTheme: darkTheme,
+                themeMode: themeNotifier.themeMode,
+                debugShowCheckedModeBanner: false,
+                home: const HomeScreen()
+            ),
           );
         },
       ),

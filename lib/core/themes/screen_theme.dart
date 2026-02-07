@@ -1,56 +1,36 @@
-import 'package:shared_preferences/shared_preferences.dart';
-import '../../data/datasources/local/cacheHelper.dart';
 import 'package:flutter/material.dart';
+import '../../data/datasources/local/cacheHelper.dart';
 
 
 class ThemeNotifier extends ChangeNotifier {
   ThemeMode _themeMode = ThemeMode.light;
 
-  bool get isDarkMode => _themeMode == ThemeMode.dark;
-  bool get isLightMode => _themeMode == ThemeMode.light;
-  bool get isSystemMode => _themeMode == ThemeMode.system;
-
   ThemeMode get themeMode => _themeMode;
-
-  void toggleTheme() {
-    switch (_themeMode) {
-      case ThemeMode.light:
-        _themeMode = ThemeMode.dark;
-        break;
-      case ThemeMode.dark:
-        _themeMode = ThemeMode.system;
-        break;
-      case ThemeMode.system:
-        _themeMode = ThemeMode.light;
-        break;
-    }
-
-    // حفظ القيمة
-    String themeValue;
-    switch (_themeMode) {
-      case ThemeMode.light:
-        themeValue = 'light';
-        break;
-      case ThemeMode.dark:
-        themeValue = 'dark';
-        break;
-      case ThemeMode.system:
-        themeValue = 'system';
-        break;
-    }
-
-    CacheHelper.setDate(key: 'theme', value: themeValue);
-    notifyListeners();
-  }
 
   ThemeNotifier() {
     _loadTheme();
   }
 
+  Future<void> toggleTheme() async {
+    switch (_themeMode) {
+      case ThemeMode.light:
+        _themeMode = ThemeMode.dark;
+        break;
+      case ThemeMode.dark:
+        _themeMode = ThemeMode.light;
+        break;
+      case ThemeMode.system:
+        _themeMode = ThemeMode.light;
+        break;
+    }
+    setTheme(_themeMode);
+    print('done..............................');
+    notifyListeners();
+  }
+
   void _loadTheme() async {
     try {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? theme = prefs.getString('theme');
+      String? theme = await CacheHelper.getDate(key: 'theme');
 
       if (theme == 'dark') {
         _themeMode = ThemeMode.dark;
@@ -62,7 +42,6 @@ class ThemeNotifier extends ChangeNotifier {
         _themeMode = ThemeMode.system;
         await CacheHelper.setDate(key: 'theme', value: 'system');
       }
-
       notifyListeners();
     } catch (e) {
       print("Error loading theme: $e");
@@ -70,8 +49,7 @@ class ThemeNotifier extends ChangeNotifier {
   }
 
   void setTheme(ThemeMode mode) {
-    _themeMode = mode;
-    String themeValue;
+    late String themeValue;
     switch (mode) {
       case ThemeMode.light:
         themeValue = 'light';

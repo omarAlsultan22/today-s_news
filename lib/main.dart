@@ -1,3 +1,5 @@
+import 'package:todays_news/data/datasources/local/hive.dart';
+
 import 'app/my_app.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -22,6 +24,7 @@ void main() async {
   await DioHelper.init();
   Bloc.observer = MyBlocObserver();
   await CacheHelper.init();
+  await HiveOperations.init();
 
 
   final DataRepository remoteDatabase = ApiArticlesRepository();
@@ -50,6 +53,4 @@ void main() async {
       ], child: const MyApp(),)
   );
 }
-
-
 
