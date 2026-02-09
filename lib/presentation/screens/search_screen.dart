@@ -81,30 +81,32 @@ class _SearchScreenState extends State<SearchScreen> {
                   const SizedBox(height: 10.0),
                   Expanded(
                     child: state.when(
-                      initial: () =>
-                      const Expanded(
-                          child: Center(child: Text('Type to start searching'))),
-                      loading: () =>
-                      const Center(child: CircularProgressIndicator()),
-                      loaded: (newTabData) =>
-                          ListBuilder(
-                              list: newTabData!.products,
-                              hasMore: tabData.hasMore,
-                              onScroll: () {
+                        initial: () =>
+                        const Expanded(
+                            child: Center(child: Text(
+                                'Type to start searching'))),
+                        loading: () =>
+                        const Center(child: CircularProgressIndicator()),
+                        loaded: (newTabData) =>
+                            ListBuilder(
+                                list: newTabData!.products,
+                                hasMore: tabData.hasMore,
+                                onScroll: () {
+                                  _currentCubit.getSearch(
+                                      query: searchController.text
+                                  );
+                                }
+                            ),
+                        onError: (error) =>
+                        error.isConnectionError ? Center(
+                            child: NoInternetConnection(
+                                error: error.message)
+                        ) :
+                        TasksErrorStateWidget(
+                            error: error.message,
+                            onRetry: () =>
                                 _currentCubit.getSearch(
-                                    query: searchController.text
-                                );
-                              }
-                          ),
-                      onError: (error) =>
-                      error.isConnectionError ? TasksErrorStateWidget(
-                          error: error.message,
-                          onRetry: () =>
-                              _currentCubit.getSearch(
-                                  query: searchController.text)) :
-                      Center(child: NoInternetConnection(
-                          error: error.message)
-                      ),
+                                    query: searchController.text))
                     ),
                   )
                 ],

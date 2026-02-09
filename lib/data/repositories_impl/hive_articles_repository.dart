@@ -1,11 +1,13 @@
 import 'package:todays_news/data/models/article_Model.dart';
 import 'package:todays_news/data/datasources/local/hive.dart';
+import 'package:todays_news/domain/repositories/data_operations.dart';
 import 'package:todays_news/domain/repositories/data_repository.dart';
 
 
-class HiveArticlesRepository implements DataRepository{
+class HiveArticlesRepository implements DataRepository, DataOperations {
   @override
-  Future<List<Article>> fetchArticles({required String key, required int currentPage}) async {
+  Future<List<Article>> fetchArticles(
+      {required String key, required int currentPage}) async {
     try {
       final value = await HiveOperations.getLocalData(key, currentPage);
 
@@ -26,5 +28,18 @@ class HiveArticlesRepository implements DataRepository{
     } catch (e) {
       return [];
     }
+  }
+
+
+  @override
+  Future<void> putData({
+    required String key,
+    required int currentPage,
+    required List<Article> articles}) async {
+    return await HiveOperations.putLocalData(
+        key: key,
+        currentPage: currentPage,
+        articles: articles
+    );
   }
 }

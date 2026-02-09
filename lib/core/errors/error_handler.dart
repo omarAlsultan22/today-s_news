@@ -5,8 +5,8 @@ import 'exceptions/app_exception.dart';
 
 class ErrorHandler {
   static AppException handleException(AppException exception) {
-    if (exception is NetworkException) {
-      return NetworkException(exception.message, true);
+    if (exception is NoInternetException) {
+      return NoInternetException(exception.message, true);
     }
     return ServerException(exception.message, false);
   }

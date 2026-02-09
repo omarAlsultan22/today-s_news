@@ -78,7 +78,6 @@ class NewsCubit extends Cubit<NewsState> {
         currentData: currentTabData,
       );
       emit(state.updateTab(index, newTabData));
-      print('im here.......................');
     }
     on AppException catch (e) {
       final failure = ErrorHandler.handleException(e);
@@ -88,6 +87,13 @@ class NewsCubit extends Cubit<NewsState> {
       );
       emit(state.updateTab(index, newTabData));
     }
+  }
+
+
+  void restLock() {
+    final index = state.currentIndex;
+    final currentTabData = state.tabsData[index]!;
+    emit(state.updateTab(index, currentTabData.copyWith(hasMore: true)));
   }
 }
 

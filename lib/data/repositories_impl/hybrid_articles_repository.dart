@@ -1,16 +1,17 @@
 import '../../domain/repositories/data_repository.dart';
 import 'package:todays_news/data/models/article_Model.dart';
 import '../../domain/services/connectivity_service/connectivity_service.dart';
+import 'package:todays_news/data/repositories_impl/hive_articles_repository.dart';
 
 
 class HybridArticlesRepository implements DataRepository {
   final DataRepository _remoteDatabase;
-  final DataRepository _localDatabase;
+  final HiveArticlesRepository _localDatabase;
   final ConnectivityService _connectivityService;
 
   HybridArticlesRepository({
     required DataRepository remoteDatabase,
-    required DataRepository localDatabase,
+    required HiveArticlesRepository localDatabase,
     required ConnectivityService connectivityService
   })
       :
@@ -23,10 +24,17 @@ class HybridArticlesRepository implements DataRepository {
       {required String key, required int currentPage}) async {
     final isConnection = await _connectivityService.checkInternetConnection();
     if (isConnection) {
-      return _remoteDatabase.fetchArticles(
+      final articles = await _remoteDatabase.fetchArticles(
           key: key, currentPage: currentPage);
+
+      if(articles.isNotEmpty) {
+        await _localDatabase.putData(
+            key: key, currentPage: currentPage, articles: articles);
+      }
+
+      return articles;
     }
-    return _localDatabase.fetchArticles(
+    return await _localDatabase.fetchArticles(
         key: key, currentPage: currentPage);
   }
 }

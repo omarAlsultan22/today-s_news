@@ -25,7 +25,7 @@ class ApiArticlesRepository implements DataRepository {
         },
       );
 
-      if (response.statusCode != 400) {
+      if (response.statusCode != 200) {
         throw(Exception('No Internet Connection'));
       }
 

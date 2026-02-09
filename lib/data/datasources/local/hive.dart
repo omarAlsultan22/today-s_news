@@ -19,10 +19,13 @@ abstract class HiveOperations {
     print('Box is opened..................');
   }
 
-  static Future<void> putLocalData(String key, List<Article> value,
-      int currentPage) async {
+  static Future<void> putLocalData({
+    required String key,
+    required int currentPage,
+    required List<Article> articles
+  }) async {
     try {
-      await box.put('${key}_$currentPage', value);
+      await box.put('${key}_$currentPage', articles);
       await box.flush();
       print("Data is done.........................");
     } catch (e) {

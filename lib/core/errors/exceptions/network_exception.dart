@@ -1,6 +1,6 @@
 import 'app_exception.dart';
 
 
-class NetworkException extends AppException {
-  const NetworkException(super.message, super.isConnection, [super.stackTrace]);
+class NoInternetException extends AppException {
+  const NoInternetException(super.message, super.isConnection, [super.stackTrace]);
 }
