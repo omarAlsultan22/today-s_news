@@ -1,6 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../../../data/models/article_Model.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter/material.dart';
 
 
 class BuildNewsItem extends StatelessWidget {
@@ -39,10 +40,10 @@ class BuildNewsItem extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10.0),
               ),
-              child: Image.network(
-                imageUrl,
+              child: CachedNetworkImage(
+                imageUrl: imageUrl,
                 fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => const Icon(Icons.error),
+                errorWidget: (context, error, stackTrace) => const Icon(Icons.error),
               ),
             ),
             const SizedBox(width: 20.0),
