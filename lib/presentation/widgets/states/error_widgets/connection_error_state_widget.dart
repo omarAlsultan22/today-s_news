@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 
-class NoInternetConnection extends StatelessWidget {
+class ConnectionErrorStateWidget extends StatelessWidget {
   final String error;
   final VoidCallback? onRetry;
 
-  const NoInternetConnection({required this.error, this.onRetry, super.key});
+  const ConnectionErrorStateWidget({required this.error, this.onRetry, super.key});
 
   Widget retryButton() {
     return Column(

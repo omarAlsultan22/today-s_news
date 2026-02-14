@@ -1,7 +1,7 @@
 import '../../../data/models/tab_data.dart';
 import '../../repositories/data_repository.dart';
+import '../../../presentation/constants/home_screen_constants.dart';
 import 'package:todays_news/domain/repositories/data_operations.dart';
-import 'package:todays_news/features/home/constants/home_screen_constants.dart';
 
 
 class LoadDataUseCase {

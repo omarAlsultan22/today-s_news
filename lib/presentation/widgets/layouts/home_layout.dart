@@ -1,10 +1,10 @@
 import 'dart:async';
-import '../../cubits/News_cubit.dart';
 import '../../states/news_state.dart';
+import '../../cubits/News_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../screens/search_screen.dart';
 import '../../../core/themes/screen_theme.dart';
+import '../../screens/search_screen.dart';
 import '../../../domain/useCases/tab_useCases/load_tab_data_useCase.dart';
 import 'package:todays_news/data/repositories_impl/api_articles_repository.dart';
 import 'package:todays_news/data/repositories_impl/hive_articles_repository.dart';

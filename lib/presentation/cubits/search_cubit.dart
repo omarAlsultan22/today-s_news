@@ -1,9 +1,9 @@
 import 'dart:async';
 import '../states/search_state.dart';
 import '../../data/models/tab_data.dart';
+import '../constants/api/search_config.dart';
 import '../../core/errors/error_handler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:todays_news/core/constants/api/search_config.dart';
 import '../../domain/useCases/tab_useCases/load_tab_data_useCase.dart';
 import 'package:todays_news/core/errors/exceptions/app_exception.dart';
 

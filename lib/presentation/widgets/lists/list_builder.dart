@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import '../../../data/models/article_Model.dart';
-import '../../../features/news/widgets/build_news_item.dart';
+import 'package:flutter/material.dart';
+import '../states/build_news_item.dart';
 
 
 class ListBuilder extends StatefulWidget {

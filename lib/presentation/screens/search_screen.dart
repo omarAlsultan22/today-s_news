@@ -1,12 +1,13 @@
 import '../cubits/search_cubit.dart';
-import '../states/search_state.dart';
 import 'package:flutter/material.dart';
-import '../../data/models/article_Model.dart';
+import '../states/search_state.dart';
+import '../widgets/lists/list_builder.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../core/widgets/lists/list_builder.dart';
+import '../../data/models/article_Model.dart';
+import '../widgets/states/loading_state_widget.dart';
 import '../../domain/useCases/tab_useCases/load_tab_data_useCase.dart';
-import 'package:todays_news/core/widgets/error_widgets/error_state.dart';
-import '../../core/widgets/error_widgets/no_internet_connection_state.dart';
+import '../widgets/states/error_widgets/connection_error_state_widget.dart';
+import 'package:todays_news/presentation/widgets/states/error_widgets/error_state_widget.dart';
 
 
 class SearchScreen extends StatefulWidget {
@@ -59,7 +60,7 @@ class _SearchScreenState extends State<SearchScreen> {
             Navigator.pop(context);
             data.clear();
           },
-          child: const Icon(Icons.arrow_back_ios),
+          child: Icon(Icons.arrow_back_ios),
         ),
       );
 
@@ -86,7 +87,7 @@ class _SearchScreenState extends State<SearchScreen> {
                             child: Center(child: Text(
                                 'Type to start searching'))),
                         loading: () =>
-                        const Center(child: CircularProgressIndicator()),
+                        const LoadingStateWidget(),
                         loaded: (newTabData) =>
                             ListBuilder(
                                 list: newTabData!.products,
@@ -99,10 +100,10 @@ class _SearchScreenState extends State<SearchScreen> {
                             ),
                         onError: (error) =>
                         error.isConnectionError ? Center(
-                            child: NoInternetConnection(
+                            child: ConnectionErrorStateWidget(
                                 error: error.message)
                         ) :
-                        TasksErrorStateWidget(
+                        ErrorStateWidget(
                             error: error.message,
                             onRetry: () =>
                                 _currentCubit.getSearch(

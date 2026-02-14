@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
 
-class NoDataWidget extends StatelessWidget {
+class InitialStateWidget extends StatelessWidget {
   final IconData icon;
   final String category;
   final double iconSize;
   final TextStyle? textStyle;
 
-  const NoDataWidget({
+  const InitialStateWidget({
     super.key,
     required this.icon,
     required this.category,

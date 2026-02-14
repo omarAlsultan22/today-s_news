@@ -1,6 +1,6 @@
+import '../../presentation/utils/helpers/list_convertor.dart';
+import '../../presentation/constants/api/news_config.dart';
 import '../../domain/repositories/data_repository.dart';
-import '../../core/utils/helpers/list_convertor.dart';
-import '../../core/constants/api/news_config.dart';
 import '../datasources/remote/dio_helper.dart';
 import '../models/article_Model.dart';
 

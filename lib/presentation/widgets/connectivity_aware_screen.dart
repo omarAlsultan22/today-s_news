@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
-import '../../presentation/cubits/News_cubit.dart';
+import '../cubits/News_cubit.dart';
 import '../../domain/services/connectivity_service/connectivity_provider.dart';
 
 

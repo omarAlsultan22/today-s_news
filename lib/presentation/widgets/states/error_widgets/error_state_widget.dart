@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
 
-class TasksErrorStateWidget extends StatelessWidget {
+class ErrorStateWidget extends StatelessWidget {
   final String error;
   final String? buttonText;
   final VoidCallback? onRetry;
 
-  const TasksErrorStateWidget({
+  const ErrorStateWidget({
     super.key,
     required this.error,
     required this.onRetry,
