@@ -15,6 +15,7 @@ class HomeLayout extends StatelessWidget {
   final NewsCubit _cubit;
   final NewsState _state;
   final ConnectivityProvider _connectivityService;
+
   const HomeLayout({super.key,
     required NewsCubit cubit,
     required NewsState state,
@@ -57,9 +58,10 @@ class HomeLayout extends StatelessWidget {
           children: [
             ConnectionBanner(
                 isVisible: isConnected,
-                bgColor: isConnected? Colors.green.shade700 : Colors.red.shade700,
-                icon: isConnected? Icons.wifi : Icons.signal_wifi_off,
-                text: isConnected? 'online' : 'offline'),
+                bgColor: isConnected ? Colors.green.shade700 : Colors.red.shade700,
+                icon: isConnected ? Icons.wifi : Icons.signal_wifi_off,
+                text: isConnected ? 'online' : 'offline'
+            ),
             Expanded(
                 child: _cubit.screenItems[_state.currentIndex])
           ]
