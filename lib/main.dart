@@ -40,7 +40,7 @@ void main() async {
 
   runApp(
       MultiBlocProvider(providers: [
-        ChangeNotifierProvider(create: (_) => ConnectivityProvider()),
+        ChangeNotifierProvider(create: (context) => ConnectivityProvider()),
         BlocProvider(
             create: (context) =>
             NewsCubit(
