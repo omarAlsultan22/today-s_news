@@ -1,26 +1,24 @@
+import '../cubits/News_cubit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
-import '../cubits/News_cubit.dart';
 import '../../domain/services/connectivity_service/connectivity_provider.dart';
 
 
-class ConnectivityAwareScreen extends StatelessWidget {
+class ConnectivityAwareService extends StatelessWidget {
   final Widget child;
   final int screenIndex;
-  final bool shouldCallRestLock;
 
-  const ConnectivityAwareScreen({
+  const ConnectivityAwareService({
     super.key,
     required this.child,
     required this.screenIndex,
-    this.shouldCallRestLock = true,
   });
 
   @override
   Widget build(BuildContext context) {
     return Consumer<ConnectivityProvider>(
       builder: (context, connectivityProvider, childWidget) {
-        if (shouldCallRestLock) {
+        if (connectivityProvider.isConnected) {
           _callRestLockIfNeeded(context, screenIndex);
         }
         return child;
