@@ -34,8 +34,8 @@ void main() async {
       connectivityService: connectivityProvider
   );
 
-  final loadUseCase = LoadDataUseCase(repository, localDatabase);
-  final changeTabUseCase = ChangeTabUseCase();
+  final loadDataUseCase = LoadDataUseCase(repository, localDatabase);
+  final changeTabUseCase = ChangeTabUseCase(loadDataUseCase: loadDataUseCase);
   const screenIndex = HomeScreenConstants.screenBusinessIndex;
 
   runApp(
@@ -44,7 +44,7 @@ void main() async {
         BlocProvider(
             create: (context) =>
             NewsCubit(
-                loadDataUseCase: loadUseCase,
+                loadDataUseCase: loadDataUseCase,
                 changeTabUseCase: changeTabUseCase
             )
               ..changeScreen(screenIndex))
