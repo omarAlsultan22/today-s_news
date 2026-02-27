@@ -39,16 +39,18 @@ void main() async {
   const screenIndex = HomeScreenConstants.screenBusinessIndex;
 
   runApp(
-      MultiBlocProvider(providers: [
-        ChangeNotifierProvider(create: (context) => ConnectivityProvider()),
-        BlocProvider(
-            create: (context) =>
-            NewsCubit(
-                loadDataUseCase: loadDataUseCase,
-                changeTabUseCase: changeTabUseCase
-            )
-              ..changeScreen(screenIndex))
-      ], child: const MyApp(),)
+      MultiProvider(
+          providers: [
+            ChangeNotifierProvider(create: (context) => ConnectivityProvider()),
+            BlocProvider(
+                create: (context) =>
+                NewsCubit(
+                    loadDataUseCase: loadDataUseCase,
+                    changeTabUseCase: changeTabUseCase
+                )
+                  ..changeScreen(screenIndex))
+          ], child: const MyApp()
+      )
   );
 }
 

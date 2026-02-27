@@ -1,5 +1,4 @@
 import 'dart:async';
-import '../../states/news_state.dart';
 import '../../cubits/News_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -11,18 +10,11 @@ import '../../../domain/services/connectivity_service/connectivity_provider.dart
 
 
 class HomeLayout extends StatelessWidget {
-  final NewsCubit _cubit;
-  final NewsState _state;
   final ConnectivityProvider _connectivityService;
 
   const HomeLayout({super.key,
-    required NewsCubit cubit,
-    required NewsState state,
     required ConnectivityProvider connectivityService,
-  })
-      : _cubit = cubit,
-        _state = state,
-        _connectivityService = connectivityService;
+  }) : _connectivityService = connectivityService;
 
 
   void _navPushSearchScreen(BuildContext context) {
@@ -35,6 +27,8 @@ class HomeLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isConnected = _connectivityService.isConnected;
+    final cubit = context.read<NewsCubit>();
+    final state = cubit.state;
     return Scaffold(
       appBar: AppBar(
         title: const Text("Today's News"),
@@ -61,13 +55,13 @@ class HomeLayout extends StatelessWidget {
                 text: isConnected ? 'online' : 'offline'
             ),
             Expanded(
-                child: _cubit.screenItems[_state.currentIndex])
+                child: cubit.screenItems[state.currentIndex])
           ]
       ),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _state.currentIndex,
-        onTap: (index) => _cubit.changeScreen(index),
-        items: _cubit.barItems,
+        currentIndex: state.currentIndex,
+        onTap: (index) => cubit.changeScreen(index),
+        items: cubit.barItems,
       ),
     );
   }
@@ -80,7 +74,6 @@ class ConnectionBanner extends StatefulWidget {
   final IconData icon;
   final String text;
   final int duration;
-  final VoidCallback? reload;
 
   const ConnectionBanner({
     super.key,
@@ -89,7 +82,6 @@ class ConnectionBanner extends StatefulWidget {
     required this.icon,
     required this.text,
     this.duration = 0,
-    this.reload
   });
 
   @override
@@ -104,15 +96,7 @@ class _ConnectionBannerState extends State<ConnectionBanner> {
   void initState() {
     super.initState();
     _height = 40.0;
-    _restLocks();
     _startTimer();
-  }
-
-
-  void _restLocks() {
-    if (widget.isVisible) {
-      widget.reload!();
-    }
   }
 
   void _startTimer() {

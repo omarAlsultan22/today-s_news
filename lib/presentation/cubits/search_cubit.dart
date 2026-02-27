@@ -67,8 +67,6 @@ class SearchCubit extends Cubit<SearchState> {
             query: query,
             categoryData: newTabData.copyWith(isLoading: false)
         ));
-        emit(state.copyWith(
-            categoryData: currentTabData.copyWith(isLoading: false)));
       }
 
       on AppException catch (e) {

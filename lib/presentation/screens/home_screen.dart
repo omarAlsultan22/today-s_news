@@ -16,10 +16,7 @@ class HomeScreen extends StatelessWidget {
         builder: (context, connectivityService, child) {
           return BlocBuilder<NewsCubit, NewsState>(
               builder: (context, state) {
-                final cubit = NewsCubit.get(context);
                 return HomeLayout(
-                    state: state,
-                    cubit: cubit,
                     connectivityService: connectivityService
                 );
               }
