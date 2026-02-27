@@ -21,6 +21,23 @@ class SearchCubit extends Cubit<SearchState> {
 
   Timer? timer;
 
+  void checkConnection(bool isConnected) {
+    final currentTabData = state.categoryData;
+    try {
+      if (!isConnected) {
+        throw Exception('No Internet Connection');
+      }
+      emit(state.copyWith(categoryData: currentTabData.copyWith(error: null)));
+    }
+    on AppException catch (e) {
+      final failure = ErrorHandler.handleException(e);
+      final newTabData = currentTabData.copyWith(
+        isLoading: false,
+        error: failure,
+      );
+      emit(state.copyWith(categoryData: newTabData));
+    }
+  }
 
   Future<void> getSearch({
     String? query,
@@ -48,9 +65,12 @@ class SearchCubit extends Cubit<SearchState> {
 
         emit(state.copyWith(
             query: query,
-            categoryData: newTabData
+            categoryData: newTabData.copyWith(isLoading: false)
         ));
+        emit(state.copyWith(
+            categoryData: currentTabData.copyWith(isLoading: false)));
       }
+
       on AppException catch (e) {
         final failure = ErrorHandler.handleException(e);
         final newTabData = currentTabData.copyWith(

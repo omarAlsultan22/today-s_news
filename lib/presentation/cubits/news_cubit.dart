@@ -47,8 +47,6 @@ class NewsCubit extends Cubit<NewsState> {
 
     final currentTabData = state.tabsData[index]!;
 
-    emit(state.updateTab(index, currentTabData.copyWith(isLoading: true)));
-
     try {
       final newTabData = await _changeTabUseCase.execute(
         tabIndex: index,
@@ -72,12 +70,14 @@ class NewsCubit extends Cubit<NewsState> {
     final index = state.currentIndex;
     final currentTabData = state.tabsData[index]!;
 
+    print('im here start............');
     try {
       final newTabData = await _loadDataUseCase.execute(
         tabIndex: index,
         currentData: currentTabData,
       );
       emit(state.updateTab(index, newTabData));
+      print('im here end............');
     }
     on AppException catch (e) {
       final failure = ErrorHandler.handleException(e);

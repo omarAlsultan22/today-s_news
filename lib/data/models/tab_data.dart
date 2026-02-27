@@ -11,7 +11,7 @@ class CategoryData {
 
   const CategoryData({
     this.products = const [],
-    this.isLoading = false,
+    this.isLoading = true,
     this.hasMore = true,
     this.error,
     this.page = 1,

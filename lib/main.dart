@@ -34,7 +34,7 @@ void main() async {
       connectivityService: connectivityProvider
   );
 
-  final loadDataUseCase = LoadDataUseCase(repository, localDatabase);
+  final loadDataUseCase = LoadDataUseCase(repository);
   final changeTabUseCase = ChangeTabUseCase(loadDataUseCase: loadDataUseCase);
   const screenIndex = HomeScreenConstants.screenBusinessIndex;
 

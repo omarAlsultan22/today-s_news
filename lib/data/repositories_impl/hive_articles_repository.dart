@@ -32,14 +32,19 @@ class HiveArticlesRepository implements DataRepository, DataOperations {
 
 
   @override
-  Future<void> putData({
+  Future<void> saveArticles({
     required String key,
     required int currentPage,
     required List<Article> articles}) async {
-    return await HiveOperations.putLocalData(
-        key: key,
-        currentPage: currentPage,
-        articles: articles
-    );
+    try {
+      return await HiveOperations.putLocalData(
+          key: key,
+          currentPage: currentPage,
+          articles: articles
+      );
+    }
+    catch(e){
+      rethrow;
+    }
   }
 }

@@ -25,10 +25,6 @@ class ApiArticlesRepository implements DataRepository {
         },
       );
 
-      if (response.statusCode != 200) {
-        throw(Exception('No Internet Connection'));
-      }
-
       return ArticleListParser
           .fromJson(response.data['articles'])
           .data;

@@ -22,19 +22,24 @@ class HybridArticlesRepository implements DataRepository {
   @override
   Future<List<Article>> fetchArticles(
       {required String key, required int currentPage}) async {
-    final isConnection = await _connectivityService.checkInternetConnection();
-    if (isConnection) {
-      final articles = await _remoteDatabase.fetchArticles(
-          key: key, currentPage: currentPage);
+    try {
+      final isConnection = await _connectivityService.checkInternetConnection();
+      if (isConnection) {
+        final articles = await _remoteDatabase.fetchArticles(
+            key: key, currentPage: currentPage);
 
-      if(articles.isNotEmpty) {
-        await _localDatabase.putData(
-            key: key, currentPage: currentPage, articles: articles);
+        if (articles.isNotEmpty) {
+          await _localDatabase.saveArticles(
+              key: key, currentPage: currentPage, articles: articles);
+        }
+
+        return articles;
       }
-
-      return articles;
+      return await _localDatabase.fetchArticles(
+          key: key, currentPage: currentPage);
     }
-    return await _localDatabase.fetchArticles(
-        key: key, currentPage: currentPage);
+    catch(e){
+      rethrow;
+    }
   }
 }

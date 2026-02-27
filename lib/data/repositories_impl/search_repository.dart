@@ -12,6 +12,12 @@ class SearchRepository implements DataRepository {
   Future<List<Article>> fetchArticles(
       {required String key, required int currentPage}) async {
     try {
+      if (key
+          .trim()
+          .isEmpty) {
+        return [];
+      }
+
       final response = await DioHelper.getData(
         url: SearchConfig.searchUrl,
         query: {
@@ -22,10 +28,6 @@ class SearchRepository implements DataRepository {
           'sortBy': NewsConfig.sortBy
         },
       );
-
-      if (response.statusCode != 200) {
-        throw(Exception('No Internet Connection'));
-      }
 
       return ArticleListParser
           .fromJson(response.data['articles'])
