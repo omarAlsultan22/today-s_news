@@ -8,7 +8,7 @@ class SearchState {
 
   SearchState({required this.query, required this.categoryData});
 
-  bool get isCategoryData => categoryData.products.isNotEmpty;
+  bool get _isCategoryData => categoryData.products.isNotEmpty;
 
   SearchState copyWith({
     String? query,
@@ -32,7 +32,7 @@ class SearchState {
     if (categoryData.isLoading && query.isNotEmpty) {
       return loading();
     }
-    if (isCategoryData) {
+    if (_isCategoryData) {
       return loaded(categoryData);
     }
     return initial();

@@ -1,6 +1,6 @@
-import '../../../data/models/article_Model.dart';
 import 'package:flutter/material.dart';
 import '../states/build_news_item.dart';
+import '../../../data/models/article_Model.dart';
 
 
 class ListBuilder extends StatefulWidget {
@@ -57,7 +57,6 @@ class _ListBuilderState extends State<ListBuilder> {
     required List<Article> data,
     ScrollController? scrollController
   }) {
-
     return ListView.builder(
       controller: scrollController,
       itemCount: length ?? data.length + 1,

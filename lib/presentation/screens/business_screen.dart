@@ -5,7 +5,6 @@ import '../widgets/lists/list_builder.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../constants/home_screen_constants.dart';
 import '../../../presentation/states/news_state.dart';
-import '../widgets/states/error_widgets/connection_error_state_widget.dart';
 import 'package:todays_news/presentation/widgets/states/initial_state_widget.dart';
 import 'package:todays_news/presentation/widgets/states/loading_state_widget.dart';
 import 'package:todays_news/presentation/widgets/states/error_widgets/error_state_widget.dart';
@@ -20,7 +19,8 @@ class BusinessScreen extends StatelessWidget {
     return ConnectivityAwareService(
         screenIndex: screenIndex,
         child: BlocBuilder<NewsCubit, NewsState>(
-            buildWhen: (previous, current)=> current.currentIndex == screenIndex,
+            buildWhen: (previous, current) =>
+            current.currentIndex == screenIndex,
             builder: (context, state) {
               final currentTabData = state.currentTabData;
               final currentCubit = context.read<NewsCubit>();
@@ -37,16 +37,13 @@ class BusinessScreen extends StatelessWidget {
                           hasMore: currentTabData!.hasMore,
                           onScroll: () => currentCubit.getMoreData()),
                   onError: (error) =>
-                  error.isConnectionError ? Center(
-                      child: ConnectionErrorStateWidget(
-                          error: error.message,
-                          onRetry: () =>
-                              currentCubit.changeScreen(state
-                                  .currentIndex)
-                      )) : ErrorStateWidget(
-                      error: error.message,
-                      onRetry: () =>
-                          currentCubit.changeScreen(state.currentIndex))
+                      Center(
+                          child: ErrorStateWidget(
+                              error: error.message,
+                              onRetry: () =>
+                                  currentCubit.changeScreen(state.currentIndex)
+                          )
+                      )
               );
             }
         )

@@ -4,9 +4,10 @@ import '../../../presentation/constants/home_screen_constants.dart';
 
 
 class LoadDataUseCase {
-  final DataRepository repository;
+  final DataRepository _repository;
 
-  const LoadDataUseCase(this.repository);
+  const LoadDataUseCase({required DataRepository repository})
+      : _repository = repository;
 
   Future<CategoryData> execute({
     int? tabIndex,
@@ -18,7 +19,7 @@ class LoadDataUseCase {
 
       final key = query ?? HomeScreenConstants.categories[tabIndex!];
 
-      final articles = await repository.fetchArticles(
+      final articles = await _repository.fetchArticles(
         key: key,
         currentPage: currentData.page,
       );
@@ -30,7 +31,7 @@ class LoadDataUseCase {
         hasMore: articles.isNotEmpty,
       );
     }
-    catch(e){
+    catch (e) {
       rethrow;
     }
   }

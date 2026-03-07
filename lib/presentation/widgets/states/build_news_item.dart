@@ -13,6 +13,8 @@ class BuildNewsItem extends StatelessWidget {
   late String title = article.title;
   late String url = article.url;
 
+  static const _height120 = 120.0;
+
   void launchURL(String url) async {
     final Uri uri = Uri.parse(Uri.encodeFull(url));
     if (await canLaunchUrl(uri)) {
@@ -35,8 +37,8 @@ class BuildNewsItem extends StatelessWidget {
         child: Row(
           children: [
             Container(
-              height: 120.0,
-              width: 120.0,
+              height: _height120,
+              width: _height120,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10.0),
               ),
@@ -50,7 +52,7 @@ class BuildNewsItem extends StatelessWidget {
             Expanded(
               flex: 1,
               child: SizedBox(
-                height: 120.0,
+                height: _height120,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,

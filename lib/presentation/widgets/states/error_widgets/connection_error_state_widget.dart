@@ -7,18 +7,6 @@ class ConnectionErrorStateWidget extends StatelessWidget {
 
   const ConnectionErrorStateWidget({required this.error, this.onRetry, super.key});
 
-  Widget retryButton() {
-    return Column(
-      children: [
-        const SizedBox(height: 30),
-        ElevatedButton(
-          onPressed: onRetry,
-          child: const Text('Retry'),
-        ),
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -31,7 +19,6 @@ class ConnectionErrorStateWidget extends StatelessWidget {
             Text(error)
           ],
         ),
-        onRetry != null ? retryButton() : const SizedBox()
       ],
     );
   }

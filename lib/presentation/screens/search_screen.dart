@@ -6,6 +6,7 @@ import '../widgets/lists/list_builder.dart';
 import '../../data/models/article_Model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../widgets/states/loading_state_widget.dart';
+import 'package:todays_news/core/constants/app_constants.dart';
 import '../../domain/useCases/tab_useCases/load_tab_data_useCase.dart';
 import '../widgets/states/error_widgets/connection_error_state_widget.dart';
 import '../../domain/services/connectivity_service/connectivity_provider.dart';
@@ -25,31 +26,32 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
 
   late SearchCubit _currentCubit;
-  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  final TextEditingController searchController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController _searchController = TextEditingController();
 
+  static const _zero = AppConstants.zero;
 
   @override
   void initState() {
     super.initState();
-    searchController.addListener(_onSearchData);
+    _searchController.addListener(_onSearchData);
   }
 
   @override
   void dispose() {
-    searchController.dispose();
-    searchController.removeListener(_onSearchData);
+    _searchController.dispose();
+    _searchController.removeListener(_onSearchData);
     super.dispose();
   }
 
   void _onSearchData() {
-    _currentCubit.getSearch(query: searchController.text.trim());
+    _currentCubit.getSearch(query: _searchController.text.trim());
   }
 
   AppBar _buildAppBar(List<Article> data) =>
       AppBar(
-        elevation: 0.0,
-        scrolledUnderElevation: 0.0,
+        elevation: _zero,
+        scrolledUnderElevation: _zero,
         title: const Text(
           "Search Screen",
           style: TextStyle(
@@ -102,12 +104,12 @@ class _SearchScreenState extends State<SearchScreen> {
                                       hasMore: tabData.hasMore,
                                       onScroll: () {
                                         _currentCubit.getSearch(
-                                            query: searchController.text
+                                            query: _searchController.text
                                         );
                                       }
                                   ),
                               onError: (error) =>
-                              error.isConnectionError ? Center(
+                              error.isConnectionError! ? Center(
                                   child: ConnectionErrorStateWidget(
                                       error: error.message)
                               ) :
@@ -115,7 +117,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                   error: error.message,
                                   onRetry: () =>
                                       _currentCubit.getSearch(
-                                          query: searchController.text))
+                                          query: _searchController.text))
                           ),
                         )
                       ],
@@ -128,22 +130,21 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-
   Widget _buildSearchField() {
     return Padding(
       padding: const EdgeInsets.all(20.0),
       child: Form(
-        key: formKey,
+        key: _formKey,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
               padding: const EdgeInsets.all(5.0),
               child: TextFormField(
-                controller: searchController,
+                controller: _searchController,
                 decoration: InputDecoration(
                   labelText: 'Search',
-                  prefixIcon: const Icon(Icons.search),
+                  prefixIcon: AppConstants.searchIcon,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(50.0),
                   ),

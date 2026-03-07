@@ -15,8 +15,8 @@ class NewsCubit extends Cubit<NewsState> {
   final LoadDataUseCase _loadDataUseCase;
   final ChangeTabUseCase _changeTabUseCase;
 
-  static const int kInitialTabIndex = 0;
-  static const int kInitialTabCount = 3;
+  static const int _initialTabIndex = 0;
+  static const int _initialTabCount = 3;
 
   NewsCubit({
     required LoadDataUseCase loadDataUseCase,
@@ -26,16 +26,16 @@ class NewsCubit extends Cubit<NewsState> {
         _changeTabUseCase = changeTabUseCase,
         super(
         NewsState(
-          currentIndex: kInitialTabIndex,
+          currentIndex: _initialTabIndex,
           tabsData: {
-            for (var i = 0; i < kInitialTabCount; i++)
+            for (var i = _initialTabIndex; i < _initialTabCount; i++)
               i: const CategoryData()
           },
         ),
       );
 
 
-  static NewsCubit get(context) => BlocProvider.of(context);
+  static NewsCubit get(context) => BlocProvider.of<NewsCubit>(context);
 
   List<Widget> get screenItems => ScreenItems.screenItems;
 
@@ -70,14 +70,12 @@ class NewsCubit extends Cubit<NewsState> {
     final index = state.currentIndex;
     final currentTabData = state.tabsData[index]!;
 
-    print('im here start............');
     try {
       final newTabData = await _loadDataUseCase.execute(
         tabIndex: index,
         currentData: currentTabData,
       );
       emit(state.updateTab(index, newTabData));
-      print('im here end............');
     }
     on AppException catch (e) {
       final failure = ErrorHandler.handleException(e);

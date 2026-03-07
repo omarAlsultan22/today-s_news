@@ -1,6 +1,6 @@
-import '../../core/errors/exceptions/app_exception.dart';
 import '../../data/models/tab_data.dart';
 import 'base/category_data_when_strategy.dart';
+import '../../core/errors/exceptions/app_exception.dart';
 
 
 class NewsState implements CategoryDataWhenStrategy{
@@ -14,9 +14,7 @@ class NewsState implements CategoryDataWhenStrategy{
 
   CategoryData? get currentTabData => tabsData[currentIndex];
 
-  bool get isProductsEmpty => currentTabData!.products.isNotEmpty;
-
-  bool get isLoadingMore => tabsData[currentIndex]!.isLoading;
+  bool get _isProductsEmpty => currentTabData!.products.isNotEmpty;
 
   NewsState updateTab(int index, CategoryData newTabData) {
     return copyWith(
@@ -51,7 +49,7 @@ class NewsState implements CategoryDataWhenStrategy{
     if (currentTabData!.isLoading) {
       return loading();
     }
-    if (isProductsEmpty) {
+    if (_isProductsEmpty) {
       return loaded(currentTabData);
     }
     return initial();

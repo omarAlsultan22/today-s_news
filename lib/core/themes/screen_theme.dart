@@ -11,6 +11,8 @@ class ThemeNotifier extends ChangeNotifier {
     _loadTheme();
   }
 
+  static const key = 'theme';
+
   Future<void> toggleTheme() async {
     switch (_themeMode) {
       case ThemeMode.light:
@@ -24,13 +26,12 @@ class ThemeNotifier extends ChangeNotifier {
         break;
     }
     setTheme(_themeMode);
-    print('done..............................');
     notifyListeners();
   }
 
   void _loadTheme() async {
     try {
-      String? theme = await CacheHelper.getDate(key: 'theme');
+      String? theme = await CacheHelper.getDate(key: key);
 
       if (theme == 'dark') {
         _themeMode = ThemeMode.dark;
@@ -62,7 +63,7 @@ class ThemeNotifier extends ChangeNotifier {
         break;
     }
 
-    CacheHelper.setDate(key: 'theme', value: themeValue);
+    CacheHelper.setDate(key: key, value: themeValue);
     notifyListeners();
   }
 }

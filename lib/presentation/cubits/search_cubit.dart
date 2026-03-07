@@ -6,6 +6,7 @@ import '../../core/errors/error_handler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/useCases/tab_useCases/load_tab_data_useCase.dart';
 import 'package:todays_news/core/errors/exceptions/app_exception.dart';
+import 'package:todays_news/core/errors/exceptions/network_exception.dart';
 
 
 class SearchCubit extends Cubit<SearchState> {
@@ -25,7 +26,7 @@ class SearchCubit extends Cubit<SearchState> {
     final currentTabData = state.categoryData;
     try {
       if (!isConnected) {
-        throw Exception('No Internet Connection');
+        throw const InternetException('No Internet Connection');
       }
       emit(state.copyWith(categoryData: currentTabData.copyWith(error: null)));
     }
