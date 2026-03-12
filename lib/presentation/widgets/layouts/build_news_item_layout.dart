@@ -1,12 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import '../../../../data/models/article_Model.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../utils/helpers/image_helpers.dart';
 import 'package:flutter/material.dart';
 
 
-class BuildNewsItem extends StatelessWidget {
+class BuildNewsItemLayout extends StatelessWidget {
   final Article article;
-  BuildNewsItem(this.article,{super.key});
+  BuildNewsItemLayout(this.article,{super.key});
 
   late String publishedAt = article.publishedAt;
   late String imageUrl = article.urlToImage;
@@ -45,6 +46,15 @@ class BuildNewsItem extends StatelessWidget {
               child: CachedNetworkImage(
                 imageUrl: imageUrl,
                 fit: BoxFit.cover,
+                memCacheHeight: ImageHelpers.calculateOptimalCacheHeight(
+                    context,
+                    targetHeight: _height120,
+                    qualityFactor: 1.5
+                ),
+                memCacheWidth: ImageHelpers.calculateOptimalCacheWidth(
+                    context,
+                    targetWidth: _height120
+                ),
                 errorWidget: (context, error, stackTrace) => const Icon(Icons.error),
               ),
             ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../states/build_news_item.dart';
+import '../layouts/build_news_item_layout.dart';
 import '../../../data/models/article_Model.dart';
 
 
@@ -62,7 +62,7 @@ class _ListBuilderState extends State<ListBuilder> {
       itemCount: length ?? data.length + 1,
       itemBuilder: (context, index) {
         if (index < data.length) {
-          return BuildNewsItem(data[index]);
+          return BuildNewsItemLayout(data[index]);
         } else {
           return Center(
             child: hasMore!
