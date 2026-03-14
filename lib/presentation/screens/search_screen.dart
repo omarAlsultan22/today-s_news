@@ -73,8 +73,8 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget build(BuildContext context) {
     return Consumer<ConnectivityProvider>(
         builder: (context, connectivityService, child) {
-          final isConnected = connectivityService.isConnected;
           WidgetsBinding.instance.addPostFrameCallback((_) {
+            final isConnected = connectivityService.isConnected;
             context.read<SearchCubit>().checkConnection(isConnected);
           });
           return BlocProvider(create: (context) =>

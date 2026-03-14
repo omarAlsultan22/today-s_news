@@ -24,6 +24,7 @@ class SearchCubit extends Cubit<SearchState> {
 
   void checkConnection(bool isConnected) {
     final currentTabData = state.categoryData;
+
     try {
       if (!isConnected) {
         throw const InternetException('No Internet Connection');
