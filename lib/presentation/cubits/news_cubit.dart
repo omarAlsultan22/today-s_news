@@ -75,7 +75,7 @@ class NewsCubit extends Cubit<NewsState> {
         currentData: currentTabData,
       );
 
-      if(newTabData.productsIsEmpty && state.productsIsEmpty!) {
+      if (newTabData.productsIsEmpty && state.productsIsEmpty!) {
         emit(state.updateTab(
             index, newTabData.copyWith(state: InitialState()))
         );

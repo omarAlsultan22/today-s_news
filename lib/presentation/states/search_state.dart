@@ -10,8 +10,8 @@ class SearchState implements CategoryDataWhenStrategy {
   final CategoryData categoryData;
 
   SearchState({
-    required this.query,
-    required this.isConnected,
+    this.query = '',
+    this.isConnected = true,
     required this.categoryData
   });
 

@@ -22,8 +22,6 @@ class SearchCubit extends Cubit<SearchState> {
         _connectivityProvider = connectivityProvider,
         super(
           SearchState(
-              query: '',
-              isConnected: true,
               categoryData: CategoryData(state: InitialState())
           )
       ) {
