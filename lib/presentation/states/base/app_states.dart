@@ -2,9 +2,9 @@ import 'package:todays_news/core/errors/exceptions/app_exception.dart';
 import 'package:todays_news/presentation/states/base/category_data_when_strategy.dart';
 
 
-abstract class AppState implements CategoryDataWhenStrategy{}
+abstract class MainAppState implements CategoryDataWhenStrategy{}
 
-class InitialState<T> extends AppState{
+class InitialState<T> extends MainAppState{
   @override
   R when<R>({
     R Function()? onConnection,
@@ -16,7 +16,7 @@ class InitialState<T> extends AppState{
   }
 }
 
-class LoadingState<T> extends AppState{
+class LoadingState<T> extends MainAppState{
   @override
   R when<R>({
     R Function()? onConnection,
@@ -28,7 +28,7 @@ class LoadingState<T> extends AppState{
   }
 }
 
-class SuccessState<T> extends AppState{
+class SuccessState<T> extends MainAppState{
   final T _currentTabData;
   SuccessState(this._currentTabData);
   @override
@@ -42,7 +42,7 @@ class SuccessState<T> extends AppState{
   }
 }
 
-class ErrorState<T> extends AppState {
+class ErrorState<T> extends MainAppState {
   final AppException _error;
   ErrorState(this._error);
 

@@ -17,7 +17,7 @@ class NewsState implements CategoryDataWhenStrategy {
 
   bool? get productsIsEmpty => currentTabData!.productsIsEmpty;
 
-  AppState? get currentState => currentTabData!.state;
+  MainAppState? get currentState => currentTabData!.state;
 
   NewsState updateTab(int index, CategoryData newTabData) {
     return copyWith(

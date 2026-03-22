@@ -15,7 +15,7 @@ class SearchState implements CategoryDataWhenStrategy {
     required this.categoryData
   });
 
-  AppState? get currentState => categoryData.state;
+  MainAppState? get currentState => categoryData.state;
 
   SearchState copyWith({
     String? query,

@@ -4,7 +4,7 @@ import 'package:todays_news/presentation/states/base/app_states.dart';
 
 class CategoryData {
   final List<Article> products;
-  final AppState? state;
+  final MainAppState? state;
   final bool hasMore;
   final int page;
 
@@ -19,7 +19,7 @@ class CategoryData {
 
   CategoryData copyWith({
     List<Article>? products,
-    AppState? state,
+    MainAppState? state,
     bool? hasMore,
     int? page
   }) {
