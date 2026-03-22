@@ -1,40 +1,49 @@
+import 'base/public_states.dart';
 import '../../data/models/tab_data.dart';
+import 'base/category_data_when_strategy.dart';
 import '../../core/errors/exceptions/app_exception.dart';
 
 
-class SearchState {
+class SearchState implements CategoryDataWhenStrategy {
   final String query;
+  final bool isConnected;
   final CategoryData categoryData;
 
-  SearchState({required this.query, required this.categoryData});
+  SearchState({
+    required this.query,
+    required this.isConnected,
+    required this.categoryData
+  });
 
-  bool get _isCategoryData => categoryData.products.isNotEmpty;
+  BaseState? get currentState => categoryData.state;
 
   SearchState copyWith({
     String? query,
+    bool? isConnected,
     CategoryData? categoryData,
   }) {
     return SearchState(
       query: query ?? this.query,
+      isConnected: isConnected ?? this.isConnected,
       categoryData: categoryData ?? this.categoryData,
     );
   }
 
+  @override
   R when<R>({
-    required R Function() initial,
-    required R Function() loading,
-    required R Function(CategoryData? tabData) loaded,
+    R Function()? onConnection,
+    required R Function() onInitial,
+    required R Function() onLoading,
+    required R Function(CategoryData tabData) onLoaded,
     required R Function(AppException error) onError}) {
-
-    if (categoryData.error != null) {
-      return onError(categoryData.error!);
+    if (!isConnected) {
+      return onConnection!();
     }
-    if (categoryData.isLoading && query.isNotEmpty) {
-      return loading();
-    }
-    if (_isCategoryData) {
-      return loaded(categoryData);
-    }
-    return initial();
+    return currentState!.when(
+      onInitial: onInitial,
+      onLoading: onLoading,
+      onLoaded: (currentData) => onLoaded(currentData),
+      onError: (error) => onError(error),
+    );
   }
 }

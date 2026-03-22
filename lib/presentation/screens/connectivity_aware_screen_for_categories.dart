@@ -4,11 +4,11 @@ import 'package:provider/provider.dart';
 import '../../domain/services/connectivity_service/connectivity_provider.dart';
 
 
-class ConnectivityAwareService extends StatelessWidget {
+class ConnectivityAwareScreenForCategories extends StatelessWidget {
   final Widget child;
   final int screenIndex;
 
-  const ConnectivityAwareService({
+  const ConnectivityAwareScreenForCategories({
     super.key,
     required this.child,
     required this.screenIndex,

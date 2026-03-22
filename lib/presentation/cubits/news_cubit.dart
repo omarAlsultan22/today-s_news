@@ -8,6 +8,7 @@ import '../../core/errors/exceptions/app_exception.dart';
 import '../../domain/useCases/tab_useCases/change_tab_useCase.dart';
 import '../../domain/useCases/tab_useCases/load_tab_data_useCase.dart';
 import 'package:todays_news/presentation/navigation/screen_items.dart';
+import 'package:todays_news/presentation/states/base/public_states.dart';
 import 'package:todays_news/presentation/navigation/bottom_navigation_bar_items.dart';
 
 
@@ -20,7 +21,7 @@ class NewsCubit extends Cubit<NewsState> {
 
   NewsCubit({
     required LoadDataUseCase loadDataUseCase,
-    required ChangeTabUseCase changeTabUseCase
+    required ChangeTabUseCase changeTabUseCase,
   })
       : _loadDataUseCase = loadDataUseCase,
         _changeTabUseCase = changeTabUseCase,
@@ -29,7 +30,7 @@ class NewsCubit extends Cubit<NewsState> {
           currentIndex: _initialTabIndex,
           tabsData: {
             for (var i = _initialTabIndex; i < _initialTabCount; i++)
-              i: const CategoryData()
+              i: CategoryData(state: InitialState())
           },
         ),
       );
@@ -53,15 +54,13 @@ class NewsCubit extends Cubit<NewsState> {
         currentData: currentTabData,
         loadDataUseCase: _loadDataUseCase,
       );
-      emit(state.updateTab(index, newTabData.copyWith(isLoading: false)));
+      emit(state.updateTab(
+          index, newTabData.copyWith(state: SuccessState(currentTabData))));
     }
     on AppException catch (e) {
       final failure = ErrorHandler.handleException(e);
-      final newTabData = currentTabData.copyWith(
-        isLoading: false,
-        error: failure,
-      );
-      emit(state.updateTab(index, newTabData));
+      emit(state.updateTab(
+          index, currentTabData.copyWith(state: ErrorState(failure))));
     }
   }
 
@@ -75,18 +74,22 @@ class NewsCubit extends Cubit<NewsState> {
         tabIndex: index,
         currentData: currentTabData,
       );
-      emit(state.updateTab(index, newTabData));
+
+      if(newTabData.productsIsEmpty && state.productsIsEmpty!) {
+        emit(state.updateTab(
+            index, newTabData.copyWith(state: InitialState()))
+        );
+      }
+
+      emit(state.updateTab(
+          index, newTabData.copyWith(state: SuccessState(newTabData))));
     }
     on AppException catch (e) {
       final failure = ErrorHandler.handleException(e);
-      final newTabData = currentTabData.copyWith(
-        isLoading: false,
-        error: failure,
-      );
-      emit(state.updateTab(index, newTabData));
+      emit(state.updateTab(
+          index, currentTabData.copyWith(state: ErrorState(failure))));
     }
   }
-
 
   void restLock() {
     final index = state.currentIndex;

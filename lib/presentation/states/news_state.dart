@@ -1,20 +1,23 @@
 import '../../data/models/tab_data.dart';
-import 'base/category_data_when_strategy.dart';
 import '../../core/errors/exceptions/app_exception.dart';
+import 'package:todays_news/presentation/states/base/public_states.dart';
+import 'package:todays_news/presentation/states/base/category_data_when_strategy.dart';
 
 
-class NewsState implements CategoryDataWhenStrategy{
+class NewsState implements CategoryDataWhenStrategy {
   final int currentIndex;
   final Map<int, CategoryData> tabsData;
 
-  const NewsState({
-    required this.currentIndex,
+  NewsState({
     required this.tabsData,
+    required this.currentIndex,
   });
 
   CategoryData? get currentTabData => tabsData[currentIndex];
 
-  bool get _isProductsEmpty => currentTabData!.products.isNotEmpty;
+  bool? get productsIsEmpty => currentTabData!.productsIsEmpty;
+
+  BaseState? get currentState => currentTabData!.state;
 
   NewsState updateTab(int index, CategoryData newTabData) {
     return copyWith(
@@ -30,29 +33,25 @@ class NewsState implements CategoryDataWhenStrategy{
     Map<int, CategoryData>? tabsData,
   }) {
     return NewsState(
-      currentIndex: currentIndex ?? this.currentIndex,
       tabsData: tabsData ?? this.tabsData,
+      currentIndex: currentIndex ?? this.currentIndex,
     );
   }
 
   @override
   R when<R>({
-    required R Function() initial,
-    required R Function() loading,
-    required R Function(CategoryData? tabData) loaded,
+    R Function()? onConnection,
+    required R Function() onInitial,
+    required R Function() onLoading,
+    required R Function(CategoryData tabData) onLoaded,
     required R Function(AppException error) onError,
   }) {
-
-    if (currentTabData!.error != null) {
-      return onError(currentTabData!.error!);
-    }
-    if (currentTabData!.isLoading) {
-      return loading();
-    }
-    if (_isProductsEmpty) {
-      return loaded(currentTabData);
-    }
-    return initial();
+    return currentState!.when(
+      onInitial: onInitial,
+      onLoading: onLoading,
+      onLoaded: (currentTabData) => onLoaded(currentTabData),
+      onError: (error) => onError(error),
+    );
   }
 }
 

@@ -1,34 +1,32 @@
 import 'article_Model.dart';
-import 'package:todays_news/core/errors/exceptions/app_exception.dart';
+import 'package:todays_news/presentation/states/base/public_states.dart';
 
 
 class CategoryData {
   final List<Article> products;
-  final AppException? error;
-  final bool isLoading;
+  final BaseState? state;
   final bool hasMore;
   final int page;
 
-  const CategoryData({
+  CategoryData({
     this.products = const [],
-    this.isLoading = true,
     this.hasMore = true,
-    this.error,
+    this.state,
     this.page = 1,
   });
 
+  bool get productsIsEmpty => products.isEmpty;
+
   CategoryData copyWith({
     List<Article>? products,
-    AppException? error,
-    bool? isLoading,
+    BaseState? state,
     bool? hasMore,
     int? page
   }) {
     return CategoryData(
         products: products ?? this.products,
-        isLoading: isLoading ?? this.isLoading,
-        error: error ?? this.error,
         hasMore: hasMore ?? this.hasMore,
+        state: state ?? this.state,
         page: page ?? this.page
     );
   }

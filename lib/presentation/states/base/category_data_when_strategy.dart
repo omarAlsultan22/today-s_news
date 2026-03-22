@@ -4,9 +4,10 @@ import '../../../core/errors/exceptions/app_exception.dart';
 
 abstract class CategoryDataWhenStrategy {
   R when<R>({
-    required R Function() initial,
-    required R Function() loading,
-    required R Function(CategoryData? tabData) loaded,
-    required R Function(AppException error) onError,
-  });
+    R Function()? onConnection,
+    required R Function() onInitial,
+    required R Function() onLoading,
+    required R Function(CategoryData tabData) onLoaded,
+    required R Function(AppException error) onError});
 }
+

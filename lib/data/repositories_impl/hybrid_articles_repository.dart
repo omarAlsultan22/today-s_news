@@ -29,6 +29,7 @@ class HybridArticlesRepository implements DataRepository {
             key: key, currentPage: currentPage);
 
         if (articles.isNotEmpty) {
+          await _localDatabase.clearArticles();
           await _localDatabase.saveArticles(
               key: key, currentPage: currentPage, articles: articles);
         }
@@ -38,7 +39,7 @@ class HybridArticlesRepository implements DataRepository {
       return await _localDatabase.fetchArticles(
           key: key, currentPage: currentPage);
     }
-    catch(e){
+    catch (e) {
       rethrow;
     }
   }

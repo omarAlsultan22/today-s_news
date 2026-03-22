@@ -7,4 +7,6 @@ abstract class DataOperations {
     required int currentPage,
     required List<Article> articles
   });
+
+  Future<void> clearArticles();
 }

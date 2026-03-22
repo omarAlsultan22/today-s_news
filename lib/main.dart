@@ -1,12 +1,10 @@
 import 'app/my_app.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todays_news/core/config/bloc_observer.dart';
 import 'package:todays_news/data/datasources/local/hive.dart';
 import 'package:todays_news/data/datasources/local/cacheHelper.dart';
 import 'package:todays_news/data/datasources/remote/dio_helper.dart';
-import 'domain/services/connectivity_service/connectivity_provider.dart';
 
 
 void main() async {
@@ -16,12 +14,6 @@ void main() async {
   await CacheHelper.init();
   await HiveOperations.init();
 
-  runApp(
-      MultiProvider(
-          providers: [
-            ChangeNotifierProvider(create: (context) => ConnectivityProvider()),
-          ], child: const MyApp()
-      )
-  );
+  runApp(const MyApp());
 }
 

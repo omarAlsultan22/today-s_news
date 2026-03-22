@@ -1,10 +1,10 @@
 import '../cubits/news_cubit.dart';
 import 'package:flutter/material.dart';
-import 'connectivity_aware_screen.dart';
 import '../widgets/lists/list_builder.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../constants/home_screen_constants.dart';
 import '../../../presentation/states/news_state.dart';
+import 'connectivity_aware_screen_for_categories.dart';
 import 'package:todays_news/presentation/widgets/states/initial_state_widget.dart';
 import 'package:todays_news/presentation/widgets/states/loading_state_widget.dart';
 import 'package:todays_news/presentation/widgets/states/error_widgets/error_state_widget.dart';
@@ -16,25 +16,25 @@ class SportsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const screenIndex = HomeScreenConstants.screenSportsIndex;
-    return ConnectivityAwareService(
+    return ConnectivityAwareScreenForCategories(
         screenIndex: screenIndex,
         child: BlocBuilder<NewsCubit, NewsState>(
             buildWhen: (previous, current) =>
             current.currentIndex == screenIndex,
             builder: (context, state) {
-              final currentTabData = state.currentTabData;
               final currentCubit = context.read<NewsCubit>();
 
               return state.when(
-                  initial: () =>
+                  onInitial: () =>
                   const InitialStateWidget(
                       icon: Icons.sports, category: 'sports'),
-                  loading: () =>
+                  onLoading: () =>
                   const LoadingStateWidget(),
-                  loaded: (newTabData) =>
+                  onLoaded: (newTabData) =>
                       ListBuilder(
-                          list: newTabData!.products,
-                          hasMore: currentTabData!.hasMore,
+                          isLocked: false,
+                          list: newTabData.products,
+                          hasMore: newTabData.hasMore,
                           onScroll: () => currentCubit.getMoreData()),
                   onError: (error) =>
                       Center(

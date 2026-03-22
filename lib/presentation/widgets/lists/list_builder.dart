@@ -4,14 +4,16 @@ import '../../../data/models/article_Model.dart';
 
 
 class ListBuilder extends StatefulWidget {
+  bool isLocked;
   final List<Article> list;
   final bool hasMore;
   final VoidCallback onScroll;
-  const ListBuilder({
+  ListBuilder({
+    super.key,
     required this.list,
     required this.hasMore,
     required this.onScroll,
-    super.key
+    required this.isLocked
   });
 
   @override
@@ -30,7 +32,8 @@ class _ListBuilderState extends State<ListBuilder> {
   void _onScrollData() {
     if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent - 50.0 &&
-        !widget.hasMore) {
+        widget.hasMore && !widget.isLocked) {
+      widget.isLocked = true;
       widget.onScroll();
     }
   }

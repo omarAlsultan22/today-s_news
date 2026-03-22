@@ -15,8 +15,6 @@ class LoadDataUseCase {
     required CategoryData currentData,
   }) async {
     try {
-      if (!currentData.hasMore) return currentData;
-
       final key = query ?? HomeScreenConstants.categories[tabIndex!];
 
       final articles = await _repository.fetchArticles(
@@ -27,7 +25,6 @@ class LoadDataUseCase {
       return currentData.copyWith(
         products: [...currentData.products, ...articles],
         page: articles.isNotEmpty ? currentData.page + 1 : currentData.page,
-        isLoading: false,
         hasMore: articles.isNotEmpty,
       );
     }

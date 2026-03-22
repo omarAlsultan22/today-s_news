@@ -13,10 +13,10 @@ class ChangeTabUseCase {
     required CategoryData currentData,
     required LoadDataUseCase loadDataUseCase,
   }) async {
-    if (currentData.products.isEmpty) {
+    if (currentData.productsIsEmpty) {
       return await _loadDataUseCase.execute(
         tabIndex: tabIndex,
-        currentData: currentData.copyWith(isLoading: true),
+        currentData: currentData,
       );
     }
     return currentData;

@@ -31,7 +31,7 @@ class ThemeNotifier extends ChangeNotifier {
 
   void _loadTheme() async {
     try {
-      String? theme = await CacheHelper.getDate(key: key);
+      String? theme = await CacheHelper.getString(key: key);
 
       if (theme == 'dark') {
         _themeMode = ThemeMode.dark;
@@ -41,7 +41,7 @@ class ThemeNotifier extends ChangeNotifier {
         _themeMode = ThemeMode.system;
       } else {
         _themeMode = ThemeMode.system;
-        await CacheHelper.setDate(key: 'theme', value: 'system');
+        await CacheHelper.setString(key: 'theme', value: 'system');
       }
       notifyListeners();
     } catch (e) {
@@ -63,7 +63,7 @@ class ThemeNotifier extends ChangeNotifier {
         break;
     }
 
-    CacheHelper.setDate(key: key, value: themeValue);
+    CacheHelper.setString(key: key, value: themeValue);
     notifyListeners();
   }
 }

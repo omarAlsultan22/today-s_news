@@ -7,7 +7,7 @@ class ConnectivityProvider with ChangeNotifier {
   bool _isConnected = true;
   bool _showOnlineMessage = false;
   String _connectionType = 'Unknown';
-  StreamSubscription<List<ConnectivityResult>>? _connectivitySubscription;
+  StreamSubscription<List<ConnectivityResult>>? connectivitySubscription;
   Timer? _onlineMessageTimer;
   Timer? _checkTimer;
 
@@ -30,27 +30,32 @@ class ConnectivityProvider with ChangeNotifier {
       await _checkConnectivity();
 
       // الاستماع للتغيرات
-      _connectivitySubscription = _connectivity.onConnectivityChanged.listen(
-        _updateConnectionStatus,
-        onError: (error) {
-          print('Connectivity error: $error');
-          _updateConnectionStatus([ConnectivityResult.none]);
-        },
-      );
+      connectivitySubscription = listenToStatus(updateConnectionStatus);
     } catch (e) {
       print('Error initializing connectivity: $e');
-      _updateConnectionStatus([ConnectivityResult.none]);
+      updateConnectionStatus([ConnectivityResult.none]);
     }
   }
 
   Future<void> _checkConnectivity() async {
     try {
       final result = await _connectivity.checkConnectivity();
-      _updateConnectionStatus(result);
+      updateConnectionStatus(result);
     } catch (e) {
       print('Error checking connectivity: $e');
-      _updateConnectionStatus([ConnectivityResult.none]);
+      updateConnectionStatus([ConnectivityResult.none]);
     }
+  }
+
+  StreamSubscription<List<ConnectivityResult>> listenToStatus(
+      void Function(List<ConnectivityResult> event) onData) {
+    return _connectivity.onConnectivityChanged.listen(
+      onData,
+      onError: (error) {
+        print('Connectivity error: $error');
+        updateConnectionStatus([ConnectivityResult.none]);
+      },
+    );
   }
 
   void _startPeriodicCheck() {
@@ -60,7 +65,7 @@ class ConnectivityProvider with ChangeNotifier {
     });
   }
 
-  void _updateConnectionStatus(List<ConnectivityResult> results) {
+  void updateConnectionStatus(List<ConnectivityResult> results) {
     final bool newStatus = _hasConnection(results);
     final String newType = _getConnectionType(results);
 
@@ -163,7 +168,7 @@ class ConnectivityProvider with ChangeNotifier {
 
   @override
   void dispose() {
-    _connectivitySubscription?.cancel();
+    connectivitySubscription?.cancel();
     _onlineMessageTimer?.cancel();
     _checkTimer?.cancel();
     super.dispose();
