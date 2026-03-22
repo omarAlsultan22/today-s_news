@@ -1,4 +1,4 @@
-import 'base/public_states.dart';
+import 'base/app_states.dart';
 import '../../data/models/tab_data.dart';
 import 'base/category_data_when_strategy.dart';
 import '../../core/errors/exceptions/app_exception.dart';
@@ -15,7 +15,7 @@ class SearchState implements CategoryDataWhenStrategy {
     required this.categoryData
   });
 
-  BaseState? get currentState => categoryData.state;
+  AppState? get currentState => categoryData.state;
 
   SearchState copyWith({
     String? query,

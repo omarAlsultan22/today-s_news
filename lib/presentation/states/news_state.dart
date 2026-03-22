@@ -1,6 +1,6 @@
 import '../../data/models/tab_data.dart';
 import '../../core/errors/exceptions/app_exception.dart';
-import 'package:todays_news/presentation/states/base/public_states.dart';
+import 'package:todays_news/presentation/states/base/app_states.dart';
 import 'package:todays_news/presentation/states/base/category_data_when_strategy.dart';
 
 
@@ -17,7 +17,7 @@ class NewsState implements CategoryDataWhenStrategy {
 
   bool? get productsIsEmpty => currentTabData!.productsIsEmpty;
 
-  BaseState? get currentState => currentTabData!.state;
+  AppState? get currentState => currentTabData!.state;
 
   NewsState updateTab(int index, CategoryData newTabData) {
     return copyWith(

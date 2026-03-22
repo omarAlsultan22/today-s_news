@@ -1,10 +1,10 @@
 import 'article_Model.dart';
-import 'package:todays_news/presentation/states/base/public_states.dart';
+import 'package:todays_news/presentation/states/base/app_states.dart';
 
 
 class CategoryData {
   final List<Article> products;
-  final BaseState? state;
+  final AppState? state;
   final bool hasMore;
   final int page;
 
@@ -19,7 +19,7 @@ class CategoryData {
 
   CategoryData copyWith({
     List<Article>? products,
-    BaseState? state,
+    AppState? state,
     bool? hasMore,
     int? page
   }) {
