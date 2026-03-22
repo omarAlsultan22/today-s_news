@@ -10,8 +10,8 @@ class InitialState<T> extends MainAppState{
     R Function()? onConnection,
     required R Function() onInitial,
     required R Function() onLoading,
-    required R Function(T tabData) onLoaded,
-    required R Function(AppException error) onError}) {
+    required R Function(T) onLoaded,
+    required R Function(AppException) onError}) {
     return onInitial();
   }
 }
@@ -22,8 +22,8 @@ class LoadingState<T> extends MainAppState{
     R Function()? onConnection,
     required R Function() onInitial,
     required R Function() onLoading,
-    required R Function(T tabData) onLoaded,
-    required R Function(AppException error) onError}) {
+    required R Function(T) onLoaded,
+    required R Function(AppException) onError}) {
     return onLoading();
   }
 }
@@ -36,8 +36,8 @@ class SuccessState<T> extends MainAppState{
     R Function()? onConnection,
     required R Function() onInitial,
     required R Function() onLoading,
-    required R Function(T tabData) onLoaded,
-    required R Function(AppException error) onError}) {
+    required R Function(T) onLoaded,
+    required R Function(AppException) onError}) {
     return onLoaded(_currentTabData);
   }
 }
@@ -51,8 +51,8 @@ class ErrorState<T> extends MainAppState {
     R Function()? onConnection,
     required R Function() onInitial,
     required R Function() onLoading,
-    required R Function(T tabData) onLoaded,
-    required R Function(AppException error) onError}) {
+    required R Function(T) onLoaded,
+    required R Function(AppException) onError}) {
     return onError(_error);
   }
 }

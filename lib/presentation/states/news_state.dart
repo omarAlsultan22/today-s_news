@@ -43,8 +43,8 @@ class NewsState implements CategoryDataWhenStrategy {
     R Function()? onConnection,
     required R Function() onInitial,
     required R Function() onLoading,
-    required R Function(CategoryData tabData) onLoaded,
-    required R Function(AppException error) onError,
+    required R Function(CategoryData) onLoaded,
+    required R Function(AppException) onError,
   }) {
     return currentState!.when(
       onInitial: onInitial,
