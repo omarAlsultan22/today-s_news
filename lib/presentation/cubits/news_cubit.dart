@@ -54,6 +54,12 @@ class NewsCubit extends Cubit<NewsState> {
         currentData: currentTabData,
         loadDataUseCase: _loadDataUseCase,
       );
+
+      if (currentTabData.productsIsEmpty && newTabData.productsIsEmpty) {
+        emit(state.updateTab(
+            index, newTabData.copyWith(state: InitialState())));
+      }
+
       emit(state.updateTab(
           index, newTabData.copyWith(state: SuccessState(currentTabData))));
     }
@@ -74,12 +80,6 @@ class NewsCubit extends Cubit<NewsState> {
         tabIndex: index,
         currentData: currentTabData,
       );
-
-      if (newTabData.productsIsEmpty && state.productsIsEmpty!) {
-        emit(state.updateTab(
-            index, newTabData.copyWith(state: InitialState()))
-        );
-      }
 
       emit(state.updateTab(
           index, newTabData.copyWith(state: SuccessState(newTabData))));
