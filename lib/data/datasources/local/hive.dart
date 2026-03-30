@@ -16,7 +16,6 @@ abstract class HiveOperations {
     await Hive.initFlutter();
     Hive.registerAdapter(ArticleAdapter());
     _box = await Hive.openBox<List<Article>>('article');
-    print('Box is opened..................');
   }
 
   static Future<void> putLocalData({
@@ -27,14 +26,18 @@ abstract class HiveOperations {
     try {
       await box.put('${key}_$currentPage', articles);
       await box.flush();
-      print("Data is done.........................");
     } catch (e) {
-      print("Error saving local data: $e");
+      rethrow;
     }
   }
 
   static Future<List<Article>> getLocalData(String key, int currentPage) async {
-    return await box.get('${key}_$currentPage');
+    try {
+      return await box.get('${key}_$currentPage');
+    }
+    catch(e){
+      rethrow;
+    }
   }
 
   static Future<void> clearData() async {

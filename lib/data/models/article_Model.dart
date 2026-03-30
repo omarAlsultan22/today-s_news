@@ -9,31 +9,34 @@ class Article {
   final String title;
 
   @HiveField(1)
-  final String description;
+  final String image;
 
   @HiveField(2)
   final String url;
 
   @HiveField(3)
-  final String urlToImage;
+  final String description;
 
   @HiveField(4)
   final String publishedAt;
 
   Article({
     required this.title,
-    required this.description,
     required this.url,
-    required this.urlToImage,
+    required this.image,
     required this.publishedAt,
+    required this.description,
+
   });
+
+  bool get urlIsNotEmpty => url.isNotEmpty;
 
   factory Article.fromJson(Map<String, dynamic> json) {
     return Article(
         url: json['url'] ?? '',
         title: json['title'] ?? '',
         description: json['description'] ?? '',
-        urlToImage: json['urlToImage'] ?? '',
+        image: json['urlToImage'] ?? '',
         publishedAt: json['publishedAt'] ?? ''
     );
   }

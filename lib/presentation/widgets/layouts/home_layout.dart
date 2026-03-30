@@ -93,6 +93,7 @@ class _ConnectionBannerState extends State<ConnectionBanner> {
   late double _height;
   Timer? _timer;
 
+  static const _white = AppConstants.white;
   static const _zero = AppConstants.zero;
 
   @override
@@ -123,7 +124,6 @@ class _ConnectionBannerState extends State<ConnectionBanner> {
 
   @override
   Widget build(BuildContext context) {
-    const white = AppConstants.white;
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
@@ -134,12 +134,12 @@ class _ConnectionBannerState extends State<ConnectionBanner> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(widget.icon, color: white),
+            Icon(widget.icon, color: _white),
             const SizedBox(width: 8),
             Text(
               widget.text,
               style: const TextStyle(
-                color: white,
+                color: _white,
                 fontWeight: FontWeight.bold,
                 fontSize: 14,
               ),

@@ -125,7 +125,6 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-
   Widget _buildSearchField() {
     return Padding(
       padding: const EdgeInsets.all(_paddingAll),

@@ -13,9 +13,10 @@ import 'package:todays_news/presentation/widgets/states/error_widgets/error_stat
 class BusinessScreen extends StatelessWidget {
   const BusinessScreen({super.key});
 
+  static const screenIndex = HomeScreenConstants.screenBusinessIndex;
+
   @override
   Widget build(BuildContext context) {
-    const screenIndex = HomeScreenConstants.screenBusinessIndex;
     return ConnectivityAwareScreenForCategories(
         screenIndex: screenIndex,
         child: BlocBuilder<NewsCubit, NewsState>(

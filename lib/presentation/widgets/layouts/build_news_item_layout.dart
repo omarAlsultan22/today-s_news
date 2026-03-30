@@ -8,12 +8,8 @@ import 'package:flutter/material.dart';
 
 class BuildNewsItemLayout extends StatelessWidget {
   final Article article;
-  BuildNewsItemLayout(this.article,{super.key});
 
-  late String publishedAt = article.publishedAt;
-  late String imageUrl = article.urlToImage;
-  late String title = article.title;
-  late String url = article.url;
+  const BuildNewsItemLayout(this.article, {super.key});
 
   static const _fontSize = AppConstants.mediumSize;
   static const _mediumSpacing = _fontSize;
@@ -33,8 +29,8 @@ class BuildNewsItemLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        if (url.isNotEmpty) {
-          launchURL(url);
+        if (article.urlIsNotEmpty) {
+          launchURL(article.url);
         }
       },
       child: Padding(
@@ -48,7 +44,7 @@ class BuildNewsItemLayout extends StatelessWidget {
                 borderRadius: BorderRadius.circular(AppConstants.smallSize),
               ),
               child: CachedNetworkImage(
-                imageUrl: imageUrl,
+                imageUrl: article.image,
                 fit: BoxFit.cover,
                 memCacheHeight: ImageHelpers.calculateOptimalCacheHeight(
                     context,
@@ -59,7 +55,8 @@ class BuildNewsItemLayout extends StatelessWidget {
                     context,
                     targetWidth: _largeSpacing
                 ),
-                errorWidget: (context, error, stackTrace) => const Icon(Icons.error),
+                errorWidget: (context, error, stackTrace) =>
+                const Icon(Icons.error),
               ),
             ),
             const SizedBox(width: _mediumSpacing),
@@ -74,7 +71,7 @@ class BuildNewsItemLayout extends StatelessWidget {
                     Expanded(
                       flex: 1,
                       child: Text(
-                        title,
+                        article.title,
                         style: const TextStyle(
                           fontSize: _fontSize,
                           fontWeight: FontWeight.bold,
@@ -83,7 +80,7 @@ class BuildNewsItemLayout extends StatelessWidget {
                         maxLines: 3,
                       ),
                     ),
-                    Text(publishedAt)
+                    Text(article.publishedAt)
                   ],
                 ),
               ),

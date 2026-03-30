@@ -13,9 +13,10 @@ import 'package:todays_news/presentation/widgets/states/error_widgets/error_stat
 class SportsScreen extends StatelessWidget {
   const SportsScreen({super.key});
 
+  static const screenIndex = HomeScreenConstants.screenSportsIndex;
+
   @override
   Widget build(BuildContext context) {
-    const screenIndex = HomeScreenConstants.screenSportsIndex;
     return ConnectivityAwareScreenForCategories(
         screenIndex: screenIndex,
         child: BlocBuilder<NewsCubit, NewsState>(

@@ -41,7 +41,7 @@ class SearchCubit extends Cubit<SearchState> {
   }) async {
     final currentTabData = state.categoryData;
 
-    if (!currentTabData.hasMore) {
+    if (!currentTabData.hasMore && query!.isNotEmpty) {
       return;
     }
     if (timer?.isActive ?? false) timer?.cancel();
