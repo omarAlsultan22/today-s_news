@@ -1,4 +1,5 @@
 import '../datasources/remote/dio_helper.dart';
+import '../../presentation/constants/api/keys_config.dart';
 import '../../presentation/constants/api/news_config.dart';
 import 'package:todays_news/data/models/article_Model.dart';
 import '../../presentation/constants/api/search_config.dart';
@@ -22,10 +23,10 @@ class SearchRepository implements DataRepository {
         url: SearchConfig.searchUrl,
         query: {
           'q': key,
-          'apiKey': NewsConfig.apiKey,
-          'pageSize': NewsConfig.pageSize,
-          'page': currentPage,
-          'sortBy': NewsConfig.sortBy
+          KeysConfig.page: currentPage,
+          KeysConfig.sortBy: NewsConfig.sortBy,
+          KeysConfig.apiKey: NewsConfig.apiKey,
+          KeysConfig.pageSize: NewsConfig.pageSize,
         },
       );
 

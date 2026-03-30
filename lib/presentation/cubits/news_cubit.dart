@@ -6,9 +6,9 @@ import '../../core/errors/error_handler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../core/errors/exceptions/app_exception.dart';
 import '../../domain/useCases/tab_useCases/change_tab_useCase.dart';
+import 'package:todays_news/presentation/states/base/app_states.dart';
 import '../../domain/useCases/tab_useCases/load_tab_data_useCase.dart';
 import 'package:todays_news/presentation/navigation/screen_items.dart';
-import 'package:todays_news/presentation/states/base/app_states.dart';
 import 'package:todays_news/presentation/navigation/bottom_navigation_bar_items.dart';
 
 

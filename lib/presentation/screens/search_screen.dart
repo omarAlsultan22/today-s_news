@@ -29,6 +29,8 @@ class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _searchController = TextEditingController();
 
   static const _zero = AppConstants.zero;
+  static const _fontSize = AppConstants.mediumSize;
+  static const _paddingAll = _fontSize;
 
   @override
   void initState() {
@@ -54,7 +56,7 @@ class _SearchScreenState extends State<SearchScreen> {
         title: const Text(
           "Search Screen",
           style: TextStyle(
-            fontSize: 20.0,
+            fontSize: _fontSize,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -84,9 +86,12 @@ class _SearchScreenState extends State<SearchScreen> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   _buildSearchField(),
-                  const SizedBox(height: 10.0),
+                  const SizedBox(height: AppConstants.smallSize),
                   Expanded(
                     child: state.when(
+                        onConnection: ()=> const Center(
+                            child: ConnectionErrorStateWidget()
+                        ),
                         onInitial: () =>
                         const Expanded(
                             child: Center(child: Text(
@@ -105,10 +110,6 @@ class _SearchScreenState extends State<SearchScreen> {
                                 }
                             ),
                         onError: (error) =>
-                        error.isConnectionError! ? Center(
-                            child: ConnectionErrorStateWidget(
-                                error: error.message)
-                        ) :
                         ErrorStateWidget(
                             error: error.message,
                             onRetry: () =>
@@ -127,7 +128,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   Widget _buildSearchField() {
     return Padding(
-      padding: const EdgeInsets.all(20.0),
+      padding: const EdgeInsets.all(_paddingAll),
       child: Form(
         key: _formKey,
         child: Column(
@@ -141,7 +142,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   labelText: 'Search',
                   prefixIcon: AppConstants.searchIcon,
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(50.0),
+                    borderRadius: BorderRadius.circular(AppConstants.largeSize),
                   ),
                 ),
               ),

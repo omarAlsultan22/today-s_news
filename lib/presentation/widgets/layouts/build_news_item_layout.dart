@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:todays_news/core/constants/app_constants.dart';
 import '../../../../data/models/article_Model.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../utils/helpers/image_helpers.dart';
@@ -14,7 +15,10 @@ class BuildNewsItemLayout extends StatelessWidget {
   late String title = article.title;
   late String url = article.url;
 
-  static const _height120 = 120.0;
+  static const _fontSize = AppConstants.mediumSize;
+  static const _mediumSpacing = _fontSize;
+  static const _paddingAll = _mediumSpacing;
+  static const _largeSpacing = 120.0;
 
   void launchURL(String url) async {
     final Uri uri = Uri.parse(Uri.encodeFull(url));
@@ -34,35 +38,35 @@ class BuildNewsItemLayout extends StatelessWidget {
         }
       },
       child: Padding(
-        padding: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.all(_paddingAll),
         child: Row(
           children: [
             Container(
-              height: _height120,
-              width: _height120,
+              height: _largeSpacing,
+              width: _largeSpacing,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10.0),
+                borderRadius: BorderRadius.circular(AppConstants.smallSize),
               ),
               child: CachedNetworkImage(
                 imageUrl: imageUrl,
                 fit: BoxFit.cover,
                 memCacheHeight: ImageHelpers.calculateOptimalCacheHeight(
                     context,
-                    targetHeight: _height120,
+                    targetHeight: _largeSpacing,
                     qualityFactor: 1.5
                 ),
                 memCacheWidth: ImageHelpers.calculateOptimalCacheWidth(
                     context,
-                    targetWidth: _height120
+                    targetWidth: _largeSpacing
                 ),
                 errorWidget: (context, error, stackTrace) => const Icon(Icons.error),
               ),
             ),
-            const SizedBox(width: 20.0),
+            const SizedBox(width: _mediumSpacing),
             Expanded(
               flex: 1,
               child: SizedBox(
-                height: _height120,
+                height: _largeSpacing,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -72,7 +76,7 @@ class BuildNewsItemLayout extends StatelessWidget {
                       child: Text(
                         title,
                         style: const TextStyle(
-                          fontSize: 20.0,
+                          fontSize: _fontSize,
                           fontWeight: FontWeight.bold,
                           overflow: TextOverflow.ellipsis,
                         ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todays_news/core/constants/app_constants.dart';
 
 
 class ErrorStateWidget extends StatelessWidget {
@@ -20,7 +21,7 @@ class ErrorStateWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 50.0),
+              padding: const EdgeInsets.symmetric(horizontal: AppConstants.largeSize),
               child: Text('Error: $error'),
             ),
             const SizedBox(height: 30),

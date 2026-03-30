@@ -1,22 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:todays_news/core/constants/app_constants.dart';
 
 
 class ConnectionErrorStateWidget extends StatelessWidget {
-  final String error;
   final VoidCallback? onRetry;
 
-  const ConnectionErrorStateWidget({required this.error, this.onRetry, super.key});
+  const ConnectionErrorStateWidget({
+    this.onRetry,
+    super.key
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return const Column(
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.wifi_off),
-            const SizedBox(width: 10.0),
-            Text(error)
+            Icon(Icons.wifi_off),
+            SizedBox(width: AppConstants.smallSize),
+            Text('No Internet Connection')
           ],
         ),
       ],

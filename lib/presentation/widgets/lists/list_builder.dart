@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../layouts/build_news_item_layout.dart';
 import '../../../data/models/article_Model.dart';
+import 'package:todays_news/core/constants/app_constants.dart';
 
 
 class ListBuilder extends StatefulWidget {
@@ -22,6 +23,7 @@ class ListBuilder extends StatefulWidget {
 
 class _ListBuilderState extends State<ListBuilder> {
   final ScrollController _scrollController = ScrollController();
+  static const _smallSpacing = AppConstants.largeSize;
 
   @override
   void initState() {
@@ -31,7 +33,7 @@ class _ListBuilderState extends State<ListBuilder> {
 
   void _onScrollData() {
     if (_scrollController.position.pixels >=
-        _scrollController.position.maxScrollExtent - 50.0 &&
+        _scrollController.position.maxScrollExtent - _smallSpacing &&
         widget.hasMore && !widget.isLocked) {
       widget.isLocked = true;
       widget.onScroll();
