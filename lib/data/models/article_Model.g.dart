@@ -20,7 +20,7 @@ class ArticleAdapter extends TypeAdapter<Article> {
       title: fields[0] as String,
       description: fields[1] as String,
       url: fields[2] as String,
-      image: fields[3] as String,
+      urlToImage: fields[3] as String,
       publishedAt: fields[4] as String,
     );
   }
@@ -36,7 +36,7 @@ class ArticleAdapter extends TypeAdapter<Article> {
       ..writeByte(2)
       ..write(obj.url)
       ..writeByte(3)
-      ..write(obj.image)
+      ..write(obj.urlToImage)
       ..writeByte(4)
       ..write(obj.publishedAt);
   }

@@ -44,7 +44,7 @@ class BuildNewsItemLayout extends StatelessWidget {
                 borderRadius: BorderRadius.circular(AppConstants.smallSize),
               ),
               child: CachedNetworkImage(
-                imageUrl: article.image,
+                imageUrl: article.urlToImage,
                 fit: BoxFit.cover,
                 memCacheHeight: ImageHelpers.calculateOptimalCacheHeight(
                     context,

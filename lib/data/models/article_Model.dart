@@ -9,7 +9,7 @@ class Article {
   final String title;
 
   @HiveField(1)
-  final String image;
+  final String urlToImage;
 
   @HiveField(2)
   final String url;
@@ -23,7 +23,7 @@ class Article {
   Article({
     required this.title,
     required this.url,
-    required this.image,
+    required this.urlToImage,
     required this.publishedAt,
     required this.description,
 
@@ -36,7 +36,7 @@ class Article {
         url: json['url'] ?? '',
         title: json['title'] ?? '',
         description: json['description'] ?? '',
-        image: json['urlToImage'] ?? '',
+        urlToImage: json['urlToImage'] ?? '',
         publishedAt: json['publishedAt'] ?? ''
     );
   }
