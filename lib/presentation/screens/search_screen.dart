@@ -1,8 +1,8 @@
+import 'dart:async';
 import '../cubits/search_cubit.dart';
 import '../states/search_state.dart';
 import 'package:flutter/material.dart';
 import '../widgets/lists/list_builder.dart';
-import '../../data/models/article_Model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../widgets/states/loading_state_widget.dart';
 import 'package:todays_news/core/constants/app_constants.dart';
@@ -24,10 +24,13 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
 
+  Timer? _debounceTimer;
+  String _currentQuery = '';
   late SearchCubit _currentCubit;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _searchController = TextEditingController();
 
+  static const _debounceMs = 500;
   static const _zero = AppConstants.zero;
   static const _fontSize = AppConstants.mediumSize;
   static const _paddingAll = _fontSize;
@@ -40,16 +43,31 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   void dispose() {
+    _debounceTimer?.cancel();
     _searchController.dispose();
     _searchController.removeListener(_onSearchData);
     super.dispose();
   }
 
   void _onSearchData() {
-    _currentCubit.getSearch(query: _searchController.text.trim());
+    if (_debounceTimer?.isActive ?? false) {
+      _debounceTimer?.cancel();
+    }
+
+    _debounceTimer = Timer(
+      const Duration(milliseconds: _debounceMs),
+          () {
+        if (_searchController.text.isNotEmpty &&
+            _currentQuery != _searchController.text
+        ) {
+          _currentQuery = _searchController.text;
+          _currentCubit.getSearch(query: _searchController.text);
+        }
+      },
+    );
   }
 
-  AppBar _buildAppBar(List<Article> data) =>
+  AppBar _buildAppBar() =>
       AppBar(
         elevation: _zero,
         scrolledUnderElevation: _zero,
@@ -63,7 +81,6 @@ class _SearchScreenState extends State<SearchScreen> {
         leading: InkWell(
           onTap: () {
             Navigator.pop(context);
-            data.clear();
           },
           child: const Icon(Icons.arrow_back_ios),
         ),
@@ -79,9 +96,8 @@ class _SearchScreenState extends State<SearchScreen> {
         child: BlocBuilder<SearchCubit, SearchState>(
           builder: (context, state) {
             _currentCubit = SearchCubit.get(context);
-            final tabData = state.categoryData;
             return Scaffold(
-              appBar: _buildAppBar(tabData.products),
+              appBar: _buildAppBar(),
               body: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
@@ -102,12 +118,8 @@ class _SearchScreenState extends State<SearchScreen> {
                             ListBuilder(
                                 isLocked: false,
                                 list: newTabData.products,
-                                hasMore: tabData.hasMore,
-                                onScroll: () {
-                                  _currentCubit.getSearch(
-                                      query: _searchController.text
-                                  );
-                                }
+                                hasMore: newTabData.hasMore,
+                                onScroll: () => _currentCubit.getMoreSearch()
                             ),
                         onError: (error) =>
                         ErrorStateWidget(

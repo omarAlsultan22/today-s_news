@@ -6,7 +6,7 @@ abstract class CategoryDataWhenStrategy<T> {
     R Function()? onConnection,
     required R Function() onInitial,
     required R Function() onLoading,
-    required R Function(T) onLoaded,
-    required R Function(AppException) onError});
+    required R Function(T?) onLoaded,
+    required R Function(AppException?) onError});
 }
 

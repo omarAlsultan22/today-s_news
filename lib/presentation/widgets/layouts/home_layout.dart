@@ -11,11 +11,14 @@ import '../../../domain/services/connectivity_service/connectivity_provider.dart
 
 
 class HomeLayout extends StatelessWidget {
-  final ConnectivityProvider _connectivityService;
+  final int currentIndex;
+  final ConnectivityProvider connectivityService;
 
-  const HomeLayout({super.key,
-    required ConnectivityProvider connectivityService,
-  }) : _connectivityService = connectivityService;
+  const HomeLayout({
+    super.key,
+    required this.currentIndex,
+    required this.connectivityService,
+  });
 
 
   void _navPushSearchScreen(BuildContext context) {
@@ -27,9 +30,8 @@ class HomeLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isConnected = _connectivityService.isConnected;
+    final isConnected = connectivityService.isConnected;
     final cubit = context.read<NewsCubit>();
-    final state = cubit.state;
     return Scaffold(
       appBar: AppBar(
         title: const Text("Today's News"),
@@ -56,11 +58,11 @@ class HomeLayout extends StatelessWidget {
                 text: isConnected ? 'online' : 'offline'
             ),
             Expanded(
-                child: cubit.screenItems[state.currentIndex])
+                child: cubit.screenItems[currentIndex])
           ]
       ),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: state.currentIndex,
+        currentIndex: currentIndex,
         onTap: (index) => cubit.changeScreen(index),
         items: cubit.barItems,
       ),

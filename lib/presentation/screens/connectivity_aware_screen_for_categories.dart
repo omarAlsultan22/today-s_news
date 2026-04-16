@@ -31,7 +31,7 @@ class ConnectivityAwareScreenForCategories extends StatelessWidget {
       try {
         final newsCubit = context.read<NewsCubit>();
         final currentState = newsCubit.state;
-        if (currentState.currentIndex == screenIndex) {
+        if (currentState.currentTabIndex == screenIndex) {
           newsCubit.restLock();
         }
       } catch (e) {

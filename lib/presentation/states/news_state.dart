@@ -5,36 +5,44 @@ import 'package:todays_news/presentation/states/base/category_data_when_strategy
 
 
 class NewsState implements CategoryDataWhenStrategy {
-  final int currentIndex;
+  final bool isConnected;
+  final int currentTabIndex;
+  final MainAppState subState;
   final Map<int, CategoryData> tabsData;
 
   NewsState({
+    this.isConnected = true,
     required this.tabsData,
-    required this.currentIndex,
+    required this.subState,
+    required this.currentTabIndex,
   });
 
-  CategoryData? get currentTabData => tabsData[currentIndex];
+  CategoryData? get currentTabData => tabsData[currentTabIndex];
 
-  bool? get productsIsEmpty => currentTabData!.productsIsEmpty;
+  bool get productsIsEmpty => currentTabData!.productsIsEmpty;
 
-  MainAppState? get currentState => currentTabData!.state;
+  bool get hasMore => currentTabData!.hasMore;
 
   NewsState updateTab(int index, CategoryData newTabData) {
     return copyWith(
-      tabsData: {
-        ...tabsData,
-        index: newTabData,
-      },
+        tabsData: {
+          ...tabsData,
+          index: newTabData,
+        }
     );
   }
 
   NewsState copyWith({
-    int? currentIndex,
+    bool? isConnected,
+    int? currentTabIndex,
+    MainAppState? subState,
     Map<int, CategoryData>? tabsData,
   }) {
     return NewsState(
+      subState: subState ?? this.subState,
       tabsData: tabsData ?? this.tabsData,
-      currentIndex: currentIndex ?? this.currentIndex,
+      isConnected: isConnected ?? this.isConnected,
+      currentTabIndex: currentTabIndex ?? this.currentTabIndex,
     );
   }
 
@@ -46,10 +54,13 @@ class NewsState implements CategoryDataWhenStrategy {
     required R Function(CategoryData) onLoaded,
     required R Function(AppException) onError,
   }) {
-    return currentState!.when(
+    if (onConnection != null && !isConnected && productsIsEmpty) {
+      return onConnection();
+    }
+    return subState.when(
       onInitial: onInitial,
       onLoading: onLoading,
-      onLoaded: (currentTabData) => onLoaded(currentTabData),
+      onLoaded: () => onLoaded(currentTabData!),
       onError: (error) => onError(error),
     );
   }

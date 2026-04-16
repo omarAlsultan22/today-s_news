@@ -9,12 +9,14 @@ import '../../domain/useCases/tab_useCases/change_tab_useCase.dart';
 import 'package:todays_news/presentation/states/base/app_states.dart';
 import '../../domain/useCases/tab_useCases/load_tab_data_useCase.dart';
 import 'package:todays_news/presentation/navigation/screen_items.dart';
+import '../../domain/services/connectivity_service/connectivity_provider.dart';
 import 'package:todays_news/presentation/navigation/bottom_navigation_bar_items.dart';
 
 
 class NewsCubit extends Cubit<NewsState> {
   final LoadDataUseCase _loadDataUseCase;
   final ChangeTabUseCase _changeTabUseCase;
+  final ConnectivityProvider _connectivityProvider;
 
   static const int _initialTabIndex = 0;
   static const int _initialTabCount = 3;
@@ -22,19 +24,23 @@ class NewsCubit extends Cubit<NewsState> {
   NewsCubit({
     required LoadDataUseCase loadDataUseCase,
     required ChangeTabUseCase changeTabUseCase,
+    required ConnectivityProvider connectivityProvider
   })
       : _loadDataUseCase = loadDataUseCase,
         _changeTabUseCase = changeTabUseCase,
+        _connectivityProvider = connectivityProvider,
         super(
         NewsState(
-          currentIndex: _initialTabIndex,
-          tabsData: {
-            for (var i = _initialTabIndex; i < _initialTabCount; i++)
-              i: CategoryData(state: InitialState())
-          },
+            currentTabIndex: _initialTabIndex,
+            tabsData: {
+              for (var i = _initialTabIndex; i < _initialTabCount; i++)
+                i: CategoryData()
+            },
+            subState: InitialState()
         ),
-      );
-
+      ) {
+    _connectivityProvider.addListener(updateConnectionStatus);
+  }
 
   static NewsCubit get(context) => BlocProvider.of<NewsCubit>(context);
 
@@ -42,11 +48,16 @@ class NewsCubit extends Cubit<NewsState> {
 
   List<BottomNavigationBarItem> get barItems => BottomNavigationBarItems.items;
 
+  void updateConnectionStatus() {
+    emit(state.copyWith(isConnected: _connectivityProvider.isConnected));
+  }
 
   Future<void> changeScreen(int index) async {
-    emit(state.copyWith(currentIndex: index));
-
+    emit(state.copyWith(currentTabIndex: index));
     final currentTabData = state.tabsData[index]!;
+    if (!currentTabData.productsIsEmpty) return;
+
+    emit(state.copyWith(subState: LoadingState()));
 
     try {
       final newTabData = await _changeTabUseCase.execute(
@@ -56,23 +67,24 @@ class NewsCubit extends Cubit<NewsState> {
       );
 
       if (currentTabData.productsIsEmpty && newTabData.productsIsEmpty) {
-        emit(state.updateTab(
-            index, newTabData.copyWith(state: InitialState())));
+        emit(state.updateTab(index, newTabData).copyWith(
+            subState: InitialState()));
       }
 
-      emit(state.updateTab(
-          index, newTabData.copyWith(state: SuccessState(currentTabData))));
+      emit(state.updateTab(index, newTabData).copyWith(
+          subState: SuccessState()));
     }
     on AppException catch (e) {
       final failure = ErrorHandler.handleException(e);
-      emit(state.updateTab(
-          index, currentTabData.copyWith(state: ErrorState(failure))));
+      emit(state.updateTab(index, currentTabData).copyWith(
+          subState: ErrorState(failure: failure)));
     }
   }
 
 
   Future<void> getMoreData() async {
-    final index = state.currentIndex;
+    if(!state.hasMore) return;
+    final index = state.currentTabIndex;
     final currentTabData = state.tabsData[index]!;
 
     try {
@@ -81,20 +93,22 @@ class NewsCubit extends Cubit<NewsState> {
         currentData: currentTabData,
       );
 
-      emit(state.updateTab(
-          index, newTabData.copyWith(state: SuccessState(newTabData))));
+      emit(state
+          .updateTab(index, newTabData)
+          .copyWith(subState: SuccessState()));
     }
     on AppException catch (e) {
       final failure = ErrorHandler.handleException(e);
-      emit(state.updateTab(
-          index, currentTabData.copyWith(state: ErrorState(failure))));
+      emit(state
+          .updateTab(index, currentTabData)
+          .copyWith(subState: ErrorState(failure: failure)));
     }
   }
 
   void restLock() {
-    final index = state.currentIndex;
-    final currentTabData = state.tabsData[index]!;
-    emit(state.updateTab(index, currentTabData.copyWith(hasMore: true)));
+    final index = state.currentTabIndex;
+    final newTabData = state.tabsData[index]!;
+    emit(state.updateTab(index, newTabData.copyWith(hasMore: true)));
   }
 }
 

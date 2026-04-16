@@ -1,7 +1,6 @@
 import 'dart:async';
 import '../states/search_state.dart';
 import '../../data/models/tab_data.dart';
-import '../constants/api/search_config.dart';
 import '../../core/errors/error_handler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todays_news/presentation/states/base/app_states.dart';
@@ -22,7 +21,8 @@ class SearchCubit extends Cubit<SearchState> {
         _connectivityProvider = connectivityProvider,
         super(
           SearchState(
-              categoryData: CategoryData(state: InitialState())
+              categoryData: CategoryData(),
+              subState: InitialState()
           )
       ) {
     _connectivityProvider.addListener(updateConnectionStatus);
@@ -39,40 +39,81 @@ class SearchCubit extends Cubit<SearchState> {
   Future<void> getSearch({
     String? query,
   }) async {
-    final currentTabData = state.categoryData;
-
-    if (!currentTabData.hasMore && query!.isNotEmpty) {
-      return;
-    }
-    if (timer?.isActive ?? false) timer?.cancel();
-
-    timer = Timer(
-        const Duration(
-            milliseconds: SearchConfig.searchDebounceMs), () async {
-      emit(state.copyWith(
-          query: query,
-          categoryData: currentTabData.copyWith(
-            products: const [],
-            state: LoadingState(),
-          )));
-
-      try {
-        final newTabData = await _loadDataUseCase.execute(
-          query: query,
-          currentData: currentTabData,
-        );
-
-        emit(state.copyWith(
+    final currentData = state.categoryData;
+    emit(
+        state.copyWith(
             query: query,
-            categoryData: newTabData.copyWith(state: SuccessState(newTabData))
-        ));
+            categoryData: currentData.copyWith(
+              products: const [],
+            ),
+            subState: LoadingState())
+    );
+    try {
+      final newTabData = await _loadDataUseCase.execute(
+        query: query,
+        currentData: currentData,
+      );
+
+      if (newTabData.productsIsEmpty) {
+        emit(
+            state.copyWith(
+              categoryData: newTabData.copyWith(),
+              subState: InitialState(),
+            ));
       }
 
-      on AppException catch (e) {
-        final failure = ErrorHandler.handleException(e);
-        emit(state.copyWith(
-            categoryData: currentTabData.copyWith(state: ErrorState(failure))));
+      emit(
+          state.copyWith(
+              categoryData: newTabData,
+              subState: SuccessState()
+          )
+      );
+    }
+
+    on AppException catch (e) {
+      final failure = ErrorHandler.handleException(e);
+      emit(
+          state.copyWith(
+              categoryData: currentData,
+              subState: ErrorState(failure: failure)
+          )
+      );
+    }
+  }
+
+  Future<void> getMoreSearch() async {
+    final currentData = state.categoryData;
+    try {
+      final newTabData = await _loadDataUseCase.execute(
+        query: state.query,
+        currentData: currentData,
+      );
+
+      if (newTabData.productsIsEmpty) {
+        emit(
+            state.copyWith(
+                categoryData: newTabData,
+                subState: InitialState()
+            )
+        );
       }
-    });
+
+      emit(
+          state.copyWith(
+              categoryData: newTabData,
+              subState: SuccessState()
+          )
+      );
+    }
+
+    on AppException catch (e) {
+      final failure = ErrorHandler.handleException(e);
+      emit(
+          state.copyWith(
+              categoryData: currentData,
+              subState: ErrorState(failure: failure)
+          )
+      );
+    }
   }
 }

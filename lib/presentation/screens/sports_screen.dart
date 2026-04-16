@@ -21,7 +21,7 @@ class SportsScreen extends StatelessWidget {
         screenIndex: screenIndex,
         child: BlocBuilder<NewsCubit, NewsState>(
             buildWhen: (previous, current) =>
-            current.currentIndex == screenIndex,
+            current.currentTabIndex == screenIndex,
             builder: (context, state) {
               final currentCubit = context.read<NewsCubit>();
 
@@ -42,7 +42,7 @@ class SportsScreen extends StatelessWidget {
                           child: ErrorStateWidget(
                               error: error.message,
                               onRetry: () =>
-                                  currentCubit.changeScreen(state.currentIndex)
+                                  currentCubit.changeScreen(state.currentTabIndex)
                           )
                       )
               );

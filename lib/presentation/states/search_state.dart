@@ -7,23 +7,25 @@ import '../../core/errors/exceptions/app_exception.dart';
 class SearchState implements CategoryDataWhenStrategy {
   final String query;
   final bool isConnected;
+  final MainAppState subState;
   final CategoryData categoryData;
 
   SearchState({
     this.query = '',
     this.isConnected = true,
+    required this.subState,
     required this.categoryData
   });
-
-  MainAppState? get currentState => categoryData.state;
 
   SearchState copyWith({
     String? query,
     bool? isConnected,
+    MainAppState? subState,
     CategoryData? categoryData,
   }) {
     return SearchState(
       query: query ?? this.query,
+      subState: subState ?? this.subState,
       isConnected: isConnected ?? this.isConnected,
       categoryData: categoryData ?? this.categoryData,
     );
@@ -36,13 +38,13 @@ class SearchState implements CategoryDataWhenStrategy {
     required R Function() onLoading,
     required R Function(CategoryData) onLoaded,
     required R Function(AppException) onError}) {
-    if (!isConnected) {
-      return onConnection!();
+    if (onConnection != null && !isConnected) {
+      return onConnection();
     }
-    return currentState!.when(
+    return subState.when(
       onInitial: onInitial,
       onLoading: onLoading,
-      onLoaded: (currentData) => onLoaded(currentData),
+      onLoaded: () => onLoaded(categoryData),
       onError: (error) => onError(error),
     );
   }

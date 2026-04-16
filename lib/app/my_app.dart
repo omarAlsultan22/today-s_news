@@ -61,16 +61,12 @@ class MyApp extends StatelessWidget {
         connectivityService: connectivityProvider
     );
 
+    const screenIndex = HomeScreenConstants.screenBusinessIndex;
     final loadDataUseCase = LoadDataUseCase(repository: repository);
     final changeTabUseCase = ChangeTabUseCase(loadDataUseCase: loadDataUseCase);
-    const screenIndex = HomeScreenConstants.screenBusinessIndex;
 
     return MultiProvider(
         providers: [
-          ChangeNotifierProvider<ThemeNotifier>(
-              create: (_) => ThemeNotifier()),
-          ChangeNotifierProvider<ConnectivityProvider>(
-              create: (_) => ConnectivityProvider()),
           BlocProvider<NewsCubit>(
               create: (_) =>
               NewsCubit(
@@ -78,6 +74,10 @@ class MyApp extends StatelessWidget {
                   changeTabUseCase: changeTabUseCase
               )
                 ..changeScreen(screenIndex)),
+          ChangeNotifierProvider<ConnectivityProvider>(
+              create: (_) => ConnectivityProvider()),
+          ChangeNotifierProvider<ThemeNotifier>(
+              create: (_) => ThemeNotifier())
         ],
         child: Consumer<ThemeNotifier>(
           builder: (context, themeNotifier, child) {
