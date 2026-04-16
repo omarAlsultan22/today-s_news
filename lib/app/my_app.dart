@@ -54,13 +54,14 @@ class MyApp extends StatelessWidget {
 
     final remoteDatabase = ApiArticlesRepository();
     final localDatabase = HiveArticlesRepository();
-    final connectivityProvider = ConnectivityService();
+    final connectivityService = ConnectivityService();
     final repository = HybridArticlesRepository(
         remoteDatabase: remoteDatabase,
         localDatabase: localDatabase,
-        connectivityService: connectivityProvider
+        connectivityService: connectivityService
     );
 
+    final connectivityProvider = ConnectivityProvider();
     const screenIndex = HomeScreenConstants.screenBusinessIndex;
     final loadDataUseCase = LoadDataUseCase(repository: repository);
     final changeTabUseCase = ChangeTabUseCase(loadDataUseCase: loadDataUseCase);
@@ -71,7 +72,8 @@ class MyApp extends StatelessWidget {
               create: (_) =>
               NewsCubit(
                   loadDataUseCase: loadDataUseCase,
-                  changeTabUseCase: changeTabUseCase
+                  changeTabUseCase: changeTabUseCase,
+                  connectivityProvider: connectivityProvider
               )
                 ..changeScreen(screenIndex)),
           ChangeNotifierProvider<ConnectivityProvider>(
