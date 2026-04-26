@@ -1,10 +1,10 @@
 import 'package:todays_news/core/errors/exceptions/base/app_exception.dart';
 
 
-class ServerException extends AppException{
-  ServerException({
-    super.code,
+class ClientException extends AppException {
+  ClientException({
     required super.message,
-    required super.statusCode
+    super.statusCode,
+    super.code
   });
 }

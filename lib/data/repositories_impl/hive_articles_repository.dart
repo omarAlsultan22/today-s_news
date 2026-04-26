@@ -7,7 +7,19 @@ import 'package:todays_news/presentation/utils/helpers/save_time_stamp.dart';
 
 
 class HiveArticlesRepository implements DataRepository, DataOperations {
-  static const time = 'saved_time';
+  final SaveTimeStamp _saveTimeStamp;
+  final HiveOperations _hiveOperations;
+  final StorageValidity _storageValidity;
+
+  HiveArticlesRepository({
+    required SaveTimeStamp saveTimeStamp,
+    required HiveOperations hiveOperations,
+    required StorageValidity storageValidity
+  })
+      :
+        _saveTimeStamp = saveTimeStamp,
+        _hiveOperations = hiveOperations,
+        _storageValidity = storageValidity;
 
   @override
   Future<List<Article>> fetchArticles({
@@ -15,33 +27,28 @@ class HiveArticlesRepository implements DataRepository, DataOperations {
     required int currentPage
   }) async {
     try {
-
-      final isTimeUp = await StorageValidity.has24HoursPassed();
-      if(isTimeUp) {
+      final isTimeUp = await _storageValidity.has24HoursPassed();
+      if (isTimeUp) {
         return [];
       }
 
-      final value = await HiveOperations.getLocalData(key, currentPage);
+      final value = await _hiveOperations.getLocalData(key, currentPage);
 
       if (value == null) return [];
 
       if (value is List<Article>) {
-        print('Get data is done..................data ${value.first.title}');
         return List<Article>.from(value);
       }
 
       if (value is List) {
-        print('Get data is done..................data');
         return value.where((item) => item is Article).cast<Article>().toList();
       }
 
-      print('Get data is done..................empty');
       return [];
     } catch (e) {
       return [];
     }
   }
-
 
   @override
   Future<void> saveArticles({
@@ -49,8 +56,8 @@ class HiveArticlesRepository implements DataRepository, DataOperations {
     required int currentPage,
     required List<Article> articles}) async {
     try {
-      SaveTimeStamp.saveTime(time);
-      return await HiveOperations.putLocalData(
+      _saveTimeStamp.saveTime();
+      return await _hiveOperations.putLocalData(
           key: key,
           currentPage: currentPage,
           articles: articles
@@ -61,9 +68,8 @@ class HiveArticlesRepository implements DataRepository, DataOperations {
     }
   }
 
-
   @override
   Future<void> clearArticles() async {
-    await HiveOperations.clearData();
+    await _hiveOperations.clearData();
   }
 }

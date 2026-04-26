@@ -1,4 +1,4 @@
-import 'package:todays_news/core/errors/exceptions/app_exception.dart';
+import '../../../core/errors/exceptions/base/app_exception.dart';
 
 
 abstract class MainAppState<T> {

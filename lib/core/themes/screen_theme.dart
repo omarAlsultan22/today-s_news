@@ -3,11 +3,13 @@ import '../../data/datasources/local/cacheHelper.dart';
 
 
 class ThemeNotifier extends ChangeNotifier {
+  final CacheHelper _cacheHelper;
   ThemeMode _themeMode = ThemeMode.light;
 
   ThemeMode get themeMode => _themeMode;
 
-  ThemeNotifier() {
+  ThemeNotifier({required CacheHelper cacheHelper}) :
+        _cacheHelper = cacheHelper {
     _loadTheme();
   }
 
@@ -31,7 +33,7 @@ class ThemeNotifier extends ChangeNotifier {
 
   void _loadTheme() async {
     try {
-      String? theme = await CacheHelper.getString(key: key);
+      String? theme = await _cacheHelper.getString(key: key);
 
       if (theme == 'dark') {
         _themeMode = ThemeMode.dark;
@@ -41,7 +43,7 @@ class ThemeNotifier extends ChangeNotifier {
         _themeMode = ThemeMode.system;
       } else {
         _themeMode = ThemeMode.system;
-        await CacheHelper.setString(key: 'theme', value: 'system');
+        await _cacheHelper.setString(key: 'theme', value: 'system');
       }
       notifyListeners();
     } catch (e) {
@@ -63,7 +65,7 @@ class ThemeNotifier extends ChangeNotifier {
         break;
     }
 
-    CacheHelper.setString(key: key, value: themeValue);
+    _cacheHelper.setString(key: key, value: themeValue);
     notifyListeners();
   }
 }

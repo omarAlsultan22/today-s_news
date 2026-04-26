@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:todays_news/core/constants/app_constants.dart';
+import 'package:todays_news/core/constants/app_sizes.dart';
 
 
 class InitialStateWidget extends StatelessWidget {
@@ -12,7 +12,7 @@ class InitialStateWidget extends StatelessWidget {
     super.key,
     required this.icon,
     required this.category,
-    this.iconSize = AppConstants.largeSize,
+    this.iconSize = AppSizes.largeSize,
     this.textStyle,
   });
 

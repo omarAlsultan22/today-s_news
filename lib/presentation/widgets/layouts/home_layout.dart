@@ -4,7 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../screens/search_screen.dart';
 import '../../../core/themes/screen_theme.dart';
-import 'package:todays_news/core/constants/app_constants.dart';
+import 'package:todays_news/core/constants/app_sizes.dart';
+import 'package:todays_news/core/constants/app_icons.dart';
+import 'package:todays_news/core/constants/app_colors.dart';
+import 'package:todays_news/data/datasources/remote/dio_helper.dart';
 import '../../../domain/useCases/tab_useCases/load_tab_data_useCase.dart';
 import 'package:todays_news/data/repositories_impl/api_articles_repository.dart';
 import '../../../domain/services/connectivity_service/connectivity_provider.dart';
@@ -22,7 +25,8 @@ class HomeLayout extends StatelessWidget {
 
 
   void _navPushSearchScreen(BuildContext context) {
-    final repository = ApiArticlesRepository();
+    final dioHelper = DioHelper();
+    final repository = ApiArticlesRepository(dioHelper: dioHelper);
     final loadDataUseCase = LoadDataUseCase(repository: repository);
     Navigator.push(context, MaterialPageRoute(
         builder: (context) => SearchScreen(loadDataUseCase: loadDataUseCase)));
@@ -38,7 +42,7 @@ class HomeLayout extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () => _navPushSearchScreen(context),
-            icon: AppConstants.searchIcon,
+            icon: AppIcons.searchIcon,
           ),
           IconButton(
             onPressed: () {
@@ -95,8 +99,8 @@ class _ConnectionBannerState extends State<ConnectionBanner> {
   late double _height;
   Timer? _timer;
 
-  static const _white = AppConstants.white;
-  static const _zero = AppConstants.zero;
+  static const _white = AppColors.white;
+  static const _noneValue = AppSizes.none;
 
   @override
   void initState() {
@@ -108,7 +112,7 @@ class _ConnectionBannerState extends State<ConnectionBanner> {
   void _startTimer() {
     _timer?.cancel();
 
-    if (widget.duration > _zero) {
+    if (widget.duration > _noneValue) {
       _timer = Timer(Duration(seconds: widget.duration), () {
         _hideBanner();
       });
@@ -131,7 +135,7 @@ class _ConnectionBannerState extends State<ConnectionBanner> {
       curve: Curves.easeInOut,
       height: _height,
       color: widget.bgColor,
-      child: _height > _zero
+      child: _height > _noneValue
           ? Center(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,

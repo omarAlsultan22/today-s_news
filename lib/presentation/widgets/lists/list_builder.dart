@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../layouts/build_news_item_layout.dart';
 import '../../../data/models/article_Model.dart';
-import 'package:todays_news/core/constants/app_constants.dart';
+import 'package:todays_news/core/constants/app_sizes.dart';
 
 
 class ListBuilder extends StatefulWidget {
@@ -23,7 +23,7 @@ class ListBuilder extends StatefulWidget {
 
 class _ListBuilderState extends State<ListBuilder> {
   final ScrollController _scrollController = ScrollController();
-  static const _smallSpacing = AppConstants.largeSize;
+  static const _smallSpacing = AppSizes.largeSize;
 
   @override
   void initState() {

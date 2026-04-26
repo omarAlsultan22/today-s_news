@@ -1,12 +1,16 @@
 import '../../presentation/utils/helpers/list_convertor.dart';
-import '../../presentation/constants/api/news_config.dart';
-import '../../presentation/constants/api/keys_config.dart';
+import '../../domain/constants/news_config.dart';
+import '../constants/keys_config.dart';
 import '../../domain/repositories/data_repository.dart';
 import '../datasources/remote/dio_helper.dart';
 import '../models/article_Model.dart';
 
 
 class ApiArticlesRepository implements DataRepository {
+  final DioHelper _dioHelper;
+
+  ApiArticlesRepository({required DioHelper dioHelper})
+      : _dioHelper = dioHelper;
 
   @override
   Future<List<Article>> fetchArticles({
@@ -14,7 +18,7 @@ class ApiArticlesRepository implements DataRepository {
     required int currentPage,
   }) async {
     try {
-      final response = await DioHelper.getData(
+      final response = await _dioHelper.getData(
         url: NewsConfig.newsUrl,
         query: {
           'category': key,

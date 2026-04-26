@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import '../../data/models/tab_data.dart';
 import '../../core/errors/error_handler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../core/errors/exceptions/app_exception.dart';
+import '../../core/errors/exceptions/base/app_exception.dart';
 import '../../domain/useCases/tab_useCases/change_tab_useCase.dart';
 import 'package:todays_news/presentation/states/base/app_states.dart';
 import '../../domain/useCases/tab_useCases/load_tab_data_useCase.dart';
@@ -16,7 +16,6 @@ import 'package:todays_news/presentation/navigation/bottom_navigation_bar_items.
 class NewsCubit extends Cubit<NewsState> {
   final LoadDataUseCase _loadDataUseCase;
   final ChangeTabUseCase _changeTabUseCase;
-  final ConnectivityProvider _connectivityProvider;
 
   static const int _initialTabIndex = 0;
   static const int _initialTabCount = 3;
@@ -28,7 +27,6 @@ class NewsCubit extends Cubit<NewsState> {
   })
       : _loadDataUseCase = loadDataUseCase,
         _changeTabUseCase = changeTabUseCase,
-        _connectivityProvider = connectivityProvider,
         super(
         NewsState(
             currentTabIndex: _initialTabIndex,
@@ -38,9 +36,7 @@ class NewsCubit extends Cubit<NewsState> {
             },
             subState: InitialState()
         ),
-      ) {
-    _connectivityProvider.addListener(updateConnectionStatus);
-  }
+      );
 
   static NewsCubit get(context) => BlocProvider.of<NewsCubit>(context);
 
@@ -48,8 +44,21 @@ class NewsCubit extends Cubit<NewsState> {
 
   List<BottomNavigationBarItem> get barItems => BottomNavigationBarItems.items;
 
-  void updateConnectionStatus() {
-    emit(state.copyWith(isConnected: _connectivityProvider.isConnected));
+  void _successState({
+    required int index,
+    required CategoryData newTabData
+  }) {
+    emit(state
+        .updateTab(index, newTabData)
+        .copyWith(subState: SuccessState()));
+  }
+
+  void _errorState({
+    required AppException exception,
+  }) {
+    final failure = ErrorHandler.handleException(exception);
+    emit(state
+        .copyWith(subState: ErrorState(failure: failure)));
   }
 
   Future<void> changeScreen(int index) async {
@@ -71,19 +80,15 @@ class NewsCubit extends Cubit<NewsState> {
             subState: InitialState()));
       }
 
-      emit(state.updateTab(index, newTabData).copyWith(
-          subState: SuccessState()));
+      _successState(index: index, newTabData: newTabData);
     }
     on AppException catch (e) {
-      final failure = ErrorHandler.handleException(e);
-      emit(state.updateTab(index, currentTabData).copyWith(
-          subState: ErrorState(failure: failure)));
+      _errorState(exception: e);
     }
   }
 
-
   Future<void> getMoreData() async {
-    if(!state.hasMore) return;
+    if (!state.hasMore) return;
     final index = state.currentTabIndex;
     final currentTabData = state.tabsData[index]!;
 
@@ -93,15 +98,10 @@ class NewsCubit extends Cubit<NewsState> {
         currentData: currentTabData,
       );
 
-      emit(state
-          .updateTab(index, newTabData)
-          .copyWith(subState: SuccessState()));
+      _successState(index: index, newTabData: newTabData);
     }
     on AppException catch (e) {
-      final failure = ErrorHandler.handleException(e);
-      emit(state
-          .updateTab(index, currentTabData)
-          .copyWith(subState: ErrorState(failure: failure)));
+      _errorState(exception: e);
     }
   }
 

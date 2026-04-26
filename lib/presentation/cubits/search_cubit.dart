@@ -3,9 +3,10 @@ import '../states/search_state.dart';
 import '../../data/models/tab_data.dart';
 import '../../core/errors/error_handler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../core/errors/exceptions/network_exception.dart';
+import '../../core/errors/exceptions/base/app_exception.dart';
 import 'package:todays_news/presentation/states/base/app_states.dart';
 import '../../domain/useCases/tab_useCases/load_tab_data_useCase.dart';
-import 'package:todays_news/core/errors/exceptions/app_exception.dart';
 import '../../domain/services/connectivity_service/connectivity_provider.dart';
 
 
@@ -33,20 +34,58 @@ class SearchCubit extends Cubit<SearchState> {
   Timer? timer;
 
   void updateConnectionStatus() {
-    emit(state.copyWith(isConnected: _connectivityProvider.isConnected));
+    if (_connectivityProvider.isConnected && !state.queryIsEmpty) {
+      getSearch(query: state.query);
+    }
+  }
+
+  void _successState({
+    required CategoryData newTabData
+  }) {
+    emit(
+        state.copyWith(
+            categoryData: newTabData,
+            subState: SuccessState()
+        )
+    );
+  }
+
+  void _errorState({
+    required AppException exception,
+  }) {
+    final failure = ErrorHandler.handleException(exception);
+    emit(
+        state.copyWith(
+            subState: ErrorState(failure: failure)
+        )
+    );
   }
 
   Future<void> getSearch({
     String? query,
   }) async {
     final currentData = state.categoryData;
+    if (!_connectivityProvider.isConnected) {
+      emit(
+          state.copyWith(
+              query: query,
+              categoryData: currentData.copyWith(
+                products: const [],
+              ),
+              subState: ErrorState(
+                  failure: NetworkException(message: 'No Internet Connection'))
+          )
+      );
+      return;
+    }
     emit(
         state.copyWith(
             query: query,
             categoryData: currentData.copyWith(
               products: const [],
             ),
-            subState: LoadingState())
+            subState: LoadingState()
+        )
     );
     try {
       final newTabData = await _loadDataUseCase.execute(
@@ -61,23 +100,11 @@ class SearchCubit extends Cubit<SearchState> {
               subState: InitialState(),
             ));
       }
-
-      emit(
-          state.copyWith(
-              categoryData: newTabData,
-              subState: SuccessState()
-          )
-      );
+      _successState(newTabData: newTabData);
     }
 
     on AppException catch (e) {
-      final failure = ErrorHandler.handleException(e);
-      emit(
-          state.copyWith(
-              categoryData: currentData,
-              subState: ErrorState(failure: failure)
-          )
-      );
+      _errorState(exception: e);
     }
   }
 
@@ -89,31 +116,11 @@ class SearchCubit extends Cubit<SearchState> {
         currentData: currentData,
       );
 
-      if (newTabData.productsIsEmpty) {
-        emit(
-            state.copyWith(
-                categoryData: newTabData,
-                subState: InitialState()
-            )
-        );
-      }
-
-      emit(
-          state.copyWith(
-              categoryData: newTabData,
-              subState: SuccessState()
-          )
-      );
+      _successState(newTabData: newTabData);
     }
 
     on AppException catch (e) {
-      final failure = ErrorHandler.handleException(e);
-      emit(
-          state.copyWith(
-              categoryData: currentData,
-              subState: ErrorState(failure: failure)
-          )
-      );
+      _errorState(exception: e);
     }
   }
 }

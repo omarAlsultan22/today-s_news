@@ -3,26 +3,31 @@ import 'package:provider/provider.dart';
 import '../core/themes/screen_theme.dart';
 import '../presentation/cubits/News_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../data/datasources/remote/dio_helper.dart';
 import '../core/managers/app_lifecycle_manager.dart';
-import 'package:todays_news/core/constants/app_constants.dart';
+import 'package:todays_news/core/constants/app_colors.dart';
+import 'package:todays_news/data/datasources/local/hive.dart';
 import '../data/repositories_impl/api_articles_repository.dart';
 import '../data/repositories_impl/hive_articles_repository.dart';
 import '../domain/useCases/tab_useCases/change_tab_useCase.dart';
 import '../data/repositories_impl/hybrid_articles_repository.dart';
 import 'package:todays_news/presentation/screens/home_screen.dart';
 import '../domain/useCases/tab_useCases/load_tab_data_useCase.dart';
+import 'package:todays_news/data/datasources/local/cacheHelper.dart';
 import '../domain/services/connectivity_service/connectivity_service.dart';
 import '../domain/services/connectivity_service/connectivity_provider.dart';
+import 'package:todays_news/presentation/utils/helpers/save_time_stamp.dart';
+import 'package:todays_news/presentation/utils/helpers/storage_validity.dart';
 import 'package:todays_news/presentation/constants/home_screen_constants.dart';
 
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  static const _white = AppConstants.white;
-  static const _black = AppConstants.black;
-  static const _amber = AppConstants.amber;
-  static const _orange = AppConstants.orange;
+  static const _white = AppColors.white;
+  static const _black = AppColors.black;
+  static const _amber = AppColors.amber;
+  static const _orange = AppColors.orange;
 
   @override
   Widget build(BuildContext context) {
@@ -52,8 +57,17 @@ class MyApp extends StatelessWidget {
           color: _white),
     );
 
-    final remoteDatabase = ApiArticlesRepository();
-    final localDatabase = HiveArticlesRepository();
+    final dioHelper = DioHelper();
+    final cacheHelper = CacheHelper();
+    final hiveOperations = HiveOperations();
+    final remoteDatabase = ApiArticlesRepository(dioHelper: dioHelper);
+    final saveTimeStamp = SaveTimeStamp(cacheHelper: cacheHelper);
+    final storageValidity = StorageValidity(cacheHelper: cacheHelper);
+    final localDatabase = HiveArticlesRepository(
+        saveTimeStamp: saveTimeStamp,
+        hiveOperations: hiveOperations,
+        storageValidity: storageValidity
+    );
     final connectivityService = ConnectivityService();
     final repository = HybridArticlesRepository(
         remoteDatabase: remoteDatabase,
@@ -79,7 +93,7 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider<ConnectivityProvider>(
               create: (_) => ConnectivityProvider()),
           ChangeNotifierProvider<ThemeNotifier>(
-              create: (_) => ThemeNotifier())
+              create: (_) => ThemeNotifier(cacheHelper: cacheHelper))
         ],
         child: Consumer<ThemeNotifier>(
           builder: (context, themeNotifier, child) {

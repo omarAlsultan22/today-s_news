@@ -5,11 +5,10 @@ import 'package:flutter/material.dart';
 import '../widgets/lists/list_builder.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../widgets/states/loading_state_widget.dart';
-import 'package:todays_news/core/constants/app_constants.dart';
+import 'package:todays_news/core/constants/app_icons.dart';
+import 'package:todays_news/core/constants/app_sizes.dart';
 import '../../domain/useCases/tab_useCases/load_tab_data_useCase.dart';
-import '../widgets/states/error_widgets/connection_error_state_widget.dart';
 import 'package:todays_news/domain/services/connectivity_service/connectivity_provider.dart';
-import 'package:todays_news/presentation/widgets/states/error_widgets/error_state_widget.dart';
 
 
 class SearchScreen extends StatefulWidget {
@@ -31,8 +30,8 @@ class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _searchController = TextEditingController();
 
   static const _debounceMs = 500;
-  static const _zero = AppConstants.zero;
-  static const _fontSize = AppConstants.mediumSize;
+  static const _elevationValue = AppSizes.none;
+  static const _fontSize = AppSizes.mediumSize;
   static const _paddingAll = _fontSize;
 
   @override
@@ -69,8 +68,8 @@ class _SearchScreenState extends State<SearchScreen> {
 
   AppBar _buildAppBar() =>
       AppBar(
-        elevation: _zero,
-        scrolledUnderElevation: _zero,
+        elevation: _elevationValue,
+        scrolledUnderElevation: _elevationValue,
         title: const Text(
           "Search Screen",
           style: TextStyle(
@@ -102,12 +101,9 @@ class _SearchScreenState extends State<SearchScreen> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   _buildSearchField(),
-                  const SizedBox(height: AppConstants.smallSize),
+                  const SizedBox(height: AppSizes.smallSize),
                   Expanded(
                     child: state.when(
-                        onConnection: ()=> const Center(
-                            child: ConnectionErrorStateWidget()
-                        ),
                         onInitial: () =>
                         const Expanded(
                             child: Center(child: Text(
@@ -122,11 +118,11 @@ class _SearchScreenState extends State<SearchScreen> {
                                 onScroll: () => _currentCubit.getMoreSearch()
                             ),
                         onError: (error) =>
-                        ErrorStateWidget(
-                            error: error.message,
-                            onRetry: () =>
-                                _currentCubit.getSearch(
-                                    query: _searchController.text))
+                            error.buildErrorWidget(
+                                onRetry: () =>
+                                    _currentCubit.getSearch(
+                                        query: _searchController.text)
+                            )
                     ),
                   )
                 ],
@@ -151,9 +147,9 @@ class _SearchScreenState extends State<SearchScreen> {
                 controller: _searchController,
                 decoration: InputDecoration(
                   labelText: 'Search',
-                  prefixIcon: AppConstants.searchIcon,
+                  prefixIcon: AppIcons.searchIcon,
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(AppConstants.largeSize),
+                    borderRadius: BorderRadius.circular(AppSizes.largeSize),
                   ),
                 ),
               ),

@@ -7,7 +7,6 @@ import '../../../presentation/states/news_state.dart';
 import 'connectivity_aware_screen_for_categories.dart';
 import 'package:todays_news/presentation/widgets/states/initial_state_widget.dart';
 import 'package:todays_news/presentation/widgets/states/loading_state_widget.dart';
-import 'package:todays_news/presentation/widgets/states/error_widgets/error_state_widget.dart';
 
 
 class SportsScreen extends StatelessWidget {
@@ -38,12 +37,8 @@ class SportsScreen extends StatelessWidget {
                           hasMore: newTabData.hasMore,
                           onScroll: () => currentCubit.getMoreData()),
                   onError: (error) =>
-                      Center(
-                          child: ErrorStateWidget(
-                              error: error.message,
-                              onRetry: () =>
-                                  currentCubit.changeScreen(state.currentTabIndex)
-                          )
+                      error.buildErrorWidget(
+                          onRetry: () => currentCubit.changeScreen
                       )
               );
             }

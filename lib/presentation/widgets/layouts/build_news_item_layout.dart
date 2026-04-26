@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:todays_news/core/constants/app_constants.dart';
+import 'package:todays_news/core/constants/app_sizes.dart';
+import 'package:todays_news/core/constants/app_durations.dart';
 import '../../../../data/models/article_Model.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../utils/helpers/image_helpers.dart';
@@ -11,17 +12,21 @@ class BuildNewsItemLayout extends StatelessWidget {
 
   const BuildNewsItemLayout(this.article, {super.key});
 
-  static const _fontSize = AppConstants.mediumSize;
+  static const _fontSize = AppSizes.mediumSize;
   static const _mediumSpacing = _fontSize;
   static const _paddingAll = _mediumSpacing;
   static const _largeSpacing = 120.0;
 
   void launchURL(String url) async {
     final Uri uri = Uri.parse(Uri.encodeFull(url));
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
-    } else {
-      throw 'Could not launch $url';
+    try {
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri, mode: LaunchMode.externalApplication).timeout(AppDurations.seconds);
+      } else {
+        throw 'Could not launch $url';
+      }
+    }
+    catch(e){
     }
   }
 
@@ -41,7 +46,7 @@ class BuildNewsItemLayout extends StatelessWidget {
               height: _largeSpacing,
               width: _largeSpacing,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(AppConstants.smallSize),
+                borderRadius: BorderRadius.circular(AppSizes.smallSize),
               ),
               child: CachedNetworkImage(
                 imageUrl: article.urlToImage,

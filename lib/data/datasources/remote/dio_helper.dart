@@ -1,10 +1,11 @@
 import 'package:dio/dio.dart';
+import 'package:todays_news/core/constants/app_durations.dart';
 
 
-abstract class DioHelper {
+class DioHelper {
   static Dio dio = Dio();
 
-  static init() {
+  init() {
     dio = Dio(
         BaseOptions(
             baseUrl: 'https://newsapi.org/',
@@ -13,12 +14,12 @@ abstract class DioHelper {
     );
   }
 
-  static Future <Response> getData({
+  Future <Response> getData({
     required String url,
     required Map<String, dynamic> query,
   }) async {
     return await dio.get(
         url,
-        queryParameters: query);
+        queryParameters: query).timeout(AppDurations.seconds);
   }
 }

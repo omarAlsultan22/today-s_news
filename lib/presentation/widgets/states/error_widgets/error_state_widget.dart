@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:todays_news/core/constants/app_constants.dart';
+import 'package:todays_news/core/constants/app_sizes.dart';
 
 
 class ErrorStateWidget extends StatelessWidget {
-  final String error;
+  final String? error;
   final String? buttonText;
   final VoidCallback? onRetry;
 
   const ErrorStateWidget({
     super.key,
-    required this.error,
-    required this.onRetry,
+    this.error,
+    this.onRetry,
     this.buttonText = 'Retry',
   });
 
@@ -21,7 +21,7 @@ class ErrorStateWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppConstants.largeSize),
+              padding: const EdgeInsets.symmetric(horizontal: AppSizes.largeSize),
               child: Text('Error: $error'),
             ),
             const SizedBox(height: 30),

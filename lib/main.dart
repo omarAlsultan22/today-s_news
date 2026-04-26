@@ -9,10 +9,13 @@ import 'package:todays_news/data/datasources/remote/dio_helper.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await DioHelper.init();
+  final dio = DioHelper();
+  await dio.init();
   Bloc.observer = MyBlocObserver();
-  await CacheHelper.init();
-  await HiveOperations.init();
+  final cacheHelper = CacheHelper();
+  await cacheHelper.init();
+  final hiveOperations = HiveOperations();
+  await hiveOperations.init();
 
   runApp(const MyApp());
 }

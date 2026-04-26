@@ -1,10 +1,17 @@
+import 'package:todays_news/presentation/constants/storage_keys.dart';
 import 'package:todays_news/data/datasources/local/cacheHelper.dart';
 
 
 class StorageValidity {
-  static Future<bool> has24HoursPassed() async {
+  final CacheHelper _cacheHelper;
 
-    String? savedTimeString = await CacheHelper.getString(key: 'saved_time');
+  StorageValidity({
+    required CacheHelper cacheHelper})
+      : _cacheHelper = cacheHelper;
+
+  Future<bool> has24HoursPassed() async {
+    String? savedTimeString = await _cacheHelper.getString(
+        key: StorageKeys.savedTime);
 
     if (savedTimeString == null) {
       return true;

@@ -5,31 +5,31 @@ class CacheHelper {
 
   static late SharedPreferences sharedPreferences;
 
-  static init() async {
+  init() async {
     sharedPreferences = await SharedPreferences.getInstance();
   }
 
-  static Future<bool> setString({
+  Future<bool> setString({
     required String key,
     required String value
   }) async {
     return await sharedPreferences.setString(key , value);
   }
 
-  static Future<String?> getString({
+  Future<String?> getString({
     required String key,
   }) async {
     return sharedPreferences.getString(key);
   }
 
-  static Future<bool> setInt({
+  Future<bool> setInt({
     required String key,
     required int value
   }) async {
     return await sharedPreferences.setInt(key , value);
   }
 
-  static Future<int?> getInt({
+  Future<int?> getInt({
     required String key,
   }) async {
     return sharedPreferences.getInt(key);

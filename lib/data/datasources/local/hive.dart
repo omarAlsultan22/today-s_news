@@ -2,8 +2,8 @@ import '../../models/article_Model.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 
-abstract class HiveOperations {
-  static Box<List<Article>>? _box;
+class HiveOperations {
+  static late Box<List<Article>>? _box;
 
   static Box get box {
     if (_box == null) {
@@ -12,13 +12,13 @@ abstract class HiveOperations {
     return _box!;
   }
 
-  static Future<void> init() async {
+  Future<void> init() async {
     await Hive.initFlutter();
     Hive.registerAdapter(ArticleAdapter());
     _box = await Hive.openBox<List<Article>>('article');
   }
 
-  static Future<void> putLocalData({
+  Future<void> putLocalData({
     required String key,
     required int currentPage,
     required List<Article> articles
@@ -31,7 +31,7 @@ abstract class HiveOperations {
     }
   }
 
-  static Future<List<Article>> getLocalData(String key, int currentPage) async {
+  Future<List<Article>> getLocalData(String key, int currentPage) async {
     try {
       return await box.get('${key}_$currentPage');
     }
@@ -40,15 +40,15 @@ abstract class HiveOperations {
     }
   }
 
-  static Future<void> clearData() async {
+  Future<void> clearData() async {
     await box.clear();
   }
 
-  static Future<void> deleteData(String key, int currentPage) async {
+  Future<void> deleteData(String key, int currentPage) async {
     await box.delete('${key}_$currentPage');
   }
 
-  static Future<void> closeBox() async {
+  Future<void> closeBox() async {
     await box.flush();
     await _box?.close();
     await Hive.close();
