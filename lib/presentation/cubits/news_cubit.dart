@@ -16,6 +16,7 @@ import 'package:todays_news/presentation/navigation/bottom_navigation_bar_items.
 class NewsCubit extends Cubit<NewsState> {
   final LoadDataUseCase _loadDataUseCase;
   final ChangeTabUseCase _changeTabUseCase;
+  final ConnectivityProvider _connectivityProvider;
 
   static const int _initialTabIndex = 0;
   static const int _initialTabCount = 3;
@@ -27,7 +28,8 @@ class NewsCubit extends Cubit<NewsState> {
   })
       : _loadDataUseCase = loadDataUseCase,
         _changeTabUseCase = changeTabUseCase,
-        super(
+        _connectivityProvider = connectivityProvider,
+      super(
         NewsState(
             currentTabIndex: _initialTabIndex,
             tabsData: {
@@ -36,13 +38,21 @@ class NewsCubit extends Cubit<NewsState> {
             },
             subState: InitialState()
         ),
-      );
+      ){
+    _connectivityProvider.addListener(_updateConnectionStatus);
+  }
 
   static NewsCubit get(context) => BlocProvider.of<NewsCubit>(context);
 
   List<Widget> get screenItems => ScreenItems.screenItems;
 
   List<BottomNavigationBarItem> get barItems => BottomNavigationBarItems.items;
+
+  void _updateConnectionStatus() {
+    if (_connectivityProvider.isConnected && !state.productsIsEmpty) {
+      changeScreen(state.currentTabIndex);
+    }
+  }
 
   void _successState({
     required int index,
@@ -109,6 +119,12 @@ class NewsCubit extends Cubit<NewsState> {
     final index = state.currentTabIndex;
     final newTabData = state.tabsData[index]!;
     emit(state.updateTab(index, newTabData.copyWith(hasMore: true)));
+  }
+
+  @override
+  Future<void> close() {
+    _connectivityProvider.removeListener(_updateConnectionStatus);
+    return super.close();
   }
 }
 
