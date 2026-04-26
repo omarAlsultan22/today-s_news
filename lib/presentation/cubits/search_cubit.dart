@@ -26,14 +26,14 @@ class SearchCubit extends Cubit<SearchState> {
               subState: InitialState()
           )
       ) {
-    _connectivityProvider.addListener(updateConnectionStatus);
+    _connectivityProvider.addListener(_updateConnectionStatus);
   }
 
   static SearchCubit get(context) => BlocProvider.of(context);
 
   Timer? timer;
 
-  void updateConnectionStatus() {
+  void _updateConnectionStatus() {
     if (_connectivityProvider.isConnected && !state.queryIsEmpty) {
       getSearch(query: state.query);
     }
@@ -122,5 +122,11 @@ class SearchCubit extends Cubit<SearchState> {
     on AppException catch (e) {
       _errorState(exception: e);
     }
+  }
+
+  @override
+  Future<void> close() {
+    _connectivityProvider.removeListener(_updateConnectionStatus);
+    return super.close();
   }
 }
