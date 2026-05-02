@@ -6,10 +6,10 @@ class CategoryData {
   final bool hasMore;
   final int page;
 
-  CategoryData({
+  const CategoryData({
     this.products = const [],
     this.hasMore = true,
-    this.page = 1,
+    this.page = 1
   });
 
   bool get productsIsEmpty => products.isEmpty;

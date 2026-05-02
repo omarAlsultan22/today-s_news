@@ -17,6 +17,8 @@ class ErrorHandler {
 
   // ==================== الدالة الرئيسية ====================
 
+  static const String _noInternetMessage = 'لا يوجد اتصال بالإنترنت';
+
   static AppException handleException(dynamic error, {StackTrace? stackTrace}) {
     // تسجيل الخطأ (للتحليلات)
     _logError(error, stackTrace);
@@ -48,7 +50,7 @@ class ErrorHandler {
 
     // 6. أخطاء الشبكة الأساسية
     if (error is SocketException) {
-      return NetworkException(message: 'لا يوجد اتصال بالإنترنت');
+      return NetworkException(message: _noInternetMessage);
     }
 
     if (error is TimeoutException) {
@@ -92,7 +94,7 @@ class ErrorHandler {
       case DioExceptionType.receiveTimeout:
       case DioExceptionType.connectionError:
         return NetworkException(
-          message: 'لا يوجد اتصال بالإنترنت أو انتهت المهلة',
+          message: ' أو انتهت المهلة$_noInternetMessage',
           code: _getDioErrorCode(error.type),
         );
 
@@ -207,7 +209,7 @@ class ErrorHandler {
         message.contains('connection') ||
         message.contains('network') ||
         message.contains('timeout')) {
-      return NetworkException(message: 'لا يوجد اتصال بالإنترنت');
+      return NetworkException(message: _noInternetMessage);
     }
 
     if (message.contains('host') ||

@@ -1,15 +1,16 @@
+import '../themes/screen_theme.dart';
+import '../constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../core/themes/screen_theme.dart';
+import '../managers/app_lifecycle_manager.dart';
 import '../presentation/cubits/News_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../data/datasources/remote/dio_helper.dart';
-import '../core/managers/app_lifecycle_manager.dart';
-import 'package:todays_news/core/constants/app_colors.dart';
 import 'package:todays_news/data/datasources/local/hive.dart';
 import '../data/repositories_impl/api_articles_repository.dart';
 import '../data/repositories_impl/hive_articles_repository.dart';
 import '../domain/useCases/tab_useCases/change_tab_useCase.dart';
+import 'package:todays_news/constants/home_screen_constants.dart';
 import '../data/repositories_impl/hybrid_articles_repository.dart';
 import 'package:todays_news/presentation/screens/home_screen.dart';
 import '../domain/useCases/tab_useCases/load_tab_data_useCase.dart';
@@ -18,7 +19,7 @@ import '../domain/services/connectivity_service/connectivity_service.dart';
 import '../domain/services/connectivity_service/connectivity_provider.dart';
 import 'package:todays_news/presentation/utils/helpers/save_time_stamp.dart';
 import 'package:todays_news/presentation/utils/helpers/storage_validity.dart';
-import 'package:todays_news/presentation/constants/home_screen_constants.dart';
+import 'package:todays_news/presentation/utils/helpers/pagination_state_manager.dart';
 
 
 class MyApp extends StatelessWidget {
@@ -75,9 +76,11 @@ class MyApp extends StatelessWidget {
         connectivityService: connectivityService
     );
 
+    final paginationHandler = PaginationHandler();
     final connectivityProvider = ConnectivityProvider();
     const screenIndex = HomeScreenConstants.screenBusinessIndex;
-    final loadDataUseCase = LoadDataUseCase(repository: repository);
+    final loadDataUseCase = LoadDataUseCase(
+        repository: repository, paginationHandler: paginationHandler);
     final changeTabUseCase = ChangeTabUseCase(loadDataUseCase: loadDataUseCase);
 
     return MultiProvider(

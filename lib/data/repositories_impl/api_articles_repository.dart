@@ -1,9 +1,10 @@
 import '../../presentation/utils/helpers/list_convertor.dart';
-import '../../domain/constants/news_config.dart';
-import '../constants/keys_config.dart';
 import '../../domain/repositories/data_repository.dart';
+import 'package:todays_news/constants/app_texts.dart';
 import '../datasources/remote/dio_helper.dart';
+import '../../constants/keys_config.dart';
 import '../models/article_Model.dart';
+import '../config/news_config.dart';
 
 
 class ApiArticlesRepository implements DataRepository {
@@ -31,7 +32,7 @@ class ApiArticlesRepository implements DataRepository {
       );
 
       return ArticleListParser
-          .fromJson(response.data['articles'])
+          .fromJson(response.data[AppTexts.articles])
           .data;
     }
     catch (e) {

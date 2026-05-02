@@ -1,7 +1,7 @@
 import 'base/app_states.dart';
-import '../../data/models/tab_data.dart';
+import '../../data/models/category_data.dart';
 import 'base/category_data_when_strategy.dart';
-import '../../core/errors/exceptions/base/app_exception.dart';
+import '../../errors/exceptions/base/app_exception.dart';
 
 
 class SearchState implements CategoryDataWhenStrategy {

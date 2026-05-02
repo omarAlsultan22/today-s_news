@@ -1,5 +1,5 @@
-import '../../data/models/tab_data.dart';
-import '../../core/errors/exceptions/base/app_exception.dart';
+import '../../data/models/category_data.dart';
+import '../../errors/exceptions/base/app_exception.dart';
 import 'package:todays_news/presentation/states/base/app_states.dart';
 import 'package:todays_news/presentation/states/base/category_data_when_strategy.dart';
 
@@ -7,9 +7,11 @@ import 'package:todays_news/presentation/states/base/category_data_when_strategy
 class NewsState implements CategoryDataWhenStrategy {
   final int currentTabIndex;
   final MainAppState subState;
+  final List<String>? categories;
   final Map<int, CategoryData> tabsData;
 
-  NewsState({
+  const NewsState({
+    this.categories,
     required this.tabsData,
     required this.subState,
     required this.currentTabIndex,
@@ -18,6 +20,8 @@ class NewsState implements CategoryDataWhenStrategy {
   CategoryData? get currentTabData => tabsData[currentTabIndex];
 
   bool get productsIsEmpty => currentTabData!.productsIsEmpty;
+
+  String get categoryStatus => categories![currentTabIndex];
 
   bool get hasMore => currentTabData!.hasMore;
 

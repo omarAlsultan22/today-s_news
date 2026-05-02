@@ -1,4 +1,4 @@
-import 'package:todays_news/presentation/constants/storage_keys.dart';
+import '../../../constants/storage_keys.dart';
 import 'package:todays_news/data/datasources/local/cacheHelper.dart';
 
 
@@ -8,6 +8,8 @@ class StorageValidity {
   StorageValidity({
     required CacheHelper cacheHelper})
       : _cacheHelper = cacheHelper;
+
+  static const _dayHours = 24;
 
   Future<bool> has24HoursPassed() async {
     String? savedTimeString = await _cacheHelper.getString(
@@ -22,6 +24,6 @@ class StorageValidity {
 
     Duration difference = currentTime.difference(savedTime);
 
-    return difference.inHours >= 24;
+    return difference.inHours >= _dayHours;
   }
 }

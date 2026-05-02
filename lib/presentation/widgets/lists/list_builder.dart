@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../layouts/build_news_item_layout.dart';
 import '../../../data/models/article_Model.dart';
-import 'package:todays_news/core/constants/app_sizes.dart';
+import 'package:todays_news/constants/app_sizes.dart';
 
 
 class ListBuilder extends StatefulWidget {

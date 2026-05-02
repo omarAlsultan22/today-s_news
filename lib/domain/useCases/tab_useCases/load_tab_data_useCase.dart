@@ -1,32 +1,34 @@
-import '../../../data/models/tab_data.dart';
+import '../../../data/models/category_data.dart';
 import '../../repositories/data_repository.dart';
-import '../../../presentation/constants/home_screen_constants.dart';
+import 'package:todays_news/constants/app_texts.dart';
+import 'package:todays_news/presentation/utils/helpers/pagination_state_manager.dart';
 
 
 class LoadDataUseCase {
   final DataRepository _repository;
+  final PaginationHandler _paginationHandler;
 
-  const LoadDataUseCase({required DataRepository repository})
-      : _repository = repository;
+  const LoadDataUseCase({
+    required DataRepository repository,
+    required PaginationHandler paginationHandler
+  })
+      : _repository = repository,
+        _paginationHandler = paginationHandler;
 
   Future<CategoryData> execute({
-    int? tabIndex,
     String? query,
+    String? category,
     required CategoryData currentData,
   }) async {
     try {
-      final key = query ?? HomeScreenConstants.categories[tabIndex!];
+      final key = query ?? category ?? AppTexts.empty;
 
-      final articles = await _repository.fetchArticles(
+      final newArticles = await _repository.fetchArticles(
         key: key,
         currentPage: currentData.page,
       );
 
-      return currentData.copyWith(
-        products: [...currentData.products, ...articles],
-        page: articles.isNotEmpty ? currentData.page + 1 : currentData.page,
-        hasMore: articles.isNotEmpty,
-      );
+      return _paginationHandler.updateWithNewData(currentData, newArticles);
     }
     catch (e) {
       rethrow;

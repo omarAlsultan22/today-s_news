@@ -1,4 +1,4 @@
-import '../../../core/errors/exceptions/base/app_exception.dart';
+import '../../../errors/exceptions/base/app_exception.dart';
 
 
 abstract class CategoryDataWhenStrategy<T> {

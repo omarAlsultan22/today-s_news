@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:todays_news/core/constants/app_sizes.dart';
+import 'package:todays_news/constants/app_sizes.dart';
 
 
 class InternetUnavailability extends StatelessWidget {

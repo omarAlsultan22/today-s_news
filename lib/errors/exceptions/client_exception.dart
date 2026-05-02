@@ -1,4 +1,4 @@
-import 'package:todays_news/core/errors/exceptions/base/app_exception.dart';
+import 'base/app_exception.dart';
 
 
 class ClientException extends AppException {

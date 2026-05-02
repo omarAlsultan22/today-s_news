@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:todays_news/core/constants/app_durations.dart';
+import '../../../constants/app_durations.dart';
 
 
 class DioHelper {

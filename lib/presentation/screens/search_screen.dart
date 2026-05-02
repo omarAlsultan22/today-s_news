@@ -2,11 +2,11 @@ import 'dart:async';
 import '../cubits/search_cubit.dart';
 import '../states/search_state.dart';
 import 'package:flutter/material.dart';
+import '../../constants/app_icons.dart';
 import '../widgets/lists/list_builder.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../widgets/states/loading_state_widget.dart';
-import 'package:todays_news/core/constants/app_icons.dart';
-import 'package:todays_news/core/constants/app_sizes.dart';
+import 'package:todays_news/constants/app_sizes.dart';
 import '../../domain/useCases/tab_useCases/load_tab_data_useCase.dart';
 import 'package:todays_news/domain/services/connectivity_service/connectivity_provider.dart';
 
@@ -30,9 +30,9 @@ class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _searchController = TextEditingController();
 
   static const _debounceMs = 500;
+  static const _paddingAll = _fontSize;
   static const _elevationValue = AppSizes.none;
   static const _fontSize = AppSizes.mediumSize;
-  static const _paddingAll = _fontSize;
 
   @override
   void initState() {

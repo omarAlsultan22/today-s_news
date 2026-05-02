@@ -13,7 +13,10 @@ class ThemeNotifier extends ChangeNotifier {
     _loadTheme();
   }
 
-  static const key = 'theme';
+  static const _dark = 'dark';
+  static const _light = 'light';
+  static const _theme = 'theme';
+  static const _system = 'system';
 
   Future<void> toggleTheme() async {
     switch (_themeMode) {
@@ -33,17 +36,17 @@ class ThemeNotifier extends ChangeNotifier {
 
   void _loadTheme() async {
     try {
-      String? theme = await _cacheHelper.getString(key: key);
+      String? theme = await _cacheHelper.getString(key: _theme);
 
-      if (theme == 'dark') {
+      if (theme == _dark) {
         _themeMode = ThemeMode.dark;
-      } else if (theme == 'light') {
+      } else if (theme == _light) {
         _themeMode = ThemeMode.light;
-      } else if (theme == 'system') {
+      } else if (theme == _system) {
         _themeMode = ThemeMode.system;
       } else {
         _themeMode = ThemeMode.system;
-        await _cacheHelper.setString(key: 'theme', value: 'system');
+        await _cacheHelper.setString(key: _theme, value: _system);
       }
       notifyListeners();
     } catch (e) {
@@ -55,17 +58,17 @@ class ThemeNotifier extends ChangeNotifier {
     late String themeValue;
     switch (mode) {
       case ThemeMode.light:
-        themeValue = 'light';
+        themeValue = _light;
         break;
       case ThemeMode.dark:
-        themeValue = 'dark';
+        themeValue = _dark;
         break;
       case ThemeMode.system:
-        themeValue = 'system';
+        themeValue = _system;
         break;
     }
 
-    _cacheHelper.setString(key: key, value: themeValue);
+    _cacheHelper.setString(key: _theme, value: themeValue);
     notifyListeners();
   }
 }

@@ -1,10 +1,10 @@
 import 'dart:async';
 import '../states/search_state.dart';
-import '../../data/models/tab_data.dart';
-import '../../core/errors/error_handler.dart';
+import '../../errors/error_handler.dart';
+import '../../data/models/category_data.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../core/errors/exceptions/network_exception.dart';
-import '../../core/errors/exceptions/base/app_exception.dart';
+import '../../errors/exceptions/network_exception.dart';
+import '../../errors/exceptions/base/app_exception.dart';
 import 'package:todays_news/presentation/states/base/app_states.dart';
 import '../../domain/useCases/tab_useCases/load_tab_data_useCase.dart';
 import '../../domain/services/connectivity_service/connectivity_provider.dart';
@@ -22,7 +22,7 @@ class SearchCubit extends Cubit<SearchState> {
         _connectivityProvider = connectivityProvider,
         super(
           SearchState(
-              categoryData: CategoryData(),
+              categoryData: const CategoryData(),
               subState: InitialState()
           )
       ) {
@@ -109,11 +109,10 @@ class SearchCubit extends Cubit<SearchState> {
   }
 
   Future<void> getMoreSearch() async {
-    final currentData = state.categoryData;
     try {
       final newTabData = await _loadDataUseCase.execute(
         query: state.query,
-        currentData: currentData,
+        currentData: state.categoryData,
       );
 
       _successState(newTabData: newTabData);

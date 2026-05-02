@@ -11,6 +11,8 @@ class ConnectivityProvider with ChangeNotifier {
   Timer? _onlineMessageTimer;
   Timer? _checkTimer;
 
+  static const _none = 'None';
+
   bool get isConnected => _isConnected;
 
   bool get showOnlineMessage => _showOnlineMessage;
@@ -18,6 +20,7 @@ class ConnectivityProvider with ChangeNotifier {
   String get connectionType => _connectionType;
 
   final Connectivity _connectivity = Connectivity();
+
 
   ConnectivityProvider() {
     _initConnectivity();
@@ -116,7 +119,7 @@ class ConnectivityProvider with ChangeNotifier {
   }
 
   String _getConnectionType(List<ConnectivityResult> results) {
-    if (results.isEmpty) return 'None';
+    if (results.isEmpty) return _none;
 
     if (results.contains(ConnectivityResult.wifi)) return 'WiFi';
     if (results.contains(ConnectivityResult.mobile)) return 'Mobile Data';
@@ -124,7 +127,7 @@ class ConnectivityProvider with ChangeNotifier {
     if (results.contains(ConnectivityResult.vpn)) return 'VPN';
     if (results.contains(ConnectivityResult.other)) return 'Other';
 
-    return 'None';
+    return _none;
   }
 
   void _showTemporaryOnlineMessage() {

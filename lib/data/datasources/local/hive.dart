@@ -5,6 +5,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 class HiveOperations {
   static late Box<List<Article>>? _box;
 
+  static const _underscore = '_';
   static Box get box {
     if (_box == null) {
       throw Exception('HiveOperations not initialized. Call init() first.');
@@ -24,7 +25,7 @@ class HiveOperations {
     required List<Article> articles
   }) async {
     try {
-      await box.put('${key}_$currentPage', articles);
+      await box.put('$key$_underscore$currentPage', articles);
       await box.flush();
     } catch (e) {
       rethrow;
@@ -33,7 +34,7 @@ class HiveOperations {
 
   Future<List<Article>> getLocalData(String key, int currentPage) async {
     try {
-      return await box.get('${key}_$currentPage');
+      return await box.get('$key$_underscore$currentPage');
     }
     catch(e){
       rethrow;
@@ -45,7 +46,7 @@ class HiveOperations {
   }
 
   Future<void> deleteData(String key, int currentPage) async {
-    await box.delete('${key}_$currentPage');
+    await box.delete('$key$_underscore$currentPage');
   }
 
   Future<void> closeBox() async {

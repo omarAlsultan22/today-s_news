@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:todays_news/core/constants/app_sizes.dart';
+import 'package:todays_news/constants/app_sizes.dart';
 
 
 class InitialStateWidget extends StatelessWidget {
@@ -24,9 +24,9 @@ class InitialStateWidget extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, size: iconSize),
-          const SizedBox(height: 16),
+          const SizedBox(height: 16.0),
           Text(
-            'There is no news for $category',
+              'There is no news for $category',
             style: textStyle ?? Theme.of(context).textTheme.titleMedium,
             textAlign: TextAlign.center,
           ),
