@@ -1,6 +1,7 @@
 import 'base/app_states.dart';
 import '../../data/models/category_data.dart';
 import 'base/category_data_when_strategy.dart';
+import 'package:todays_news/constants/app_strings.dart';
 import '../../errors/exceptions/base/app_exception.dart';
 
 
@@ -10,7 +11,7 @@ class SearchState implements CategoryDataWhenStrategy {
   final CategoryData categoryData;
 
   SearchState({
-    this.query = '',
+    this.query = AppStrings.empty,
     required this.subState,
     required this.categoryData
   });

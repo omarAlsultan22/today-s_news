@@ -1,7 +1,7 @@
 import '../config/news_config.dart';
-import '../../constants/app_texts.dart';
 import '../../constants/keys_config.dart';
 import '../datasources/remote/dio_helper.dart';
+import 'package:todays_news/constants/app_strings.dart';
 import 'package:todays_news/data/models/article_Model.dart';
 import '../../presentation/utils/helpers/list_convertor.dart';
 import 'package:todays_news/domain/repositories/data_repository.dart';
@@ -31,7 +31,7 @@ class SearchRepository implements DataRepository {
       );
 
       return ArticleListParser
-          .fromJson(response.data[AppTexts.articles])
+          .fromJson(response.data[AppStrings.articles])
           .data;
     }
     catch (e) {

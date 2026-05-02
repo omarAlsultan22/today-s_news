@@ -1,6 +1,6 @@
 import '../../../data/models/category_data.dart';
 import '../../repositories/data_repository.dart';
-import 'package:todays_news/constants/app_texts.dart';
+import 'package:todays_news/constants/app_strings.dart';
 import 'package:todays_news/presentation/utils/helpers/pagination_state_manager.dart';
 
 
@@ -21,7 +21,7 @@ class LoadDataUseCase {
     required CategoryData currentData,
   }) async {
     try {
-      final key = query ?? category ?? AppTexts.empty;
+      final key = query ?? category ?? AppStrings.empty;
 
       final newArticles = await _repository.fetchArticles(
         key: key,
