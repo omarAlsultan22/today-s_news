@@ -1,5 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:todays_news/constants/app_sizes.dart';
+import 'package:todays_news/presentation/constants/ui_sizes.dart';
 import '../../../../data/models/article_Model.dart';
 import '../../utils/helpers/image_helpers.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -13,7 +13,7 @@ class BuildNewsItemLayout extends StatelessWidget {
   const BuildNewsItemLayout(this.article, {super.key});
 
 
-  static const _fontSize = AppSizes.mediumSize;
+  static const _fontSize = UiSizes.mediumSize;
   static const _mediumSpacing = _fontSize;
   static const _paddingAll = _mediumSpacing;
   static const _largeSpacing = 120.0;
@@ -54,7 +54,7 @@ class BuildNewsItemLayout extends StatelessWidget {
               height: _largeSpacing,
               width: _largeSpacing,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(AppSizes.smallSize),
+                borderRadius: BorderRadius.circular(UiSizes.smallSize),
               ),
               child: CachedNetworkImage(
                 imageUrl: article.urlToImage,

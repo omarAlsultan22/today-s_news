@@ -11,61 +11,62 @@ import 'exceptions/network_exception.dart';
 import 'exceptions/base/app_exception.dart';
 import 'exceptions/security_exception.dart';
 import 'exceptions/url_launcher_exceptions.dart';
+import 'package:todays_news/constants/app_strings.dart';
 
 
 class ErrorHandler {
 
-  // ==================== الدالة الرئيسية ====================
+  // ==================== Main Function ====================
 
-  static const String _noInternetMessage = 'لا يوجد اتصال بالإنترنت';
+  static const String _noInternetMessage = AppStrings.noInternetMessage;
 
   static AppException handleException(dynamic error, {StackTrace? stackTrace}) {
-    // تسجيل الخطأ (للتحليلات)
+    // Log error (for analytics)
     _logError(error, stackTrace);
 
-    // 1. أخطاء Dio
+    // 1. Dio Errors
     if (error is DioException) {
       return _handleDioError(error);
     }
 
-    // 2. أخطاء HTTP Client
+    // 2. HTTP Client Errors
     if (error is ClientException) {
       return _handleHttpError(error);
     }
 
-    // 3. أخطاء Url Launcher
+    // 3. Url Launcher Errors
     if (_isUrlLauncherError(error)) {
       return _handleUrlLauncherError(error);
     }
 
-    // 4. أخطاء SharedPreferences (بدون كلاس خاص)
+    // 4. SharedPreferences Errors (without specific class)
     if (_isSharedPrefsError(error)) {
       return _handleSharedPrefsError(error, stackTrace);
     }
 
-    // 5. أخطاء Hive (لديه كلاس خاص)
+    // 5. Hive Errors (has its own class)
     if (error is HiveError) {
       return _handleHiveError(error, stackTrace);
     }
 
-    // 6. أخطاء الشبكة الأساسية
+    // 6. Basic Network Errors
     if (error is SocketException) {
       return NetworkException(message: _noInternetMessage);
     }
 
     if (error is TimeoutException) {
-      return NetworkException(message: 'انتهت المهلة، يرجى المحاولة لاحقاً');
+      return NetworkException(message: 'Timeout expired, please try again later');
     }
 
     if (error is FormatException) {
-      return ClientException(message: 'تنسيق البيانات غير صالح');
+      return ClientException(message: 'Invalid data format');
     }
 
-    // 7. أي خطأ آخر
+    // 7. Any other error
     return UnknownException(message: error.toString());
   }
 
-  // ==================== دوال المساعدة للتحقق ====================
+  // ==================== Helper Functions for Checking ====================
 
   static bool _isUrlLauncherError(dynamic error) {
     final errorStr = error.toString().toLowerCase();
@@ -94,13 +95,13 @@ class ErrorHandler {
       case DioExceptionType.receiveTimeout:
       case DioExceptionType.connectionError:
         return NetworkException(
-          message: ' أو انتهت المهلة$_noInternetMessage',
+          message: '$_noInternetMessage or timeout expired',
           code: _getDioErrorCode(error.type),
         );
 
       case DioExceptionType.badCertificate:
         return SecurityException(
-          message: 'شهادة الأمان غير صالحة',
+          message: 'Invalid security certificate',
           code: 'BAD_CERTIFICATE',
         );
 
@@ -109,14 +110,14 @@ class ErrorHandler {
 
       case DioExceptionType.cancel:
         return ClientException(
-          message: 'تم إلغاء الطلب',
+          message: 'Request cancelled',
           code: 'REQUEST_CANCELLED',
         );
 
       case DioExceptionType.unknown:
       default:
         return UnknownException(
-          message: error.message ?? 'حدث خطأ غير متوقع',
+          message: error.message ?? 'An unexpected error occurred',
           code: 'UNKNOWN_DIO_ERROR',
         );
     }
@@ -139,11 +140,11 @@ class ErrorHandler {
 
   static AppException _handleBadResponse(int? statusCode) {
     switch (statusCode) {
-    // 4xx - أخطاء العميل
+    // 4xx - Client Errors
       case 400:
       case 422:
         return ClientException(
-          message: 'بيانات غير صالحة',
+          message: 'Invalid data',
           code: 'BAD_REQUEST',
           statusCode: statusCode,
         );
@@ -152,8 +153,8 @@ class ErrorHandler {
       case 403:
         return SecurityException(
           message: statusCode == 401
-              ? 'يرجى تسجيل الدخول مجدداً'
-              : 'ليس لديك صلاحية للوصول',
+              ? 'Please login again'
+              : 'You do not have permission to access',
           code: statusCode == 401 ? 'UNAUTHORIZED' : 'FORBIDDEN',
           statusCode: statusCode,
         );
@@ -161,7 +162,7 @@ class ErrorHandler {
       case 404:
       case 410:
         return ClientException(
-          message: 'البيانات غير موجودة',
+          message: 'Data not found',
           code: 'NOT_FOUND',
           statusCode: statusCode,
         );
@@ -169,32 +170,32 @@ class ErrorHandler {
       case 409:
       case 412:
         return ClientException(
-          message: 'تعارض في البيانات',
+          message: 'Data conflict',
           code: 'CONFLICT',
           statusCode: statusCode,
         );
 
       case 429:
         return ClientException(
-          message: 'تم تجاوز حد الطلبات، يرجى المحاولة لاحقاً',
+          message: 'Request limit exceeded, please try again later',
           code: 'TOO_MANY_REQUESTS',
           statusCode: statusCode,
         );
 
-    // 5xx - أخطاء الخادم
+    // 5xx - Server Errors
       case 500:
       case 502:
       case 503:
       case 504:
         return ServerException(
-          message: 'خطأ في الخادم، يرجى المحاولة لاحقاً',
+          message: 'Server error, please try again later',
           code: 'SERVER_ERROR',
           statusCode: statusCode,
         );
 
       default:
         return ServerException(
-          message: 'خطأ في الخادم: $statusCode',
+          message: 'Server error: $statusCode',
           statusCode: statusCode,
         );
     }
@@ -215,10 +216,10 @@ class ErrorHandler {
     if (message.contains('host') ||
         message.contains('dns') ||
         message.contains('unable to resolve')) {
-      return NetworkException(message: 'لا يمكن الوصول إلى الخادم');
+      return NetworkException(message: 'Cannot reach the server');
     }
 
-    return ClientException(message: 'خطأ في طلب HTTP: ${error.message}');
+    return ClientException(message: 'HTTP request error: ${error.message}');
   }
 
   // ==================== Url Launcher Error Handler ====================
@@ -230,20 +231,20 @@ class ErrorHandler {
       if (errorString.contains('activitynotfound') ||
           errorString.contains('cannotopenurl')) {
         return CantLaunchUrlAppException(
-            message: 'لا يوجد تطبيق لفتح هذا الرابط');
+            message: 'No application available to open this link');
       }
-      return PlatformUrlAppException(message: 'حدث خطأ في النظام');
+      return PlatformUrlAppException(message: 'System error occurred');
     }
 
     if (errorString.contains('missingpluginexception')) {
-      return MissingPluginUrlAppException(message: 'مشكلة في تهيئة التطبيق');
+      return MissingPluginUrlAppException(message: 'Application initialization issue');
     }
 
     if (errorString.contains('formatexception')) {
-      return InvalidUrlAppException(message: 'صيغة الرابط غير صحيحة');
+      return InvalidUrlAppException(message: 'Invalid URL format');
     }
 
-    return UrlLauncherAppException(message: 'فشل فتح الرابط');
+    return UrlLauncherAppException(message: 'Failed to open link');
   }
 
   // ==================== SharedPreferences Error Handler ====================
@@ -252,14 +253,14 @@ class ErrorHandler {
       StackTrace? stackTrace) {
     final errorStr = error.toString().toLowerCase();
 
-    // PlatformException (الأكثر شيوعاً)
+    // PlatformException (most common)
     if (error is PlatformException) {
       final message = error.message?.toLowerCase() ?? '';
 
       if (message.contains('streamcorrupted') ||
           message.contains('invalid stream header')) {
         return SharedPrefsInitException(
-          message: 'ملف التخزين المحلي تالف، سيتم إعادة تهيئته',
+          message: 'Local storage file is corrupted, will be reinitialized',
           platformCode: error.code,
           stackTrace: stackTrace,
         );
@@ -268,14 +269,14 @@ class ErrorHandler {
       if (message.contains('channel-error') ||
           message.contains('unable to establish connection')) {
         return SharedPrefsPlatformException(
-          message: 'مشكلة في الاتصال مع نظام التخزين',
+          message: 'Connection issue with storage system',
           platformCode: error.code,
           stackTrace: stackTrace,
         );
       }
 
       return SharedPrefsPlatformException(
-        message: error.message ?? 'خطأ في منصة التخزين المحلي',
+        message: error.message ?? 'Local storage platform error',
         platformCode: error.code,
         stackTrace: stackTrace,
       );
@@ -284,34 +285,34 @@ class ErrorHandler {
     // MissingPluginException
     if (error is MissingPluginException) {
       return SharedPrefsPluginException(
-        message: 'مشكلة في تهيئة التخزين المحلي، يرجى إعادة تشغيل التطبيق',
+        message: 'Local storage initialization issue, please restart the application',
         stackTrace: stackTrace,
       );
     }
 
-    // _CastError (خطأ في تحويل النوع)
+    // _CastError (type conversion error)
     if (errorStr.contains('_casterror') ||
         errorStr.contains('null check operator')) {
       return SharedPrefsCastException(
-        message: 'خطأ في نوع البيانات المخزنة',
+        message: 'Stored data type error',
         stackTrace: stackTrace,
       );
     }
 
-    // أخطاء التهيئة العامة
+    // General initialization errors
     if (errorStr.contains('getinstance') ||
         errorStr.contains('not initialized') ||
         errorStr.contains('binding has not been initialized')) {
       return SharedPrefsInitException(
-        message: 'لم يتم تهيئة التخزين المحلي بشكل صحيح',
+        message: 'Local storage not properly initialized',
         stackTrace: stackTrace,
       );
     }
 
-    // أخطاء القراءة/الكتابة
+    // Read/write errors
     if (errorStr.contains('read') || errorStr.contains('get')) {
       return SharedPrefsOperationException(
-        message: 'فشل قراءة البيانات من التخزين المحلي',
+        message: 'Failed to read data from local storage',
         operation: 'read',
         stackTrace: stackTrace,
       );
@@ -320,15 +321,15 @@ class ErrorHandler {
     if (errorStr.contains('write') || errorStr.contains('set') ||
         errorStr.contains('save')) {
       return SharedPrefsOperationException(
-        message: 'فشل حفظ البيانات في التخزين المحلي',
+        message: 'Failed to save data to local storage',
         operation: 'write',
         stackTrace: stackTrace,
       );
     }
 
-    // أي خطأ آخر
+    // Any other error
     return SharedPrefsOperationException(
-      message: 'خطأ في التخزين المحلي: ${error.toString()}',
+      message: 'Local storage error: ${error.toString()}',
       stackTrace: stackTrace,
     );
   }
@@ -338,10 +339,10 @@ class ErrorHandler {
   static AppException _handleHiveError(dynamic error, StackTrace? stackTrace) {
     final errorString = error.toString().toLowerCase();
 
-    // أخطاء الـ Box
+    // Box Errors
     if (errorString.contains('box has already been closed')) {
       return HiveBoxException(
-        message: 'محاولة الوصول إلى قاعدة بيانات مغلقة',
+        message: 'Attempting to access a closed database',
         code: 'HIVE_BOX_CLOSED',
         stackTrace: stackTrace,
       );
@@ -350,7 +351,7 @@ class ErrorHandler {
     if (errorString.contains('box not found') ||
         errorString.contains('box doesn\'t exist')) {
       return HiveBoxException(
-        message: 'قاعدة البيانات غير موجودة',
+        message: 'Database does not exist',
         code: 'HIVE_BOX_NOT_FOUND',
         stackTrace: stackTrace,
       );
@@ -358,28 +359,28 @@ class ErrorHandler {
 
     if (errorString.contains('null') && errorString.contains('box')) {
       return HiveBoxException(
-        message: 'لم يتم تهيئة قاعدة البيانات بشكل صحيح',
+        message: 'Database not properly initialized',
         code: 'HIVE_BOX_NULL',
         stackTrace: stackTrace,
       );
     }
 
-    // أخطاء فتح الـ Box
+    // Box Opening Errors
     if (errorString.contains('openbox') ||
         errorString.contains('failed to open')) {
       final boxName = _extractBoxName(errorString);
       return HiveOpenBoxException(
         boxName: boxName ?? 'unknown',
-        message: 'فشل فتح قاعدة البيانات: ${error.toString()}',
+        message: 'Failed to open database: ${error.toString()}',
         stackTrace: stackTrace,
       );
     }
 
-    // أخطاء ملفات Hive
+    // Hive File Errors
     if (errorString.contains('filesystemexception') ||
         errorString.contains('file closed')) {
       return HiveOperationException(
-        message: 'حدث خطأ في ملف قاعدة البيانات',
+        message: 'Database file error occurred',
         operation: 'file_system',
         stackTrace: stackTrace,
       );
@@ -387,26 +388,26 @@ class ErrorHandler {
 
     if (errorString.contains('compaction')) {
       return HiveOperationException(
-        message: 'حدث خطأ أثناء ضغط قاعدة البيانات',
+        message: 'Error occurred while compacting database',
         operation: 'compaction',
         stackTrace: stackTrace,
       );
     }
 
-    // أخطاء التشفير
+    // Encryption Errors
     if (errorString.contains('encryption') ||
         errorString.contains('decryption')) {
       return HiveOperationException(
-        message: 'خطأ في تشفير/فك تشفير قاعدة البيانات',
+        message: 'Database encryption/decryption error',
         operation: 'encryption',
         stackTrace: stackTrace,
       );
     }
 
-    // أخطاء عمليات CRUD
+    // CRUD Operation Errors
     if (errorString.contains('put')) {
       return HiveOperationException(
-        message: 'فشل حفظ البيانات في قاعدة البيانات',
+        message: 'Failed to save data to database',
         operation: 'put',
         stackTrace: stackTrace,
       );
@@ -414,7 +415,7 @@ class ErrorHandler {
 
     if (errorString.contains('get')) {
       return HiveOperationException(
-        message: 'فشل قراءة البيانات من قاعدة البيانات',
+        message: 'Failed to read data from database',
         operation: 'get',
         stackTrace: stackTrace,
       );
@@ -422,13 +423,13 @@ class ErrorHandler {
 
     if (errorString.contains('delete')) {
       return HiveOperationException(
-        message: 'فشل حذف البيانات من قاعدة البيانات',
+        message: 'Failed to delete data from database',
         operation: 'delete',
         stackTrace: stackTrace,
       );
     }
 
-    // أي خطأ آخر في Hive
+    // Any other Hive error
     if (error is HiveError) {
       return HiveOperationException(
         message: error.message,
@@ -437,15 +438,15 @@ class ErrorHandler {
     }
 
     return HiveCacheException(
-      message: 'خطأ في التخزين المحلي: ${error.toString()}',
+      message: 'Local storage error: ${error.toString()}',
       stackTrace: stackTrace,
     );
   }
 
-  // ==================== دوال مساعدة ====================
+  // ==================== Helper Functions ====================
 
   static String? _extractBoxName(String errorString) {
-    // إنشاء الـ Regex بشكل منفصل وآمن
+    // Create regex separately and safely
     const pattern = r'box\s+["'']?(\w+)["'']?';
     final regex = RegExp(pattern);
     final match = regex.firstMatch(errorString);
@@ -453,7 +454,7 @@ class ErrorHandler {
   }
 
   static void _logError(dynamic error, StackTrace? stackTrace) {
-    // للتتبع والتحليلات
+    // For tracking and analytics
     print('════════════════════════════════════════');
     print('❌ Error caught: ${error.runtimeType}');
     print('Message: $error');

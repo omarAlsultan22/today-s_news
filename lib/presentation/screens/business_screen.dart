@@ -2,7 +2,6 @@ import '../cubits/news_cubit.dart';
 import 'package:flutter/material.dart';
 import '../widgets/lists/list_builder.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../constants/home_screen_constants.dart';
 import '../../../presentation/states/news_state.dart';
 import 'connectivity_aware_screen_for_categories.dart';
 import 'package:todays_news/presentation/widgets/states/initial_state_widget.dart';
@@ -12,7 +11,7 @@ import 'package:todays_news/presentation/widgets/states/loading_state_widget.dar
 class BusinessScreen extends StatelessWidget {
   const BusinessScreen({super.key});
 
-  static const screenIndex = HomeScreenConstants.screenBusinessIndex;
+  static const screenIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +34,7 @@ class BusinessScreen extends StatelessWidget {
                           isLocked: false,
                           list: newTabData.products,
                           hasMore: newTabData.hasMore,
-                          onScroll: () => currentCubit.getMoreData()),
+                          onScroll: () => currentCubit.loadMoreData()),
                   onError: (error) =>
                       error.buildErrorWidget(
                           onRetry: () => currentCubit.changeScreen

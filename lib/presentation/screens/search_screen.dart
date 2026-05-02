@@ -2,11 +2,11 @@ import 'dart:async';
 import '../cubits/search_cubit.dart';
 import '../states/search_state.dart';
 import 'package:flutter/material.dart';
-import '../../constants/app_icons.dart';
+import '../constants/ui_icons.dart';
 import '../widgets/lists/list_builder.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../widgets/states/loading_state_widget.dart';
-import 'package:todays_news/constants/app_sizes.dart';
+import 'package:todays_news/presentation/constants/ui_sizes.dart';
 import '../../domain/useCases/tab_useCases/load_tab_data_useCase.dart';
 import 'package:todays_news/domain/services/connectivity_service/connectivity_provider.dart';
 
@@ -31,8 +31,8 @@ class _SearchScreenState extends State<SearchScreen> {
 
   static const _debounceMs = 500;
   static const _paddingAll = _fontSize;
-  static const _elevationValue = AppSizes.none;
-  static const _fontSize = AppSizes.mediumSize;
+  static const _elevationValue = UiSizes.none;
+  static const _fontSize = UiSizes.mediumSize;
 
   @override
   void initState() {
@@ -101,7 +101,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   _buildSearchField(),
-                  const SizedBox(height: AppSizes.smallSize),
+                  const SizedBox(height: UiSizes.smallSize),
                   Expanded(
                     child: state.when(
                         onInitial: () =>
@@ -115,7 +115,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                 isLocked: false,
                                 list: newTabData.products,
                                 hasMore: newTabData.hasMore,
-                                onScroll: () => _currentCubit.getMoreSearch()
+                                onScroll: () => _currentCubit.loadMoreSearch()
                             ),
                         onError: (error) =>
                             error.buildErrorWidget(
@@ -147,9 +147,9 @@ class _SearchScreenState extends State<SearchScreen> {
                 controller: _searchController,
                 decoration: InputDecoration(
                   labelText: 'Search',
-                  prefixIcon: AppIcons.searchIcon,
+                  prefixIcon: UiIcons.searchIcon,
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(AppSizes.largeSize),
+                    borderRadius: BorderRadius.circular(UiSizes.largeSize),
                   ),
                 ),
               ),

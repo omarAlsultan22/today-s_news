@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:todays_news/constants/app_sizes.dart';
+import 'package:todays_news/presentation/constants/ui_sizes.dart';
 
 
 class InternetUnavailability extends StatelessWidget {
@@ -20,7 +20,7 @@ class InternetUnavailability extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Icon(Icons.wifi_off),
-            const SizedBox(width: AppSizes.smallSize),
+            const SizedBox(width: UiSizes.smallSize),
             Text(message)
           ],
         ),

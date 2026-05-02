@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:todays_news/constants/app_strings.dart';
+
 import '../states/search_state.dart';
 import '../../errors/error_handler.dart';
 import '../../data/models/category_data.dart';
@@ -50,30 +52,16 @@ class SearchCubit extends Cubit<SearchState> {
     );
   }
 
-  void _errorState({
-    required AppException exception,
-  }) {
-    final failure = ErrorHandler.handleException(exception);
-    emit(
-        state.copyWith(
-            subState: ErrorState(failure: failure)
-        )
-    );
-  }
-
   Future<void> getSearch({
     String? query,
   }) async {
-    final currentData = state.categoryData;
     if (!_connectivityProvider.isConnected) {
       emit(
           state.copyWith(
               query: query,
-              categoryData: currentData.copyWith(
-                products: const [],
-              ),
               subState: ErrorState(
-                  failure: NetworkException(message: 'No Internet Connection'))
+                  failure: NetworkException(
+                      message: AppStrings.noInternetMessage))
           )
       );
       return;
@@ -81,16 +69,13 @@ class SearchCubit extends Cubit<SearchState> {
     emit(
         state.copyWith(
             query: query,
-            categoryData: currentData.copyWith(
-              products: const [],
-            ),
             subState: LoadingState()
         )
     );
     try {
       final newTabData = await _loadDataUseCase.execute(
         query: query,
-        currentData: currentData,
+        currentData: state.categoryData,
       );
 
       if (newTabData.productsIsEmpty) {
@@ -104,11 +89,16 @@ class SearchCubit extends Cubit<SearchState> {
     }
 
     on AppException catch (e) {
-      _errorState(exception: e);
+      final failure = ErrorHandler.handleException(e);
+      emit(
+          state.copyWith(
+              subState: ErrorState(failure: failure)
+          )
+      );
     }
   }
 
-  Future<void> getMoreSearch() async {
+  Future<void> loadMoreSearch() async {
     try {
       final newTabData = await _loadDataUseCase.execute(
         query: state.query,
@@ -118,8 +108,10 @@ class SearchCubit extends Cubit<SearchState> {
       _successState(newTabData: newTabData);
     }
 
-    on AppException catch (e) {
-      _errorState(exception: e);
+    catch (e) {
+      Future.delayed(const Duration(seconds: 3), () {
+        loadMoreSearch();
+      });
     }
   }
 

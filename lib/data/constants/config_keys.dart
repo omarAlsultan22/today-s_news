@@ -1,4 +1,4 @@
-class KeysConfig {
+class ConfigKeys {
   static const String page = 'page';
   static const String apiKey = 'apiKey';
   static const String sortBy = 'sortBy';

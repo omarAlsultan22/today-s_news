@@ -1,11 +1,13 @@
 import 'dart:async';
+import 'package:todays_news/constants/app_strings.dart';
+
+import '../../errors/exceptions/network_exception.dart';
 import '../states/news_state.dart';
 import 'package:flutter/material.dart';
 import '../../errors/error_handler.dart';
 import '../../data/models/category_data.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../errors/exceptions/base/app_exception.dart';
-import 'package:todays_news/constants/home_screen_constants.dart';
 import '../../domain/useCases/tab_useCases/change_tab_useCase.dart';
 import 'package:todays_news/presentation/states/base/app_states.dart';
 import '../../domain/useCases/tab_useCases/load_tab_data_useCase.dart';
@@ -21,6 +23,7 @@ class NewsCubit extends Cubit<NewsState> {
 
   static const int _initialTabIndex = 0;
   static const int _initialTabCount = 3;
+  static const List<String> categories = ['business', 'sports', 'science'];
 
   NewsCubit({
     required LoadDataUseCase loadDataUseCase,
@@ -38,7 +41,7 @@ class NewsCubit extends Cubit<NewsState> {
                 i: const CategoryData()
             },
             subState: InitialState(),
-            categories: HomeScreenConstants.categories
+            categories: categories
         ),
       ) {
     _connectivityProvider.addListener(_updateConnectionStatus);
@@ -52,7 +55,7 @@ class NewsCubit extends Cubit<NewsState> {
 
   void _updateConnectionStatus() {
     if (_connectivityProvider.isConnected && !state.productsIsEmpty) {
-      changeScreen(state.currentTabIndex);
+      changeScreen(index: state.currentTabIndex);
     }
   }
 
@@ -65,10 +68,21 @@ class NewsCubit extends Cubit<NewsState> {
         .copyWith(subState: SuccessState()));
   }
 
-  Future<void> changeScreen(int index) async {
+  Future<void> changeScreen({required int index}) async {
     emit(state.copyWith(currentTabIndex: index));
     final productsIsEmpty = state.productsIsEmpty;
-    if (!productsIsEmpty || !_connectivityProvider.isConnected) return;
+    if (!productsIsEmpty) return;
+
+    if (!_connectivityProvider.isConnected) {
+      emit(
+          state.copyWith(
+              subState: ErrorState(
+                  failure: NetworkException(
+                      message: AppStrings.noInternetMessage))
+          )
+      );
+      return;
+    }
 
     emit(state.copyWith(subState: LoadingState()));
 
@@ -94,7 +108,7 @@ class NewsCubit extends Cubit<NewsState> {
     }
   }
 
-  Future<void> getMoreData() async {
+  Future<void> loadMoreData() async {
     if (!state.hasMore) return;
     final index = state.currentTabIndex;
 
@@ -108,7 +122,7 @@ class NewsCubit extends Cubit<NewsState> {
     }
     catch (e) {
       Future.delayed(const Duration(seconds: 3), () {
-        getMoreData();
+        loadMoreData();
       });
     }
   }

@@ -1,12 +1,12 @@
 import 'dart:async';
 import '../../cubits/News_cubit.dart';
+import '../../constants/ui_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../screens/search_screen.dart';
-import '../../../constants/app_icons.dart';
 import '../../../themes/screen_theme.dart';
-import 'package:todays_news/constants/app_sizes.dart';
 import 'package:todays_news/constants/app_colors.dart';
+import 'package:todays_news/presentation/constants/ui_sizes.dart';
 import 'package:todays_news/data/datasources/remote/dio_helper.dart';
 import '../../../domain/useCases/tab_useCases/load_tab_data_useCase.dart';
 import 'package:todays_news/data/repositories_impl/api_articles_repository.dart';
@@ -45,7 +45,7 @@ class HomeLayout extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () => _navPushSearchScreen(context),
-            icon: AppIcons.searchIcon,
+            icon: UiIcons.searchIcon,
           ),
           IconButton(
             onPressed: () {
@@ -104,7 +104,7 @@ class _ConnectionBannerState extends State<ConnectionBanner> {
 
   static const _milliseconds = 300;
   static const _white = AppColors.white;
-  static const _noneValue = AppSizes.none;
+  static const _noneValue = UiSizes.none;
 
   @override
   void initState() {
@@ -126,7 +126,7 @@ class _ConnectionBannerState extends State<ConnectionBanner> {
   void _hideBanner() {
     if (mounted) {
       setState(() {
-        _height = AppSizes.none;
+        _height = UiSizes.none;
       });
     }
     _timer?.cancel();

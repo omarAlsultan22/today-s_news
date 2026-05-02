@@ -10,7 +10,6 @@ import 'package:todays_news/data/datasources/local/hive.dart';
 import '../data/repositories_impl/api_articles_repository.dart';
 import '../data/repositories_impl/hive_articles_repository.dart';
 import '../domain/useCases/tab_useCases/change_tab_useCase.dart';
-import 'package:todays_news/constants/home_screen_constants.dart';
 import '../data/repositories_impl/hybrid_articles_repository.dart';
 import 'package:todays_news/presentation/screens/home_screen.dart';
 import '../domain/useCases/tab_useCases/load_tab_data_useCase.dart';
@@ -25,10 +24,10 @@ import 'package:todays_news/presentation/utils/helpers/pagination_state_manager.
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+  static const _black = Colors.black;
+  static const _amber = Colors.amber;
   static const _white = AppColors.white;
-  static const _black = AppColors.black;
-  static const _amber = AppColors.amber;
-  static const _orange = AppColors.orange;
+  static const _orange = Color(0xFFFF3D00);
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +77,6 @@ class MyApp extends StatelessWidget {
 
     final paginationHandler = PaginationHandler();
     final connectivityProvider = ConnectivityProvider();
-    const screenIndex = HomeScreenConstants.screenBusinessIndex;
     final loadDataUseCase = LoadDataUseCase(
         repository: repository, paginationHandler: paginationHandler);
     final changeTabUseCase = ChangeTabUseCase(loadDataUseCase: loadDataUseCase);
@@ -92,7 +90,7 @@ class MyApp extends StatelessWidget {
                   changeTabUseCase: changeTabUseCase,
                   connectivityProvider: connectivityProvider
               )
-                ..changeScreen(screenIndex)),
+                ..changeScreen(index: 0)),
           ChangeNotifierProvider<ConnectivityProvider>(
               create: (_) => ConnectivityProvider()),
           ChangeNotifierProvider<ThemeNotifier>(
