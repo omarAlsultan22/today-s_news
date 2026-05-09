@@ -1,5 +1,4 @@
 import '../themes/screen_theme.dart';
-import '../constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../managers/app_lifecycle_manager.dart';
@@ -24,37 +23,32 @@ import 'package:todays_news/presentation/utils/helpers/pagination_state_manager.
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  static const _black = Colors.black;
-  static const _amber = Colors.amber;
-  static const _white = AppColors.white;
-  static const _orange = Color(0xFFFF3D00);
-
   @override
   Widget build(BuildContext context) {
     final ThemeData lightTheme = ThemeData(
-      primarySwatch: _amber,
+      primarySwatch: Colors.amber,
       brightness: Brightness.light,
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-          selectedItemColor: _orange,
-          unselectedIconTheme: IconThemeData(color: _black)
+          selectedItemColor: Colors.orange,
+          unselectedIconTheme: IconThemeData(color: Colors.black)
       ),
       iconButtonTheme: const IconButtonThemeData(
-          style: ButtonStyle(iconColor: WidgetStatePropertyAll(_black))),
+          style: ButtonStyle(iconColor: WidgetStatePropertyAll(Colors.black))),
       progressIndicatorTheme: const ProgressIndicatorThemeData(
-          color: _black),
+          color: Colors.black),
     );
 
     final ThemeData darkTheme = ThemeData(
-      primarySwatch: _amber,
+      primarySwatch: Colors.amber,
       brightness: Brightness.dark,
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-          selectedItemColor: _orange,
-          unselectedIconTheme: IconThemeData(color: _white)
+          selectedItemColor: Colors.orange,
+          unselectedIconTheme: IconThemeData(color: Colors.white)
       ),
       iconButtonTheme: const IconButtonThemeData(
-          style: ButtonStyle(iconColor: WidgetStatePropertyAll(_white))),
+          style: ButtonStyle(iconColor: WidgetStatePropertyAll(Colors.white))),
       progressIndicatorTheme: const ProgressIndicatorThemeData(
-          color: _white),
+          color: Colors.white),
     );
 
     final dioHelper = DioHelper();

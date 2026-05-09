@@ -1,5 +1,5 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:todays_news/presentation/constants/ui_sizes.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../../../../data/models/article_Model.dart';
 import '../../utils/helpers/image_helpers.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -12,12 +12,7 @@ class BuildNewsItemLayout extends StatelessWidget {
 
   const BuildNewsItemLayout(this.article, {super.key});
 
-
-  static const _fontSize = UiSizes.mediumSize;
-  static const _mediumSpacing = _fontSize;
-  static const _paddingAll = _mediumSpacing;
   static const _largeSpacing = 120.0;
-
 
   ScaffoldMessenger _scaffoldMessenger(String message) {
     return ScaffoldMessenger(child: SnackBar(content: Text(message)));
@@ -47,7 +42,7 @@ class BuildNewsItemLayout extends StatelessWidget {
         }
       },
       child: Padding(
-        padding: const EdgeInsets.all(_paddingAll),
+        padding: const EdgeInsets.all(UiSizes.mediumSize),
         child: Row(
           children: [
             Container(
@@ -72,7 +67,7 @@ class BuildNewsItemLayout extends StatelessWidget {
                 const Icon(Icons.error),
               ),
             ),
-            const SizedBox(width: _mediumSpacing),
+            const SizedBox(width: UiSizes.mediumSize),
             Expanded(
               flex: 1,
               child: SizedBox(
@@ -86,7 +81,7 @@ class BuildNewsItemLayout extends StatelessWidget {
                       child: Text(
                         article.title,
                         style: const TextStyle(
-                          fontSize: _fontSize,
+                          fontSize: UiSizes.mediumSize,
                           fontWeight: FontWeight.bold,
                           overflow: TextOverflow.ellipsis,
                         ),

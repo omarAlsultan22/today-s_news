@@ -60,9 +60,10 @@ class HomeLayout extends StatelessWidget {
           children: [
             ConnectionBanner(
                 isVisible: isConnected,
-                bgColor: isConnected ? const Color(0xFF388E3C) : const Color(0xFFD32F2F),
+                bgColor: isConnected ? const Color(0xFF388E3C) : const Color(
+                    0xFFD32F2F),
                 icon: isConnected ? Icons.wifi : Icons.signal_wifi_off,
-                text: isConnected ?  'online' : 'offline'
+                text: isConnected ? 'online' : 'offline'
             ),
             Expanded(
                 child: cubit.screenItems[currentIndex])
@@ -70,7 +71,7 @@ class HomeLayout extends StatelessWidget {
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: currentIndex,
-        onTap: (index) => cubit.changeScreen(index),
+        onTap: (index) => cubit.changeScreen(index: index),
         items: cubit.barItems,
       ),
     );
@@ -103,8 +104,6 @@ class _ConnectionBannerState extends State<ConnectionBanner> {
   Timer? _timer;
 
   static const _milliseconds = 300;
-  static const _white = AppColors.white;
-  static const _noneValue = UiSizes.none;
 
   @override
   void initState() {
@@ -116,7 +115,7 @@ class _ConnectionBannerState extends State<ConnectionBanner> {
   void _startTimer() {
     _timer?.cancel();
 
-    if (widget.duration > _noneValue) {
+    if (widget.duration > UiSizes.none) {
       _timer = Timer(Duration(seconds: widget.duration), () {
         _hideBanner();
       });
@@ -139,17 +138,17 @@ class _ConnectionBannerState extends State<ConnectionBanner> {
       curve: Curves.easeInOut,
       height: _height,
       color: widget.bgColor,
-      child: _height > _noneValue
+      child: _height > UiSizes.none
           ? Center(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(widget.icon, color: _white),
+            Icon(widget.icon, color: AppColors.white),
             const SizedBox(width: 8.0),
             Text(
               widget.text,
               style: const TextStyle(
-                color: _white,
+                color: AppColors.white,
                 fontWeight: FontWeight.bold,
                 fontSize: 14.0,
               ),

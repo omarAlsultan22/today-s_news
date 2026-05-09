@@ -1,10 +1,9 @@
 import 'dart:async';
-import 'package:todays_news/constants/app_strings.dart';
-
 import '../states/search_state.dart';
 import '../../errors/error_handler.dart';
 import '../../data/models/category_data.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:todays_news/constants/app_strings.dart';
 import '../../errors/exceptions/network_exception.dart';
 import '../../errors/exceptions/base/app_exception.dart';
 import 'package:todays_news/presentation/states/base/app_states.dart';
