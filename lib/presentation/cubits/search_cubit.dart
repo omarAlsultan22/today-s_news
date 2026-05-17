@@ -1,11 +1,10 @@
 import 'dart:async';
 import '../states/search_state.dart';
-import '../../errors/error_handler.dart';
 import '../../data/models/category_data.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../errors/mappers/error_handler.dart';
 import 'package:todays_news/constants/app_strings.dart';
-import '../../errors/exceptions/network_exception.dart';
-import '../../errors/exceptions/base/app_exception.dart';
+import '../../errors/exceptions/network_app_exception.dart';
 import 'package:todays_news/presentation/states/base/app_states.dart';
 import '../../domain/useCases/tab_useCases/load_tab_data_useCase.dart';
 import '../../domain/services/connectivity_service/connectivity_provider.dart';
@@ -59,7 +58,7 @@ class SearchCubit extends Cubit<SearchState> {
           state.copyWith(
               query: query,
               subState: ErrorState(
-                  failure: NetworkException(
+                  exception: NetworkAppException(
                       message: AppStrings.noInternetMessage))
           )
       );
@@ -87,11 +86,12 @@ class SearchCubit extends Cubit<SearchState> {
       _successState(newTabData: newTabData);
     }
 
-    on AppException catch (e) {
-      final failure = ErrorHandler.handleException(e);
+    catch (e, stackTrace) {
+      final errorHandler = ErrorHandler(error: e, stackTrace: stackTrace);
+      final exception = errorHandler.handleException();
       emit(
           state.copyWith(
-              subState: ErrorState(failure: failure)
+              subState: ErrorState(exception: exception)
           )
       );
     }

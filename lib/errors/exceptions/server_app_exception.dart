@@ -1,8 +1,9 @@
 import 'base/app_exception.dart';
 
 
-class DioAppException extends AppException {
-  DioAppException({
+class ServerAppException extends AppException{
+  ServerAppException({
+    super.code,
     required super.message,
     required super.statusCode
   });

@@ -4,12 +4,14 @@ import '../../../../presentation/widgets/states/error_widgets/error_state_widget
 
 abstract class AppException implements Exception {
   final int? statusCode;
-  final String message;
+  final String? message;
+  final dynamic error;
   final String? code;
 
   const AppException({
-    required this.message,
     this.statusCode,
+    this.message,
+    this.error,
     this.code,
   });
 

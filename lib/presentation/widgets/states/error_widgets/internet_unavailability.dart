@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:todays_news/constants/app_strings.dart';
 import 'package:todays_news/presentation/constants/ui_sizes.dart';
 
 
 class InternetUnavailability extends StatelessWidget {
-  final String message;
-  final VoidCallback? onRetry;
+  final String? message;
 
   const InternetUnavailability({
-    required this.message,
-    this.onRetry,
+    this.message,
     super.key
   });
 
@@ -21,7 +20,7 @@ class InternetUnavailability extends StatelessWidget {
           children: [
             const Icon(Icons.wifi_off),
             const SizedBox(width: UiSizes.smallSize),
-            Text(message)
+            Text(message ?? AppStrings.noInternetMessage)
           ],
         ),
       ],

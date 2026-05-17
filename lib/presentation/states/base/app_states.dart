@@ -43,9 +43,9 @@ class SuccessState extends MainAppState {
 }
 
 class ErrorState extends MainAppState {
-  final AppException failure;
+  final AppException exception;
 
-  ErrorState({required this.failure});
+  ErrorState({required this.exception});
 
   @override
   R when<R>({
@@ -53,6 +53,6 @@ class ErrorState extends MainAppState {
     required R Function() onLoading,
     required R Function() onLoaded,
     required R Function(AppException) onError}) {
-    return onError(failure);
+    return onError(exception);
   }
 }
