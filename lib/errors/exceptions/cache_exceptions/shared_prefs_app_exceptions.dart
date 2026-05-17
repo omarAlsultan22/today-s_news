@@ -1,9 +1,9 @@
 import '../base/app_exception.dart';
 import 'base/cache_app_exceptions.dart';
-import '../base/app_exception_convertible.dart';
+import '../base/exception_handler.dart';
 
 
-class SharedPrefsAppException extends CacheAppException implements AppExceptionConvertible{
+class SharedPrefsAppException extends CacheAppException implements ExceptionHandler{
   SharedPrefsAppException({
     super.code,
     super.error,
@@ -18,7 +18,7 @@ class SharedPrefsAppException extends CacheAppException implements AppExceptionC
   static const String _msgConnectionIssue =
       'Connection issue with storage system';
 
-  static final Map<String, AppException> _exactMatches = {
+  static final Map<String, AppException> _errorFactories = {
     'streamcorrupted': SharedPrefsInitException(
       message: _msgCorruptedFile,
       platformCode: 'STREAM_CORRUPTED',
@@ -38,10 +38,14 @@ class SharedPrefsAppException extends CacheAppException implements AppExceptionC
   };
 
   @override
-  AppException getException() {
-    final isKeyFound = _exactMatches.containsKey(error);
-    if (isKeyFound) {
-      final value = _exactMatches[error];
+  bool canHandle() {
+    return _errorFactories.containsKey(error);
+  }
+
+  @override
+  AppException handle() {
+    if (canHandle()) {
+      final value = _errorFactories[error];
       if (value != null) {
         return value;
       }

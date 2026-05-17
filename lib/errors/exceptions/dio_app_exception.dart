@@ -1,15 +1,15 @@
 import 'package:dio/dio.dart';
+import 'base/app_exception.dart';
 import 'client_app_exception.dart';
 import 'network_app_exception.dart';
-import 'base/app_exception.dart';
-import 'base/app_exception_convertible.dart';
+import 'base/exception_handler.dart';
 import 'package:todays_news/constants/app_strings.dart';
 import 'package:todays_news/errors/exceptions/server_app_exception.dart';
 import 'package:todays_news/errors/exceptions/unknown_app_exception.dart';
 import 'package:todays_news/errors/exceptions/security_app_exception.dart';
 
 
-class DioAppException extends AppException implements AppExceptionConvertible {
+class DioAppException extends AppException implements ExceptionHandler {
   DioAppException({
     super.error,
     super.message
@@ -184,8 +184,19 @@ class DioAppException extends AppException implements AppExceptionConvertible {
   };
 
   @override
-  AppException getException() {
-    final e = error as DioException;
-    return _dioTypeExceptionHandlers[e.type]!(error);
+  bool canHandle() {
+    return _dioTypeExceptionHandlers.containsKey(error);
+  }
+
+  @override
+  AppException handle() {
+    if (canHandle()) {
+      final dioException = error as DioException;
+      return _dioTypeExceptionHandlers[dioException.type]!(error);
+    }
+    return UnknownAppException(
+      message: error.message ?? 'An unexpected error occurred',
+      code: 'UNKNOWN_DIO_ERROR',
+    );
   }
 }

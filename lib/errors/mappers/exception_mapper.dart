@@ -80,13 +80,13 @@ class ExceptionMapper {
       AppException Function(dynamic)> _exceptionTypeHandlers = {
     HiveError: (error) {
       final hiveException = HiveAppExceptions(error: error.toString());
-      return hiveException.getException();
+      return hiveException.handle();
     },
     DioException: (error) {
       final firebaseException = DioAppException(
           message: (error as DioException).message ?? 'DIO_ERROR'
       );
-      return firebaseException.getException();
+      return firebaseException.handle();
     },
     SocketException: (error) =>
         NetworkAppException(
@@ -114,24 +114,6 @@ class ExceptionMapper {
       {..._networkPatterns, ..._sharedPrefsPatterns}.keys;
 
   bool get isKey => _exceptionTypeHandlers.containsKey(error);
-
-  bool isUrlLauncherError() {
-    final errorStr = error.toString().toLowerCase();
-    return errorStr.contains('url_launcher') ||
-        error is PlatformException && errorStr.contains('url') ||
-        error is MissingPluginException && errorStr.contains('url');
-  }
-
-  bool isSharedPrefsError() {
-    final errorStr = error.toString().toLowerCase();
-    return error is PlatformException &&
-        (errorStr.contains('shared_preferences') ||
-            errorStr.contains('sharedpreferences')) ||
-        error is MissingPluginException &&
-            errorStr.contains('shared_preferences') ||
-        errorStr.contains('sharedpreferences') ||
-        errorStr.contains('preferences') && errorStr.contains('instance');
-  }
 
   AppException mapByTypePattern() {
     final exception = _exceptionTypeHandlers[error]!(error);

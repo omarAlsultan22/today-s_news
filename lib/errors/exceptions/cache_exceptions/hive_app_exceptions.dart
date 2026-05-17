@@ -1,9 +1,9 @@
 import '../base/app_exception.dart';
 import 'base/cache_app_exceptions.dart';
-import '../base/app_exception_convertible.dart';
+import '../base/exception_handler.dart';
 
 
-class HiveAppExceptions extends CacheAppException implements AppExceptionConvertible{
+class HiveAppExceptions extends CacheAppException implements ExceptionHandler{
   HiveAppExceptions({
     super.code,
     super.error,
@@ -15,7 +15,7 @@ class HiveAppExceptions extends CacheAppException implements AppExceptionConvert
   static const String _msgEncryptionError = 'Error in database encryption/decryption';
   static const String _msgNotInitialized = 'Database has not been initialized correctly';
 
-  static String? extractBoxName(String errorString) {
+  static String? _extractBoxName(String errorString) {
     // Create the Regex separately and safely
     const pattern = r'box\s+["'']?(\w+)["'']?';
     final regex = RegExp(pattern);
@@ -52,12 +52,12 @@ class HiveAppExceptions extends CacheAppException implements AppExceptionConvert
         ),
     'openbox': (msg) =>
         HiveOpenBoxException(
-          boxName: extractBoxName(msg) ?? 'unknown',
+          boxName: _extractBoxName(msg) ?? 'unknown',
           error: 'Failed to open database: $msg',
         ),
     'failed to open': (msg) =>
         HiveOpenBoxException(
-          boxName: extractBoxName(msg) ?? 'unknown',
+          boxName: _extractBoxName(msg) ?? 'unknown',
           error: 'Failed to open database: $msg',
         ),
     'filesystemexception': (msg) =>
@@ -103,11 +103,14 @@ class HiveAppExceptions extends CacheAppException implements AppExceptionConvert
   };
 
   @override
-  AppException getException() {
-    final errorStr = error.toString().toLowerCase();
+  bool canHandle() {
+    return _errorFactories.containsKey(error);
+  }
 
-    final isKeyFound = _errorFactories.containsKey(error);
-    if (isKeyFound) {
+  @override
+  AppException handle() {
+    final errorStr = error.toString().toLowerCase();
+    if (canHandle()) {
       return _errorFactories[errorStr]!(errorStr);
     }
     return HiveOperationException(
