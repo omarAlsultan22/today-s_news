@@ -4,8 +4,9 @@ import 'base/app_exception_convertible.dart';
 
 class UrlLauncherAppException extends AppException implements AppExceptionConvertible {
   UrlLauncherAppException({
+    super.code,
     super.error,
-    required super.message
+    super.message
   });
 
   static const String _msgSysError = 'System error occurred';

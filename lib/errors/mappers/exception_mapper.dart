@@ -110,10 +110,10 @@ class ExceptionMapper {
     caseSensitive: false,
   );
 
-  bool get isKey => _exceptionTypeHandlers.containsKey(error);
+  Iterable<String> get keys =>
+      {..._networkPatterns, ..._sharedPrefsPatterns}.keys;
 
-  Map<String, AppException> get stringPatterns =>
-      {..._networkPatterns, ..._sharedPrefsPatterns};
+  bool get isKey => _exceptionTypeHandlers.containsKey(error);
 
   bool isUrlLauncherError() {
     final errorStr = error.toString().toLowerCase();

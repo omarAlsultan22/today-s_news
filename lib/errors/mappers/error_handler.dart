@@ -39,7 +39,7 @@ class ErrorHandler {
     if (_exceptionMapper.isUrlLauncherError()) {
       final prefsException = UrlLauncherAppException(
         error: error,
-        message: (error as PlatformException).code,
+        code: (error as PlatformException).code,
       );
       return prefsException.getException();
     }
@@ -47,7 +47,7 @@ class ErrorHandler {
     if (_exceptionMapper.isSharedPrefsError()) {
       final prefsException = SharedPrefsAppException(
         error: error,
-        message: (error as PlatformException).code,
+        code: (error as PlatformException).code,
       );
       return prefsException.getException();
     }
@@ -67,7 +67,7 @@ class ErrorHandler {
   }
 
   AppException? _mapByStringPattern() {
-    for (var key in _exceptionMapper.stringPatterns.keys) {
+    for (var key in _exceptionMapper.keys) {
       if (error.toString().contains(key)) {
         final value = _exceptionMapper.mapByStringPattern();
         return value;
