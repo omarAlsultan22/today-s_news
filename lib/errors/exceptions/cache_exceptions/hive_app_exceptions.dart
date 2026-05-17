@@ -3,7 +3,7 @@ import 'base/cache_app_exceptions.dart';
 import '../base/exception_handler.dart';
 
 
-class HiveAppExceptions extends CacheAppException implements ExceptionHandler{
+class HiveAppExceptions extends CacheAppException implements ExceptionHandler {
   HiveAppExceptions({
     super.code,
     super.error,
@@ -104,13 +104,14 @@ class HiveAppExceptions extends CacheAppException implements ExceptionHandler{
 
   @override
   bool canHandle() {
-    return _errorFactories.containsKey(error);
+    final errorStr = error.toString().toLowerCase();
+    return _errorFactories.containsKey(errorStr);
   }
 
   @override
   AppException handle() {
-    final errorStr = error.toString().toLowerCase();
     if (canHandle()) {
+      final errorStr = error.toString().toLowerCase();
       return _errorFactories[errorStr]!(errorStr);
     }
     return HiveOperationException(

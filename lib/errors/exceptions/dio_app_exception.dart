@@ -185,14 +185,13 @@ class DioAppException extends AppException implements ExceptionHandler {
 
   @override
   bool canHandle() {
-    return _dioTypeExceptionHandlers.containsKey(error);
+    return _dioTypeExceptionHandlers.containsKey((error as DioException).type);
   }
 
   @override
   AppException handle() {
     if (canHandle()) {
-      final dioException = error as DioException;
-      return _dioTypeExceptionHandlers[dioException.type]!(error);
+      return _dioTypeExceptionHandlers[(error as DioException).type]!(error);
     }
     return UnknownAppException(
       message: error.message ?? 'An unexpected error occurred',

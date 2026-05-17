@@ -39,15 +39,17 @@ class SharedPrefsAppException extends CacheAppException implements ExceptionHand
 
   @override
   bool canHandle() {
-    return _errorFactories.containsKey(error);
+    final errorStr = error.toString().toLowerCase();
+    return _errorFactories.containsKey(errorStr);
   }
 
   @override
   AppException handle() {
     if (canHandle()) {
-      final value = _errorFactories[error];
-      if (value != null) {
-        return value;
+      final errorStr = error.toString().toLowerCase();
+      final exception = _errorFactories[errorStr];
+      if (exception != null) {
+        return exception;
       }
     }
     return SharedPrefsPlatformException(
