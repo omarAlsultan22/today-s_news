@@ -24,7 +24,7 @@ class ErrorHandler {
     // Log the error (for analytics)
     _logError(error, stackTrace);
 
-    return mapByTypePattern() ??
+    return _mapByTypePattern() ??
         _mapByStringPattern() ??
         _mapBySharedPrefError() ??
         _mapByUrlLauncherError() ??
@@ -51,7 +51,7 @@ class ErrorHandler {
         errorStr.contains('preferences') && errorStr.contains('instance');
   }
 
-  AppException? mapByTypePattern() {
+  AppException? _mapByTypePattern() {
     if (_exceptionMapper.isKey) {
       return _exceptionMapper.mapByTypePattern();
     }
