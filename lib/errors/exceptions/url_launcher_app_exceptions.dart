@@ -28,7 +28,10 @@ class UrlLauncherAppException extends AppException implements AppExceptionConver
     if (exception != null) {
       return exception;
     }
-    return UrlLauncherAppException(message: 'Failed to open link');
+    return UrlLauncherAppException(
+        code: code,
+        message: 'Failed to open link'
+    );
   }
 }
 

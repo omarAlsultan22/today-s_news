@@ -48,7 +48,7 @@ class SharedPrefsAppException extends CacheAppException implements AppExceptionC
     }
     return SharedPrefsPlatformException(
       message: error.message ?? 'Local storage platform error',
-      platformCode: error.code,
+      platformCode: code,
     );
   }
 }
