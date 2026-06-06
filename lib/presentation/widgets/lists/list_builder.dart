@@ -6,8 +6,8 @@ import 'package:todays_news/presentation/constants/ui_sizes.dart';
 
 class ListBuilder extends StatefulWidget {
   bool isLocked;
-  final List<Article> list;
   final bool hasMore;
+  final List<Article> list;
   final VoidCallback onScroll;
   ListBuilder({
     super.key,
