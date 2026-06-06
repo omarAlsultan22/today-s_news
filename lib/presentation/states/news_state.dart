@@ -1,3 +1,4 @@
+import 'base/main_app_state.dart';
 import '../../data/models/category_data.dart';
 import '../../errors/exceptions/base/app_exception.dart';
 import 'package:todays_news/presentation/states/base/app_states.dart';
@@ -9,6 +10,7 @@ class NewsState implements CategoryDataWhenStrategy {
   final MainAppState subState;
   final List<String>? categories;
   final Map<int, CategoryData> tabsData;
+  static const List<String> _categoriesKeys = ['business', 'sports', 'science'];
 
   const NewsState({
     this.categories,
@@ -16,6 +18,18 @@ class NewsState implements CategoryDataWhenStrategy {
     required this.subState,
     required this.currentTabIndex,
   });
+
+  factory NewsState.initial(){
+    return NewsState(
+        currentTabIndex: 0,
+        tabsData: {
+          for (var i = 0; i < 3; i++)
+            i: const CategoryData()
+        },
+        subState: InitialState(),
+        categories: _categoriesKeys
+    );
+  }
 
   CategoryData? get currentTabData => tabsData[currentTabIndex];
 

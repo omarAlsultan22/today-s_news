@@ -21,11 +21,7 @@ class SearchCubit extends Cubit<SearchState> {
       : _loadDataUseCase = loadDataUseCase,
         _connectivityProvider = connectivityProvider,
         super(
-          SearchState(
-              categoryData: const CategoryData(),
-              subState: InitialState()
-          )
-      ) {
+          SearchState.initial()) {
     _connectivityProvider.addListener(_updateConnectionStatus);
   }
 

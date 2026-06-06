@@ -11,15 +11,15 @@ import 'package:todays_news/presentation/widgets/states/loading_state_widget.dar
 class BusinessScreen extends StatelessWidget {
   const BusinessScreen({super.key});
 
-  static const screenIndex = 0;
+  static const _screenIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     return ConnectivityAwareScreenForCategories(
-        screenIndex: screenIndex,
+        screenIndex: _screenIndex,
         child: BlocBuilder<NewsCubit, NewsState>(
             buildWhen: (previous, current) =>
-            current.currentTabIndex == screenIndex,
+            current.currentTabIndex == _screenIndex,
             builder: (context, state) {
               final currentCubit = context.read<NewsCubit>();
 

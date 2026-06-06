@@ -1,4 +1,5 @@
 import 'base/app_states.dart';
+import 'base/main_app_state.dart';
 import '../../data/models/category_data.dart';
 import 'base/category_data_when_strategy.dart';
 import 'package:todays_news/constants/app_strings.dart';
@@ -15,6 +16,13 @@ class SearchState implements CategoryDataWhenStrategy {
     required this.subState,
     required this.categoryData
   });
+
+  factory SearchState.initial(){
+    return SearchState(
+        categoryData: const CategoryData(),
+        subState: InitialState()
+    );
+  }
 
   bool get queryIsEmpty => query.isEmpty;
 

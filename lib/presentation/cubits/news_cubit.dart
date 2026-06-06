@@ -19,10 +19,6 @@ class NewsCubit extends Cubit<NewsState> {
   final ChangeTabUseCase _changeTabUseCase;
   final ConnectivityProvider _connectivityProvider;
 
-  static const int _initialTabIndex = 0;
-  static const int _initialTabCount = 3;
-  static const List<String> categories = ['business', 'sports', 'science'];
-
   NewsCubit({
     required LoadDataUseCase loadDataUseCase,
     required ChangeTabUseCase changeTabUseCase,
@@ -32,15 +28,7 @@ class NewsCubit extends Cubit<NewsState> {
         _changeTabUseCase = changeTabUseCase,
         _connectivityProvider = connectivityProvider,
         super(
-        NewsState(
-            currentTabIndex: _initialTabIndex,
-            tabsData: {
-              for (var i = _initialTabIndex; i < _initialTabCount; i++)
-                i: const CategoryData()
-            },
-            subState: InitialState(),
-            categories: categories
-        ),
+        NewsState.initial(),
       ) {
     _connectivityProvider.addListener(_updateConnectionStatus);
   }
