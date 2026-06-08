@@ -1,9 +1,9 @@
 import 'dart:async';
 import '../states/news_state.dart';
 import 'package:flutter/material.dart';
+import '../mixins/error_handler_mixin.dart';
 import '../../data/models/category_data.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../errors/mappers/error_handler.dart';
 import 'package:todays_news/constants/app_strings.dart';
 import '../../errors/exceptions/network_app_exception.dart';
 import '../../domain/useCases/tab_useCases/change_tab_useCase.dart';
@@ -14,7 +14,7 @@ import '../../domain/services/connectivity_service/connectivity_provider.dart';
 import 'package:todays_news/presentation/navigation/bottom_navigation_bar_items.dart';
 
 
-class NewsCubit extends Cubit<NewsState> {
+class NewsCubit extends Cubit<NewsState> with ErrorHandlerMixin<NewsState> {
   final LoadDataUseCase _loadDataUseCase;
   final ChangeTabUseCase _changeTabUseCase;
   final ConnectivityProvider _connectivityProvider;
@@ -88,10 +88,14 @@ class NewsCubit extends Cubit<NewsState> {
       _successState(index: index, newTabData: newTabData);
     }
     catch (e, stackTrace) {
-      final errorHandler = ErrorHandler(error: e, stackTrace: stackTrace);
-      final exception = errorHandler.handleException();
-      emit(state
-          .copyWith(subState: ErrorState(exception: exception)));
+      handleError(e, stackTrace,
+          onError: (failure) =>
+              state.copyWith(
+                  subState: ErrorState(
+                      exception: failure
+                  )
+              )
+      );
     }
   }
 

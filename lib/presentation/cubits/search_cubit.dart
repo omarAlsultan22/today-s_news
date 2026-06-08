@@ -1,8 +1,8 @@
 import 'dart:async';
 import '../states/search_state.dart';
+import '../mixins/error_handler_mixin.dart';
 import '../../data/models/category_data.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../errors/mappers/error_handler.dart';
 import 'package:todays_news/constants/app_strings.dart';
 import '../../errors/exceptions/network_app_exception.dart';
 import 'package:todays_news/presentation/states/base/app_states.dart';
@@ -10,7 +10,7 @@ import '../../domain/useCases/tab_useCases/load_tab_data_useCase.dart';
 import '../../domain/services/connectivity_service/connectivity_provider.dart';
 
 
-class SearchCubit extends Cubit<SearchState> {
+class SearchCubit extends Cubit<SearchState> with ErrorHandlerMixin<SearchState> {
   final LoadDataUseCase _loadDataUseCase;
   final ConnectivityProvider _connectivityProvider;
 
@@ -83,12 +83,13 @@ class SearchCubit extends Cubit<SearchState> {
     }
 
     catch (e, stackTrace) {
-      final errorHandler = ErrorHandler(error: e, stackTrace: stackTrace);
-      final exception = errorHandler.handleException();
-      emit(
-          state.copyWith(
-              subState: ErrorState(exception: exception)
-          )
+      handleError(e, stackTrace,
+          onError: (failure) =>
+              state.copyWith(
+                  subState: ErrorState(
+                      exception: failure
+                  )
+              )
       );
     }
   }
