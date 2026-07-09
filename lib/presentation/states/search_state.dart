@@ -12,19 +12,22 @@ class SearchState implements CategoryDataWhenStrategy {
   final CategoryData categoryData;
 
   SearchState({
-    this.query = AppStrings.empty,
+    required this.query,
     required this.subState,
-    required this.categoryData
+    required this.categoryData,
   });
 
   factory SearchState.initial(){
     return SearchState(
         categoryData: const CategoryData(),
-        subState: InitialState()
+        subState: InitialState(),
+        query: AppStrings.empty
     );
   }
 
   bool get queryIsEmpty => query.isEmpty;
+
+  bool get hasMore => categoryData.hasMore;
 
   SearchState copyWith({
     String? query,

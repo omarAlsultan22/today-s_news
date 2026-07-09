@@ -1,6 +1,6 @@
 import '../config/news_config.dart';
 import '../constants/config_keys.dart';
-import '../datasources/remote/dio_helper.dart';
+import '../data_sources/remote/dio_helper.dart';
 import 'package:todays_news/data/models/article_Model.dart';
 import '../../presentation/utils/helpers/list_convertor.dart';
 import 'package:todays_news/data/constants/data_strings.dart';
@@ -24,6 +24,7 @@ class SearchRepository implements DataRepository {
         url: 'v2/everything',
         query: {
           'q': key,
+          'language': 'en',
           ConfigKeys.page: currentPage,
           ConfigKeys.sortBy: NewsConfig.sortBy,
           ConfigKeys.apiKey: NewsConfig.apiKey,

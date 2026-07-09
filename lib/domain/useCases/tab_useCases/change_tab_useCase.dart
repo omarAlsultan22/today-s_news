@@ -1,5 +1,5 @@
-import '../../../data/models/category_data.dart';
 import 'load_tab_data_useCase.dart';
+import '../../../data/models/category_data.dart';
 
 
 class ChangeTabUseCase {

@@ -8,14 +8,14 @@ import 'package:todays_news/presentation/states/base/category_data_when_strategy
 class NewsState implements CategoryDataWhenStrategy {
   final int currentTabIndex;
   final MainAppState subState;
-  final List<String>? categories;
+  final List<String> categories;
   final Map<int, CategoryData> tabsData;
   static const List<String> _categoriesKeys = ['business', 'sports', 'science'];
 
   const NewsState({
-    this.categories,
     required this.tabsData,
     required this.subState,
+    this.categories = const [],
     required this.currentTabIndex,
   });
 
@@ -31,13 +31,13 @@ class NewsState implements CategoryDataWhenStrategy {
     );
   }
 
-  CategoryData? get currentTabData => tabsData[currentTabIndex];
+  bool get hasMore => currentTabData!.hasMore;
 
   bool get productsIsEmpty => currentTabData!.productsIsEmpty;
 
-  String get categoryStatus => categories![currentTabIndex];
+  CategoryData? get currentTabData => tabsData[currentTabIndex];
 
-  bool get hasMore => currentTabData!.hasMore;
+  String get categoryStatus => _categoriesKeys[currentTabIndex];
 
   NewsState updateTab(int index, CategoryData newTabData) {
     return copyWith(
@@ -51,11 +51,13 @@ class NewsState implements CategoryDataWhenStrategy {
   NewsState copyWith({
     int? currentTabIndex,
     MainAppState? subState,
+    List<String>? categories,
     Map<int, CategoryData>? tabsData,
   }) {
     return NewsState(
       subState: subState ?? this.subState,
       tabsData: tabsData ?? this.tabsData,
+      categories: categories ?? this.categories,
       currentTabIndex: currentTabIndex ?? this.currentTabIndex,
     );
   }

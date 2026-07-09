@@ -1,12 +1,14 @@
 import 'dart:async';
 import '../states/news_state.dart';
 import 'package:flutter/material.dart';
+import '../../constants/app_durations.dart';
 import '../mixins/error_handler_mixin.dart';
 import '../../data/models/category_data.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todays_news/constants/app_strings.dart';
 import '../../errors/exceptions/network_app_exception.dart';
 import '../../domain/useCases/tab_useCases/change_tab_useCase.dart';
+import 'package:todays_news/presentation/mixins/debounce_mixin.dart';
 import 'package:todays_news/presentation/states/base/app_states.dart';
 import '../../domain/useCases/tab_useCases/load_tab_data_useCase.dart';
 import 'package:todays_news/presentation/navigation/screen_items.dart';
@@ -14,7 +16,7 @@ import '../../domain/services/connectivity_service/connectivity_provider.dart';
 import 'package:todays_news/presentation/navigation/bottom_navigation_bar_items.dart';
 
 
-class NewsCubit extends Cubit<NewsState> with ErrorHandlerMixin<NewsState> {
+class NewsCubit extends Cubit<NewsState> with ErrorHandlerMixin<NewsState>, DebounceMixin {
   final LoadDataUseCase _loadDataUseCase;
   final ChangeTabUseCase _changeTabUseCase;
   final ConnectivityProvider _connectivityProvider;
@@ -40,7 +42,7 @@ class NewsCubit extends Cubit<NewsState> with ErrorHandlerMixin<NewsState> {
   List<BottomNavigationBarItem> get barItems => BottomNavigationBarItems.items;
 
   void _updateConnectionStatus() {
-    if (_connectivityProvider.isConnected && !state.productsIsEmpty) {
+    if (_connectivityProvider.isConnected && state.productsIsEmpty) {
       changeScreen(index: state.currentTabIndex);
     }
   }
@@ -60,18 +62,20 @@ class NewsCubit extends Cubit<NewsState> with ErrorHandlerMixin<NewsState> {
     if (!productsIsEmpty) return;
 
     if (!_connectivityProvider.isConnected) {
-      emit(
-          state.copyWith(
-              subState: ErrorState(
-                  exception: NetworkAppException(
-                      message: AppStrings.noInternetMessage))
-          )
+      handleError(
+          AppStrings.noInternetMessage,
+          StackTrace.current,
+          onError: (failure) =>
+              state.copyWith(
+                  subState: ErrorState(
+                      exception: NetworkAppException()
+                  )
+              )
       );
       return;
     }
 
     emit(state.copyWith(subState: LoadingState()));
-
 
     try {
       final newTabData = await _changeTabUseCase.execute(
@@ -112,9 +116,9 @@ class NewsCubit extends Cubit<NewsState> with ErrorHandlerMixin<NewsState> {
       _successState(index: index, newTabData: newTabData);
     }
     catch (e) {
-      Future.delayed(const Duration(seconds: 3), () {
-        loadMoreData();
-      });
+      runDebounced(AppDurations.seconds, () =>
+          loadMoreData()
+      );
     }
   }
 
@@ -130,4 +134,3 @@ class NewsCubit extends Cubit<NewsState> with ErrorHandlerMixin<NewsState> {
     return super.close();
   }
 }
-

@@ -6,14 +6,12 @@ class InitialStateWidget extends StatelessWidget {
   final IconData icon;
   final String category;
   final double iconSize;
-  final TextStyle? textStyle;
 
   const InitialStateWidget({
     super.key,
     required this.icon,
     required this.category,
     this.iconSize = UiSizes.largeSize,
-    this.textStyle,
   });
 
   @override
@@ -27,7 +25,7 @@ class InitialStateWidget extends StatelessWidget {
           const SizedBox(height: 16.0),
           Text(
               'There is no news for $category',
-            style: textStyle ?? Theme.of(context).textTheme.titleMedium,
+            style: Theme.of(context).textTheme.titleMedium,
             textAlign: TextAlign.center,
           ),
         ],

@@ -6,7 +6,7 @@ import '../../../presentation/widgets/states/error_widgets/internet_unavailabili
 class NetworkAppException extends AppException {
   NetworkAppException({
     super.code,
-    required super.message
+    super.message
   });
 
   @override

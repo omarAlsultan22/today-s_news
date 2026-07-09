@@ -1,9 +1,9 @@
-import '../cubits/news_cubit.dart';
 import 'package:flutter/material.dart';
 import '../widgets/lists/list_builder.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../presentation/states/news_state.dart';
 import 'connectivity_aware_screen_for_categories.dart';
+import 'package:todays_news/presentation/cubits/news_cubit.dart';
 import 'package:todays_news/presentation/widgets/states/initial_state_widget.dart';
 import 'package:todays_news/presentation/widgets/states/loading_state_widget.dart';
 

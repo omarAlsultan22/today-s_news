@@ -1,162 +1,109 @@
-import 'dart:async';
 import '../cubits/search_cubit.dart';
 import '../states/search_state.dart';
+import '../widgets/search_field.dart';
 import 'package:flutter/material.dart';
-import '../constants/ui_icons.dart';
+import '../mixins/debounce_mixin.dart';
 import '../widgets/lists/list_builder.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../widgets/states/loading_state_widget.dart';
-import 'package:todays_news/presentation/constants/ui_sizes.dart';
 import '../../domain/useCases/tab_useCases/load_tab_data_useCase.dart';
-import 'package:todays_news/domain/services/connectivity_service/connectivity_provider.dart';
+import '../../domain/services/connectivity_service/connectivity_provider.dart';
 
 
 class SearchScreen extends StatefulWidget {
-  final LoadDataUseCase _loadDataUseCase;
+  final LoadDataUseCase loadDataUseCase;
+  final ConnectivityProvider connectivityProvider;
 
-  const SearchScreen({required LoadDataUseCase loadDataUseCase, super.key})
-      : _loadDataUseCase = loadDataUseCase;
+  const SearchScreen({
+    super.key,
+    required this.loadDataUseCase,
+    required this.connectivityProvider
+  });
 
   @override
   State<SearchScreen> createState() => _SearchScreenState();
 }
 
-class _SearchScreenState extends State<SearchScreen> {
-
-  Timer? _debounceTimer;
-  String _currentQuery = '';
-  late SearchCubit _currentCubit;
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+class _SearchScreenState extends State<SearchScreen> with DebounceMixin {
   final TextEditingController _searchController = TextEditingController();
-
-  static const _debounceMs = 500;
-  static const _paddingAll = _fontSize;
-  static const _elevationValue = UiSizes.none;
-  static const _fontSize = UiSizes.mediumSize;
+  static const int _debounceMs = 500;
+  late final SearchCubit _searchCubit;
 
   @override
   void initState() {
     super.initState();
-    _searchController.addListener(_onSearchData);
+    _searchCubit = SearchCubit(
+      loadDataUseCase: widget.loadDataUseCase,
+      connectivityProvider: widget.connectivityProvider,
+    );
   }
 
   @override
   void dispose() {
-    _debounceTimer?.cancel();
-    _searchController.dispose();
-    _searchController.removeListener(_onSearchData);
+    disposeDebounce();
+    _searchCubit.close();
     super.dispose();
   }
 
-  void _onSearchData() {
-    if (_debounceTimer?.isActive ?? false) {
-      _debounceTimer?.cancel();
+  void _onSearchChanged(String query) {
+    if (query.isNotEmpty) {
+      runDebounced(const Duration(milliseconds: _debounceMs), () =>
+          _searchCubit.getSearch(query: query));
     }
+  }
 
-    _debounceTimer = Timer(
-      const Duration(milliseconds: _debounceMs),
-          () {
-        if (_searchController.text.isNotEmpty &&
-            _currentQuery != _searchController.text
-        ) {
-          _currentQuery = _searchController.text;
-          _currentCubit.getSearch(query: _searchController.text);
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider.value(
+      value: _searchCubit,
+      child: BlocBuilder<SearchCubit, SearchState>(
+        builder: (context, state) {
+          return Scaffold(
+            appBar: _buildAppBar(),
+            body: Column(
+              children: [
+                SearchField(
+                  controller: _searchController,
+                  onChanged: _onSearchChanged, // الـ debounce يديرها
+                ),
+                Expanded(child: _buildContent(state)),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildContent(SearchState state) {
+    return state.when(
+      onInitial: () => const Center(child: Text('Type to start searching')),
+      onLoading: () => const LoadingStateWidget(),
+      onLoaded: (data) {
+        if (_searchController.text.isNotEmpty && data.productsIsEmpty) {
+          return const Center(child: Text('No news found'));
         }
+        return ListBuilder(
+          isLocked: false,
+          list: data.products,
+          hasMore: data.hasMore,
+          onScroll: _searchCubit.loadMoreSearch,
+        );
       },
+      onError: (error) =>
+          error.buildErrorWidget(
+            onRetry: () =>
+                _searchCubit.getSearch(query: _searchController.text),
+          ),
     );
   }
 
   AppBar _buildAppBar() =>
       AppBar(
-        elevation: _elevationValue,
-        scrolledUnderElevation: _elevationValue,
-        title: const Text(
-          "Search Screen",
-          style: TextStyle(
-            fontSize: _fontSize,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        leading: InkWell(
-          onTap: () {
-            Navigator.pop(context);
-          },
-          child: const Icon(Icons.arrow_back_ios),
+        title: const Text('Search Screen'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pop(context),
         ),
       );
-
-
-  @override
-  Widget build(BuildContext context) {
-    final connectivityProvider = ConnectivityProvider();
-    return BlocProvider(create: (context) =>
-        SearchCubit(loadDataUseCase: widget._loadDataUseCase,
-            connectivityProvider: connectivityProvider),
-        child: BlocBuilder<SearchCubit, SearchState>(
-          builder: (context, state) {
-            _currentCubit = SearchCubit.get(context);
-            return Scaffold(
-              appBar: _buildAppBar(),
-              body: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  _buildSearchField(),
-                  const SizedBox(height: UiSizes.smallSize),
-                  Expanded(
-                    child: state.when(
-                        onInitial: () =>
-                        const Expanded(
-                            child: Center(child: Text(
-                                'Type to start searching'))),
-                        onLoading: () =>
-                        const LoadingStateWidget(),
-                        onLoaded: (newTabData) =>
-                            ListBuilder(
-                                isLocked: false,
-                                list: newTabData.products,
-                                hasMore: newTabData.hasMore,
-                                onScroll: () => _currentCubit.loadMoreSearch()
-                            ),
-                        onError: (error) =>
-                            error.buildErrorWidget(
-                                onRetry: () =>
-                                    _currentCubit.getSearch(
-                                        query: _searchController.text)
-                            )
-                    ),
-                  )
-                ],
-              ),
-            );
-          },
-        )
-    );
-  }
-
-  Widget _buildSearchField() {
-    return Padding(
-      padding: const EdgeInsets.all(_paddingAll),
-      child: Form(
-        key: _formKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(5.0),
-              child: TextFormField(
-                controller: _searchController,
-                decoration: InputDecoration(
-                  labelText: 'Search',
-                  prefixIcon: UiIcons.searchIcon,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(UiSizes.largeSize),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }

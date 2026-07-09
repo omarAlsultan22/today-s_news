@@ -89,7 +89,7 @@ class ExceptionMapper {
     },
     SocketException: (error) =>
         NetworkAppException(
-          message: AppStrings.noInternetMessage,
+          message: _noInternetMessage,
         ),
     TimeoutException: (error) =>
         NetworkAppException(

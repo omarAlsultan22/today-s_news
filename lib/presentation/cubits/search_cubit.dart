@@ -4,13 +4,15 @@ import '../mixins/error_handler_mixin.dart';
 import '../../data/models/category_data.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todays_news/constants/app_strings.dart';
+import 'package:todays_news/constants/app_durations.dart';
 import '../../errors/exceptions/network_app_exception.dart';
+import 'package:todays_news/presentation/mixins/debounce_mixin.dart';
 import 'package:todays_news/presentation/states/base/app_states.dart';
 import '../../domain/useCases/tab_useCases/load_tab_data_useCase.dart';
 import '../../domain/services/connectivity_service/connectivity_provider.dart';
 
 
-class SearchCubit extends Cubit<SearchState> with ErrorHandlerMixin<SearchState> {
+class SearchCubit extends Cubit<SearchState> with ErrorHandlerMixin<SearchState>, DebounceMixin {
   final LoadDataUseCase _loadDataUseCase;
   final ConnectivityProvider _connectivityProvider;
 
@@ -30,8 +32,13 @@ class SearchCubit extends Cubit<SearchState> with ErrorHandlerMixin<SearchState>
   Timer? timer;
 
   void _updateConnectionStatus() {
-    if (_connectivityProvider.isConnected && !state.queryIsEmpty) {
-      getSearch(query: state.query);
+    if (_connectivityProvider.isConnected) {
+      if (!state.queryIsEmpty) {
+        getSearch(query: state.query);
+      }
+      else {
+        emit(state.copyWith(subState: InitialState()));
+      }
     }
   }
 
@@ -47,16 +54,19 @@ class SearchCubit extends Cubit<SearchState> with ErrorHandlerMixin<SearchState>
   }
 
   Future<void> getSearch({
-    String? query,
+    required String query,
   }) async {
     if (!_connectivityProvider.isConnected) {
-      emit(
-          state.copyWith(
-              query: query,
-              subState: ErrorState(
-                  exception: NetworkAppException(
-                      message: AppStrings.noInternetMessage))
-          )
+      handleError(
+        AppStrings.noInternetMessage,
+        StackTrace.current,
+        onError: (failure) =>
+            state.copyWith(
+                query: query,
+                subState: ErrorState(
+                    exception: NetworkAppException()
+                )
+            ),
       );
       return;
     }
@@ -71,14 +81,6 @@ class SearchCubit extends Cubit<SearchState> with ErrorHandlerMixin<SearchState>
         query: query,
         currentData: state.categoryData,
       );
-
-      if (newTabData.productsIsEmpty) {
-        emit(
-            state.copyWith(
-              categoryData: newTabData.copyWith(),
-              subState: InitialState(),
-            ));
-      }
       _successState(newTabData: newTabData);
     }
 
@@ -95,6 +97,7 @@ class SearchCubit extends Cubit<SearchState> with ErrorHandlerMixin<SearchState>
   }
 
   Future<void> loadMoreSearch() async {
+    if (!state.hasMore) return;
     try {
       final newTabData = await _loadDataUseCase.execute(
         query: state.query,
@@ -105,9 +108,9 @@ class SearchCubit extends Cubit<SearchState> with ErrorHandlerMixin<SearchState>
     }
 
     catch (e) {
-      Future.delayed(const Duration(seconds: 3), () {
-        loadMoreSearch();
-      });
+      runDebounced(AppDurations.seconds, () =>
+          loadMoreSearch()
+      );
     }
   }
 

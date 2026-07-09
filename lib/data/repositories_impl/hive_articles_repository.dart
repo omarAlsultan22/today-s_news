@@ -1,5 +1,5 @@
+import '../data_sources/local/hive.dart';
 import 'package:todays_news/data/models/article_Model.dart';
-import 'package:todays_news/data/datasources/local/hive.dart';
 import '../../presentation/utils/helpers/storage_validity.dart';
 import 'package:todays_news/domain/repositories/data_operations.dart';
 import 'package:todays_news/domain/repositories/data_repository.dart';

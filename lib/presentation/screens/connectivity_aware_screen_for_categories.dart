@@ -1,6 +1,7 @@
-import '../cubits/News_cubit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:todays_news/presentation/cubits/news_cubit.dart';
 import '../../domain/services/connectivity_service/connectivity_provider.dart';
 
 
@@ -29,7 +30,7 @@ class ConnectivityAwareScreenForCategories extends StatelessWidget {
   void _callRestLockIfNeeded(BuildContext context, int screenIndex) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       try {
-        final newsCubit = context.read<NewsCubit>();
+        final newsCubit = BlocProvider.of<NewsCubit>(context);
         final currentState = newsCubit.state;
         if (currentState.currentTabIndex == screenIndex) {
           newsCubit.restLock();

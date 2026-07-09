@@ -1,13 +1,13 @@
-import 'dart:async';
-import '../../cubits/News_cubit.dart';
 import '../../constants/ui_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../mixins/debounce_mixin.dart';
 import '../../screens/search_screen.dart';
 import '../../../themes/screen_theme.dart';
 import 'package:todays_news/constants/app_colors.dart';
+import 'package:todays_news/constants/app_durations.dart';
+import '../../../data/data_sources/remote/dio_helper.dart';
 import 'package:todays_news/presentation/constants/ui_sizes.dart';
-import 'package:todays_news/data/datasources/remote/dio_helper.dart';
 import '../../../domain/useCases/tab_useCases/load_tab_data_useCase.dart';
 import 'package:todays_news/data/repositories_impl/api_articles_repository.dart';
 import '../../../domain/services/connectivity_service/connectivity_provider.dart';
@@ -16,14 +16,19 @@ import 'package:todays_news/presentation/utils/helpers/pagination_state_manager.
 
 class HomeLayout extends StatelessWidget {
   final int currentIndex;
+  final List<Widget> screenItems;
+  final void Function(int) onChange;
+  final List<BottomNavigationBarItem> barItems;
   final ConnectivityProvider connectivityService;
 
   const HomeLayout({
     super.key,
+    required this.onChange,
+    required this.barItems,
+    required this.screenItems,
     required this.currentIndex,
     required this.connectivityService,
   });
-
 
   void _navPushSearchScreen(BuildContext context) {
     final dioHelper = DioHelper();
@@ -31,14 +36,21 @@ class HomeLayout extends StatelessWidget {
     final paginationHandler = PaginationHandler();
     final loadDataUseCase = LoadDataUseCase(
         repository: repository, paginationHandler: paginationHandler);
-    Navigator.push(context, MaterialPageRoute(
-        builder: (context) => SearchScreen(loadDataUseCase: loadDataUseCase)));
+    final connectivityProvider = ConnectivityProvider();
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                SearchScreen(loadDataUseCase: loadDataUseCase,
+                    connectivityProvider: connectivityProvider
+                )
+        )
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final isConnected = connectivityService.isConnected;
-    final cubit = context.read<NewsCubit>();
     return Scaffold(
       appBar: AppBar(
         title: const Text("Today's News"),
@@ -66,13 +78,13 @@ class HomeLayout extends StatelessWidget {
                 text: isConnected ? 'online' : 'offline'
             ),
             Expanded(
-                child: cubit.screenItems[currentIndex])
+                child: screenItems[currentIndex])
           ]
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: currentIndex,
-        onTap: (index) => cubit.changeScreen(index: index),
-        items: cubit.barItems,
+        onTap: (index) => onChange(index),
+        items: barItems,
       ),
     );
   }
@@ -84,7 +96,6 @@ class ConnectionBanner extends StatefulWidget {
   final Color bgColor;
   final IconData icon;
   final String text;
-  final int duration;
 
   const ConnectionBanner({
     super.key,
@@ -92,16 +103,14 @@ class ConnectionBanner extends StatefulWidget {
     required this.bgColor,
     required this.icon,
     required this.text,
-    this.duration = 0,
   });
 
   @override
   _ConnectionBannerState createState() => _ConnectionBannerState();
 }
 
-class _ConnectionBannerState extends State<ConnectionBanner> {
+class _ConnectionBannerState extends State<ConnectionBanner> with DebounceMixin {
   late double _height;
-  Timer? _timer;
 
   static const _milliseconds = 300;
 
@@ -113,12 +122,11 @@ class _ConnectionBannerState extends State<ConnectionBanner> {
   }
 
   void _startTimer() {
-    _timer?.cancel();
-
-    if (widget.duration > UiSizes.none) {
-      _timer = Timer(Duration(seconds: widget.duration), () {
-        _hideBanner();
-      });
+    if (widget.isVisible) {
+      runDebounced(
+          AppDurations.seconds, () =>
+          _hideBanner()
+      );
     }
   }
 
@@ -128,7 +136,6 @@ class _ConnectionBannerState extends State<ConnectionBanner> {
         _height = UiSizes.none;
       });
     }
-    _timer?.cancel();
   }
 
   @override
@@ -162,7 +169,7 @@ class _ConnectionBannerState extends State<ConnectionBanner> {
 
   @override
   void dispose() {
-    _timer?.cancel();
+    disposeDebounce();
     super.dispose();
   }
 }

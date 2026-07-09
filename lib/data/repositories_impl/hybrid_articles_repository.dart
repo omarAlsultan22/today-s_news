@@ -20,8 +20,10 @@ class HybridArticlesRepository implements DataRepository {
         _connectivityService = connectivityService;
 
   @override
-  Future<List<Article>> fetchArticles(
-      {required String key, required int currentPage}) async {
+  Future<List<Article>> fetchArticles({
+    required String key,
+    required int currentPage
+  }) async {
     try {
       final isConnection = await _connectivityService.checkInternetConnection();
       if (isConnection) {
@@ -37,7 +39,8 @@ class HybridArticlesRepository implements DataRepository {
         return articles;
       }
       return await _localDatabase.fetchArticles(
-          key: key, currentPage: currentPage);
+          key: key, currentPage: currentPage
+      );
     }
     catch (e) {
       rethrow;
