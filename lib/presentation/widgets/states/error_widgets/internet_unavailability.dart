@@ -18,24 +18,12 @@ class InternetUnavailability extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Column(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: UiSizes.largeSize),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(Icons.wifi_off),
-                const SizedBox(width: UiSizes.smallSize),
-                Text(message ?? AppStrings.noInternetMessage)
-              ],
-            ),
-          ),
-          const SizedBox(height: 30.0),
-          ElevatedButton(
-            onPressed: onRetry,
-            child: Text(buttonText!),
-          ),
+          const Icon(Icons.wifi_off),
+          const SizedBox(width: UiSizes.smallSize),
+          Text(message ?? AppStrings.noInternetMessage)
         ],
       ),
     );

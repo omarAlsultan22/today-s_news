@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:dio/dio.dart';
+
 import '../states/news_state.dart';
 import 'package:flutter/material.dart';
 import '../../constants/app_durations.dart';
@@ -42,8 +44,10 @@ class NewsCubit extends Cubit<NewsState> with ErrorHandlerMixin<NewsState>, Debo
   List<BottomNavigationBarItem> get barItems => BottomNavigationBarItems.items;
 
   void _updateConnectionStatus() {
-    if (_connectivityProvider.isConnected && state.productsIsEmpty) {
-      changeScreen(index: state.currentTabIndex);
+    if (_connectivityProvider.isConnected) {
+      if (state.productsIsEmpty) {
+        changeScreen(index: state.currentTabIndex);
+      }
     }
   }
 
@@ -51,24 +55,29 @@ class NewsCubit extends Cubit<NewsState> with ErrorHandlerMixin<NewsState>, Debo
     required int index,
     required CategoryData newTabData
   }) {
-    emit(state
-        .updateTab(index, newTabData)
-        .copyWith(subState: SuccessState()));
+    emit(
+        state.updateTab(
+            index, newTabData)
+            .copyWith(
+            subState: SuccessState()
+        )
+    );
   }
 
   Future<void> changeScreen({required int index}) async {
     emit(state.copyWith(currentTabIndex: index));
     final productsIsEmpty = state.productsIsEmpty;
-    if (!productsIsEmpty) return;
+    if (!state.productsIsEmpty) return;
 
     if (!_connectivityProvider.isConnected) {
       handleError(
-          AppStrings.noInternetMessage,
-          StackTrace.current,
+          stackTrace: StackTrace.current,
+          error: DioException(type: DioExceptionType.connectionError,
+              requestOptions: RequestOptions()),
           onError: (failure) =>
               state.copyWith(
                   subState: ErrorState(
-                      exception: NetworkAppException()
+                      exception: failure
                   )
               )
       );
@@ -92,7 +101,9 @@ class NewsCubit extends Cubit<NewsState> with ErrorHandlerMixin<NewsState>, Debo
       _successState(index: index, newTabData: newTabData);
     }
     catch (e, stackTrace) {
-      handleError(e, stackTrace,
+      handleError(
+          error: e,
+          stackTrace: stackTrace,
           onError: (failure) =>
               state.copyWith(
                   subState: ErrorState(

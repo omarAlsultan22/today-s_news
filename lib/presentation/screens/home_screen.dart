@@ -51,12 +51,11 @@ class HomeScreen extends StatelessWidget {
 
     return BlocProvider<NewsCubit>(
         create: (context) =>
-        NewsCubit(
-            loadDataUseCase: loadDataUseCase,
-            changeTabUseCase: changeTabUseCase,
-            connectivityProvider: connectivityProvider
-        )
-          ..changeScreen(index: 0),
+            NewsCubit(
+                loadDataUseCase: loadDataUseCase,
+                changeTabUseCase: changeTabUseCase,
+                connectivityProvider: connectivityProvider
+            ),
         child: BlocBuilder<NewsCubit, NewsState>(
             builder: (context, state) {
               final cubit = NewsCubit.get(context);

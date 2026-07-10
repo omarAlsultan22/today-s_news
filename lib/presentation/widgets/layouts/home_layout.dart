@@ -40,17 +40,19 @@ class HomeLayout extends StatelessWidget {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) =>
-                SearchScreen(loadDataUseCase: loadDataUseCase,
-                    connectivityProvider: connectivityProvider
-                )
+            builder: (context) => SearchScreen(
+                loadDataUseCase: loadDataUseCase,
+                connectivityProvider: connectivityProvider
+            )
         )
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final isConnected = connectivityService.isConnected;
+    final showOnlineMessage = connectivityService.showOnlineMessage;
+    final showOfflineMessage = connectivityService.showOfflineMessage;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Today's News"),
@@ -61,25 +63,34 @@ class HomeLayout extends StatelessWidget {
           ),
           IconButton(
             onPressed: () {
-              Provider.of<ThemeNotifier>(context, listen: false)
-                  .toggleTheme();
+              Provider.of<ThemeNotifier>(context, listen: false).toggleTheme();
             },
             icon: const Icon(Icons.brightness_4_outlined),
           ),
         ],
       ),
       body: Column(
-          children: [
-            ConnectionBanner(
-                isVisible: isConnected,
-                bgColor: isConnected ? const Color(0xFF388E3C) : const Color(
-                    0xFFD32F2F),
-                icon: isConnected ? Icons.wifi : Icons.signal_wifi_off,
-                text: isConnected ? 'online' : 'offline'
+        children: [
+          if (showOfflineMessage)
+            const ConnectionBanner(
+              bgColor: Color(0xFFD32F2F),
+              icon: Icons.signal_wifi_off,
+              text: '🔴 لا يوجد اتصال بالإنترنت',
+              isVisible: true,
             ),
-            Expanded(
-                child: screenItems[currentIndex])
-          ]
+
+          if (showOnlineMessage)
+            const ConnectionBanner(
+              bgColor: Color(0xFF388E3C),
+              icon: Icons.wifi,
+              text: '🟢 تم استعادة الاتصال',
+              isVisible: true,
+            ),
+
+          Expanded(
+              child: screenItems[currentIndex]
+          )
+        ],
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: currentIndex,
@@ -111,22 +122,52 @@ class ConnectionBanner extends StatefulWidget {
 
 class _ConnectionBannerState extends State<ConnectionBanner> with DebounceMixin {
   late double _height;
+  bool _isHidden = false;
 
   static const _milliseconds = 300;
 
   @override
   void initState() {
     super.initState();
-    _height = 40.0;
-    _startTimer();
+    _height = widget.isVisible ? 40.0 : 0.0;
+
+    // ✅ بدء المؤقت لإخفاء البانر بعد 5 ثواني
+    if (widget.isVisible) {
+      _startAutoHideTimer();
+    }
   }
 
-  void _startTimer() {
-    if (widget.isVisible) {
-      runDebounced(
-          AppDurations.seconds, () =>
-          _hideBanner()
-      );
+  @override
+  void didUpdateWidget(ConnectionBanner oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (widget.isVisible != oldWidget.isVisible) {
+      if (widget.isVisible) {
+        _showBanner();
+        _startAutoHideTimer();  // ✅ إعادة تشغيل المؤقت
+      } else {
+        _hideBanner();
+      }
+    }
+  }
+
+  void _startAutoHideTimer() {
+    // ✅ إلغاء المؤقت القديم
+    disposeDebounce();
+
+    // ✅ بدء مؤقت جديد للإخفاء بعد 5 ثواني
+    runDebounced(
+        AppDurations.seconds,  // 5 ثواني
+            () => _hideBanner()
+    );
+  }
+
+  void _showBanner() {
+    if (mounted) {
+      setState(() {
+        _height = 40.0;
+        _isHidden = false;
+      });
     }
   }
 
@@ -134,12 +175,18 @@ class _ConnectionBannerState extends State<ConnectionBanner> with DebounceMixin 
     if (mounted) {
       setState(() {
         _height = UiSizes.none;
+        _isHidden = true;
       });
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    // ✅ إذا كان البانر مخفياً أو غير مرئي، لا نعرضه
+    if (_isHidden || !widget.isVisible) {
+      return const SizedBox.shrink();
+    }
+
     return AnimatedContainer(
       duration: const Duration(milliseconds: _milliseconds),
       curve: Curves.easeInOut,
@@ -173,5 +220,3 @@ class _ConnectionBannerState extends State<ConnectionBanner> with DebounceMixin 
     super.dispose();
   }
 }
-
-

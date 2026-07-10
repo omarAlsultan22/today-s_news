@@ -1,11 +1,10 @@
 import 'dart:async';
+import 'package:dio/dio.dart';
 import '../states/search_state.dart';
 import '../mixins/error_handler_mixin.dart';
 import '../../data/models/category_data.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:todays_news/constants/app_strings.dart';
 import 'package:todays_news/constants/app_durations.dart';
-import '../../errors/exceptions/network_app_exception.dart';
 import 'package:todays_news/presentation/mixins/debounce_mixin.dart';
 import 'package:todays_news/presentation/states/base/app_states.dart';
 import '../../domain/useCases/tab_useCases/load_tab_data_useCase.dart';
@@ -33,11 +32,8 @@ class SearchCubit extends Cubit<SearchState> with ErrorHandlerMixin<SearchState>
 
   void _updateConnectionStatus() {
     if (_connectivityProvider.isConnected) {
-      if (!state.queryIsEmpty) {
+      if (!state.queryIsEmpty && state.productsIsEmpty) {
         getSearch(query: state.query);
-      }
-      else {
-        emit(state.copyWith(subState: InitialState()));
       }
     }
   }
@@ -58,22 +54,23 @@ class SearchCubit extends Cubit<SearchState> with ErrorHandlerMixin<SearchState>
   }) async {
     if (!_connectivityProvider.isConnected) {
       handleError(
-        AppStrings.noInternetMessage,
-        StackTrace.current,
-        onError: (failure) =>
-            state.copyWith(
-                query: query,
-                subState: ErrorState(
-                    exception: NetworkAppException()
-                )
-            ),
+          stackTrace: StackTrace.current,
+          error: DioException(type: DioExceptionType.connectionError,
+              requestOptions: RequestOptions()),
+          onError: (failure) =>
+              state.copyWith(
+                  subState: ErrorState(
+                      exception: failure
+                  )
+              )
       );
       return;
     }
     emit(
         state.copyWith(
             query: query,
-            subState: LoadingState()
+            subState: LoadingState(),
+            categoryData: const CategoryData()
         )
     );
     try {
@@ -85,7 +82,9 @@ class SearchCubit extends Cubit<SearchState> with ErrorHandlerMixin<SearchState>
     }
 
     catch (e, stackTrace) {
-      handleError(e, stackTrace,
+      handleError(
+          error: e,
+          stackTrace: stackTrace,
           onError: (failure) =>
               state.copyWith(
                   subState: ErrorState(

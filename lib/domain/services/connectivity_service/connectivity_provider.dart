@@ -4,41 +4,76 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 
 
 class ConnectivityProvider with ChangeNotifier {
-  bool _isConnected = true;
+  // المتغيرات الأساسية
+  bool _isConnected = false;
   bool _showOnlineMessage = false;
+  bool _showOfflineMessage = false;
   String _connectionType = 'Unknown';
+  bool _isInitialized = false;
+
+  // الـ Subscriptions والـ Timers
   StreamSubscription<List<ConnectivityResult>>? connectivitySubscription;
   Timer? _onlineMessageTimer;
+  Timer? _offlineMessageTimer;
   Timer? _checkTimer;
 
   static const _none = 'None';
 
+  // Getters
   bool get isConnected => _isConnected;
-
   bool get showOnlineMessage => _showOnlineMessage;
-
+  bool get showOfflineMessage => _showOfflineMessage;
   String get connectionType => _connectionType;
+  bool get isInitialized => _isInitialized;
 
   final Connectivity _connectivity = Connectivity();
 
-
+  // Constructor
   ConnectivityProvider() {
     _initConnectivity();
     _startPeriodicCheck();
   }
 
+  // ==================== التهيئة ====================
+
   void _initConnectivity() async {
     try {
-      // الحالة الأولية
-      await _checkConnectivity();
+      // التحقق من الحالة الأولية
+      final result = await _connectivity.checkConnectivity();
+      final bool initialStatus = _hasConnection(result);
+      final String initialType = _getConnectionType(result);
 
-      // الاستماع للتغيرات
+      // تحديث القيم مباشرة
+      _isConnected = initialStatus;
+      _connectionType = initialType;
+      _isInitialized = true;
+
+      // إشعار واحد فقط بعد التهيئة
+      notifyListeners();
+
+      // عرض الرسالة المناسبة بعد التأكد من الحالة
+      if (_isConnected) {
+        _showTemporaryOnlineMessage();
+      } else {
+        _showTemporaryOfflineMessage();
+      }
+
+      // بدء الاستماع للتغيرات
       connectivitySubscription = listenToStatus(updateConnectionStatus);
+
     } catch (e) {
       print('Error initializing connectivity: $e');
-      updateConnectionStatus([ConnectivityResult.none]);
+      _isConnected = false;
+      _connectionType = _none;
+      _isInitialized = true;
+      notifyListeners();
+
+      // عرض رسالة عدم الاتصال
+      _showTemporaryOfflineMessage();
     }
   }
+
+  // ==================== التحقق من الاتصال ====================
 
   Future<void> _checkConnectivity() async {
     try {
@@ -49,6 +84,8 @@ class ConnectivityProvider with ChangeNotifier {
       updateConnectionStatus([ConnectivityResult.none]);
     }
   }
+
+  // ==================== الاستماع للتغيرات ====================
 
   StreamSubscription<List<ConnectivityResult>> listenToStatus(
       void Function(List<ConnectivityResult> event) onData) {
@@ -61,6 +98,8 @@ class ConnectivityProvider with ChangeNotifier {
     );
   }
 
+  // ==================== الفحص الدوري ====================
+
   void _startPeriodicCheck() {
     // فحص دوري كل 10 ثوان للتأكد من الاتصال
     _checkTimer = Timer.periodic(const Duration(seconds: 10), (timer) async {
@@ -68,7 +107,12 @@ class ConnectivityProvider with ChangeNotifier {
     });
   }
 
+  // ==================== تحديث حالة الاتصال ====================
+
   void updateConnectionStatus(List<ConnectivityResult> results) {
+    // تجاهل التحديثات قبل التهيئة
+    if (!_isInitialized) return;
+
     final bool newStatus = _hasConnection(results);
     final String newType = _getConnectionType(results);
 
@@ -83,25 +127,25 @@ class ConnectivityProvider with ChangeNotifier {
         // فقدان الاتصال
         print('Connection lost');
         _hideOnlineMessage();
-
-        // إشعار بفقدان الاتصال
+        _showTemporaryOfflineMessage();
         _notifyWithDelay();
+
       } else if (!wasConnected && newStatus) {
         // استعادة الاتصال
         print('Connection restored');
+        _hideOfflineMessage();
         _showTemporaryOnlineMessage();
-
-        // إشعار فوري
         notifyListeners();
-
-        // محاولة إعادة تحميل البيانات
         _tryReloadData();
+
       } else {
         // تغيير في نوع الاتصال فقط
         notifyListeners();
       }
     }
   }
+
+  // ==================== دوال المساعدة ====================
 
   bool _hasConnection(List<ConnectivityResult> results) {
     if (results.isEmpty) return false;
@@ -130,6 +174,8 @@ class ConnectivityProvider with ChangeNotifier {
     return _none;
   }
 
+  // ==================== عرض وإخفاء الرسائل ====================
+
   void _showTemporaryOnlineMessage() {
     _onlineMessageTimer?.cancel();
     _showOnlineMessage = true;
@@ -141,10 +187,30 @@ class ConnectivityProvider with ChangeNotifier {
     });
   }
 
+  void _showTemporaryOfflineMessage() {
+    _offlineMessageTimer?.cancel();
+    _showOfflineMessage = true;
+    notifyListeners();
+
+    _offlineMessageTimer = Timer(const Duration(seconds: 5), () {
+      _showOfflineMessage = false;
+      notifyListeners();
+    });
+  }
+
   void _hideOnlineMessage() {
     _onlineMessageTimer?.cancel();
     _showOnlineMessage = false;
+    notifyListeners();
   }
+
+  void _hideOfflineMessage() {
+    _offlineMessageTimer?.cancel();
+    _showOfflineMessage = false;
+    notifyListeners();
+  }
+
+  // ==================== دوال إضافية ====================
 
   void _notifyWithDelay() {
     // تأخير صغير للتأكد من أن UI قد استقبل التحديث
@@ -164,15 +230,20 @@ class ConnectivityProvider with ChangeNotifier {
     });
   }
 
+  // ==================== تحديث يدوي ====================
+
   Future<void> refreshConnection() async {
     // تحديث يدوي لحالة الاتصال
     await _checkConnectivity();
   }
 
+  // ==================== تنظيف الموارد ====================
+
   @override
   void dispose() {
     connectivitySubscription?.cancel();
     _onlineMessageTimer?.cancel();
+    _offlineMessageTimer?.cancel();
     _checkTimer?.cancel();
     super.dispose();
   }
