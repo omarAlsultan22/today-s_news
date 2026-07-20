@@ -17,7 +17,8 @@ class SearchRepository implements DataRepository {
   @override
   Future<List<Article>> fetchArticles({
     required String key,
-    required int currentPage
+    required int currentPage,
+    required int currentIndex,
   }) async {
     try {
       final response = await _dioHelper.getData(

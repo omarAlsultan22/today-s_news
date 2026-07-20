@@ -5,5 +5,6 @@ abstract class DataRepository {
   Future<List<Article>> fetchArticles({
     required String key,
     required int currentPage,
+    required int currentIndex,
   });
 }

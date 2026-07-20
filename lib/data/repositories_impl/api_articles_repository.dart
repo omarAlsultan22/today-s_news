@@ -17,6 +17,8 @@ class ApiArticlesRepository implements DataRepository {
   Future<List<Article>> fetchArticles({
     required String key,
     required int currentPage,
+    required int currentIndex,
+
   }) async {
     try {
       final response = await _dioHelper.getData(

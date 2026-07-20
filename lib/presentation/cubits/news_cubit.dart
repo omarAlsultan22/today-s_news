@@ -1,14 +1,11 @@
 import 'dart:async';
 import 'package:dio/dio.dart';
-
 import '../states/news_state.dart';
 import 'package:flutter/material.dart';
 import '../../constants/app_durations.dart';
 import '../mixins/error_handler_mixin.dart';
 import '../../data/models/category_data.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:todays_news/constants/app_strings.dart';
-import '../../errors/exceptions/network_app_exception.dart';
 import '../../domain/useCases/tab_useCases/change_tab_useCase.dart';
 import 'package:todays_news/presentation/mixins/debounce_mixin.dart';
 import 'package:todays_news/presentation/states/base/app_states.dart';
@@ -45,9 +42,7 @@ class NewsCubit extends Cubit<NewsState> with ErrorHandlerMixin<NewsState>, Debo
 
   void _updateConnectionStatus() {
     if (_connectivityProvider.isConnected) {
-      if (state.productsIsEmpty) {
-        changeScreen(index: state.currentTabIndex);
-      }
+      changeScreen(index: state.currentTabIndex, currentPage: 0);
     }
   }
 
@@ -64,7 +59,7 @@ class NewsCubit extends Cubit<NewsState> with ErrorHandlerMixin<NewsState>, Debo
     );
   }
 
-  Future<void> changeScreen({required int index}) async {
+  Future<void> changeScreen({required int index, int? currentPage}) async {
     emit(state.copyWith(currentTabIndex: index));
     final productsIsEmpty = state.productsIsEmpty;
     if (!state.productsIsEmpty) return;
@@ -88,9 +83,9 @@ class NewsCubit extends Cubit<NewsState> with ErrorHandlerMixin<NewsState>, Debo
 
     try {
       final newTabData = await _changeTabUseCase.execute(
+        currentPage: currentPage,
         category: state.categoryStatus,
         currentData: state.currentTabData!,
-        loadDataUseCase: _loadDataUseCase,
       );
 
       if (productsIsEmpty && newTabData.productsIsEmpty) {

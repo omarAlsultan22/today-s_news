@@ -18,15 +18,28 @@ class LoadDataUseCase {
   Future<CategoryData> execute({
     String? query,
     String? category,
+    int? currentPage,
     required CategoryData currentData,
   }) async {
     try {
       final key = query ?? category ?? AppStrings.empty;
 
       final newArticles = await _repository.fetchArticles(
-        key: key,
-        currentPage: currentData.page,
+          key: key,
+          currentPage: currentPage ?? currentData.page,
+          currentIndex: currentData.currentIndex
       );
+
+      if (!currentData.productsIsEmpty) {
+        if (currentData.publishedAt != newArticles.first.publishedAt) {
+          return currentData.copyWith(
+            products: newArticles,
+            currentIndex: newArticles.length,
+            hasMore: newArticles.isNotEmpty,
+            page: newArticles.isNotEmpty ? currentPage! + 1 : currentPage,
+          );
+        }
+      }
 
       return _paginationHandler.updateWithNewData(currentData, newArticles);
     }

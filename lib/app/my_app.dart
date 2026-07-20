@@ -49,11 +49,12 @@ class MyApp extends StatelessWidget {
         child: Consumer<ThemeNotifier>(
           builder: (context, themeNotifier, child) {
             return MaterialApp(
-                theme: lightTheme,
-                darkTheme: darkTheme,
-                themeMode: themeNotifier.themeMode,
-                debugShowCheckedModeBanner: false,
-                home: const HomeScreen()
+              theme: lightTheme,
+              darkTheme: darkTheme,
+              home: const HomeScreen(),
+              debugShowCheckedModeBanner: false,
+              themeMode: themeNotifier.themeMode,
+
             );
           },
         )

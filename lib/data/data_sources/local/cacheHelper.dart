@@ -5,6 +5,12 @@ class CacheHelper {
 
   static late SharedPreferences sharedPreferences;
 
+  static final CacheHelper _instance = CacheHelper._internal();
+
+  factory CacheHelper() => _instance;
+
+  CacheHelper._internal();
+
   init() async {
     sharedPreferences = await SharedPreferences.getInstance();
   }
@@ -13,7 +19,7 @@ class CacheHelper {
     required String key,
     required String value
   }) async {
-    return await sharedPreferences.setString(key , value);
+    return await sharedPreferences.setString(key, value);
   }
 
   Future<String?> getString({
@@ -26,7 +32,7 @@ class CacheHelper {
     required String key,
     required int value
   }) async {
-    return await sharedPreferences.setInt(key , value);
+    return await sharedPreferences.setInt(key, value);
   }
 
   Future<int?> getInt({
