@@ -58,12 +58,13 @@ class NewsCubit extends Cubit<NewsState> with ErrorHandlerMixin<NewsState>, Debo
 
   Future<void> changeScreen({required int index}) async {
     emit(state.copyWith(currentTabIndex: index));
+    final currentTabData = state.currentTabData;
+    emit(state.updateTab(index, currentTabData!));
+
     final productsIsEmpty = state.productsIsEmpty;
     if (!state.productsIsEmpty) return;
 
-    final currentTabData = state.currentTabData;
-
-    final newTabData = currentTabData!.copyWith(subState: const LoadingState());
+    final newTabData = currentTabData.copyWith(subState: const LoadingState());
     emit(state.updateTab(index, newTabData));
 
     try {

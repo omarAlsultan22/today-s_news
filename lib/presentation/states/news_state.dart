@@ -27,19 +27,17 @@ class NewsState implements CategoryDataWhenStrategy {
     );
   }
 
-  bool get hasMore => currentTabData!.hasMore;
-
-  bool get productsIsEmpty => currentTabData!.productsIsEmpty;
-
   String get categoryStatus => _categoriesKeys[currentTabIndex];
 
   CategoryData? get currentTabData => tabsData[currentTabIndex];
 
+  bool get productsIsEmpty => currentTabData!.productsIsEmpty;
+
   MainAppState get subState => currentTabData!.subState;
 
+  bool get hasMore => currentTabData!.hasMore;
 
-
-      NewsState updateTab(int index, CategoryData newTabData) {
+  NewsState updateTab(int index, CategoryData newTabData) {
     return copyWith(
         tabsData: {
           ...tabsData,
