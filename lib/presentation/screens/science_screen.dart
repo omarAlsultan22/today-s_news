@@ -37,7 +37,8 @@ class ScienceScreen extends StatelessWidget {
                           onScroll: () => currentCubit.loadMoreData()),
                   onError: (error) =>
                       error.buildErrorWidget(
-                          onRetry: () => currentCubit.changeScreen
+                          onRetry: () =>
+                              currentCubit.changeScreen(index: _screenIndex)
                       )
               );
             }

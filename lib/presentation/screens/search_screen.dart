@@ -6,17 +6,20 @@ import '../mixins/debounce_mixin.dart';
 import '../widgets/lists/list_builder.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../widgets/states/loading_state_widget.dart';
+import '../../domain/useCases/tab_useCases/change_tab_useCase.dart';
 import '../../domain/useCases/tab_useCases/load_tab_data_useCase.dart';
 import '../../domain/services/connectivity_service/connectivity_provider.dart';
 
 
 class SearchScreen extends StatefulWidget {
   final LoadDataUseCase loadDataUseCase;
+  final ChangeTabUseCase changeTabUseCase;
   final ConnectivityProvider connectivityProvider;
 
   const SearchScreen({
     super.key,
     required this.loadDataUseCase,
+    required this.changeTabUseCase,
     required this.connectivityProvider
   });
 
@@ -34,6 +37,7 @@ class _SearchScreenState extends State<SearchScreen> with DebounceMixin {
     super.initState();
     _searchCubit = SearchCubit(
       loadDataUseCase: widget.loadDataUseCase,
+      changeTabUseCase: widget.changeTabUseCase,
       connectivityProvider: widget.connectivityProvider,
     );
   }
@@ -46,10 +50,8 @@ class _SearchScreenState extends State<SearchScreen> with DebounceMixin {
   }
 
   void _onSearchChanged(String query) {
-    if (query.isNotEmpty) {
       runDebounced(const Duration(milliseconds: _debounceMs), () =>
           _searchCubit.getSearch(query: query));
-    }
   }
 
   @override

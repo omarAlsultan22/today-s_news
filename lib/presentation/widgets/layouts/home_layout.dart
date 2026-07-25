@@ -6,9 +6,10 @@ import '../../screens/search_screen.dart';
 import '../../../themes/screen_theme.dart';
 import 'package:todays_news/constants/app_colors.dart';
 import '../../../data/data_sources/remote/dio_helper.dart';
+import '../../../data/repositories_impl/search_repository.dart';
 import 'package:todays_news/presentation/constants/ui_sizes.dart';
+import '../../../domain/useCases/tab_useCases/change_tab_useCase.dart';
 import '../../../domain/useCases/tab_useCases/load_tab_data_useCase.dart';
-import 'package:todays_news/data/repositories_impl/api_articles_repository.dart';
 import '../../../domain/services/connectivity_service/connectivity_provider.dart';
 import 'package:todays_news/presentation/utils/helpers/pagination_state_manager.dart';
 
@@ -31,16 +32,18 @@ class HomeLayout extends StatelessWidget {
 
   void _navPushSearchScreen(BuildContext context) {
     final dioHelper = DioHelper();
-    final repository = ApiArticlesRepository(dioHelper: dioHelper);
+    final repository = SearchRepository(dioHelper: dioHelper);
     final paginationHandler = PaginationHandler();
     final loadDataUseCase = LoadDataUseCase(
         repository: repository, paginationHandler: paginationHandler);
+    final changeTabUseCase = ChangeTabUseCase(loadDataUseCase: loadDataUseCase);
     final connectivityProvider = ConnectivityProvider();
     Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) => SearchScreen(
                 loadDataUseCase: loadDataUseCase,
+                changeTabUseCase: changeTabUseCase,
                 connectivityProvider: connectivityProvider
             )
         )

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:dio/dio.dart';
 import '../states/news_state.dart';
 import 'package:flutter/material.dart';
 import '../../constants/app_durations.dart';
@@ -42,76 +41,61 @@ class NewsCubit extends Cubit<NewsState> with ErrorHandlerMixin<NewsState>, Debo
 
   void _updateConnectionStatus() {
     if (_connectivityProvider.isConnected) {
-      changeScreen(index: state.currentTabIndex, currentPage: 0);
+      changeScreen(index: state.currentTabIndex);
     }
   }
 
   void _successState({
-    required int index,
-    required CategoryData newTabData
+    required CategoryData currentTabData
   }) {
+    final newTabData = currentTabData.copyWith(subState: const SuccessState());
     emit(
         state.updateTab(
-            index, newTabData)
-            .copyWith(
-            subState: SuccessState()
+            state.currentTabIndex, newTabData
         )
     );
   }
 
-  Future<void> changeScreen({required int index, int? currentPage}) async {
+  Future<void> changeScreen({required int index}) async {
     emit(state.copyWith(currentTabIndex: index));
     final productsIsEmpty = state.productsIsEmpty;
     if (!state.productsIsEmpty) return;
 
-    if (!_connectivityProvider.isConnected) {
-      handleError(
-          stackTrace: StackTrace.current,
-          error: DioException(type: DioExceptionType.connectionError,
-              requestOptions: RequestOptions()),
-          onError: (failure) =>
-              state.copyWith(
-                  subState: ErrorState(
-                      exception: failure
-                  )
-              )
-      );
-      return;
-    }
+    final currentTabData = state.currentTabData;
 
-    emit(state.copyWith(subState: LoadingState()));
+    final newTabData = currentTabData!.copyWith(subState: const LoadingState());
+    emit(state.updateTab(index, newTabData));
 
     try {
-      final newTabData = await _changeTabUseCase.execute(
-        currentPage: currentPage,
+      final currentTabData = await _changeTabUseCase.execute(
         category: state.categoryStatus,
         currentData: state.currentTabData!,
       );
 
-      if (productsIsEmpty && newTabData.productsIsEmpty) {
-        emit(state.updateTab(index, newTabData).copyWith(
-            subState: InitialState()));
+      if (productsIsEmpty && currentTabData.productsIsEmpty) {
+        final newTabData = currentTabData.copyWith(
+            subState: const InitialState());
+        emit(state.updateTab(index, newTabData));
       }
 
-      _successState(index: index, newTabData: newTabData);
+      _successState(currentTabData: currentTabData);
     }
     catch (e, stackTrace) {
       handleError(
           error: e,
           stackTrace: stackTrace,
-          onError: (failure) =>
-              state.copyWith(
-                  subState: ErrorState(
-                      exception: failure
-                  )
-              )
+          onError: (failure) {
+            final newTabData = currentTabData.copyWith(subState: ErrorState(
+                exception: failure
+            ));
+            return state.updateTab(index, newTabData);
+          }
       );
     }
   }
 
   Future<void> loadMoreData() async {
     if (!state.hasMore) return;
-    final index = state.currentTabIndex;
 
     try {
       final newTabData = await _loadDataUseCase.execute(
@@ -119,7 +103,7 @@ class NewsCubit extends Cubit<NewsState> with ErrorHandlerMixin<NewsState>, Debo
         currentData: state.currentTabData!,
       );
 
-      _successState(index: index, newTabData: newTabData);
+      _successState(currentTabData: newTabData);
     }
     catch (e) {
       runDebounced(AppDurations.seconds, () =>

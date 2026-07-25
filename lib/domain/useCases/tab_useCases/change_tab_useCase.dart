@@ -9,14 +9,14 @@ class ChangeTabUseCase {
       : _loadDataUseCase = loadDataUseCase;
 
   Future<CategoryData> execute({
-    int? currentPage,
-    required String category,
+    String? query,
+    String? category,
     required CategoryData currentData,
   }) async {
     if (currentData.productsIsEmpty) {
       return await _loadDataUseCase.execute(
+        query: query,
         category: category,
-        currentPage: currentPage,
         currentData: currentData,
       );
     }

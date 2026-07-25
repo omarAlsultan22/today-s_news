@@ -16,8 +16,8 @@ class ErrorStateWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
+    return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: UiSizes.largeSize),
@@ -29,7 +29,6 @@ class ErrorStateWidget extends StatelessWidget {
             child: Text(buttonText!),
           ),
         ],
-      ),
     );
   }
 }

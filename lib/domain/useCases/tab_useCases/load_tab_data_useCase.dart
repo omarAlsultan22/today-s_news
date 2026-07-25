@@ -18,7 +18,6 @@ class LoadDataUseCase {
   Future<CategoryData> execute({
     String? query,
     String? category,
-    int? currentPage,
     required CategoryData currentData,
   }) async {
     try {
@@ -26,17 +25,20 @@ class LoadDataUseCase {
 
       final newArticles = await _repository.fetchArticles(
           key: key,
-          currentPage: currentPage ?? currentData.page,
+          currentPage: currentData.page,
           currentIndex: currentData.currentIndex
       );
 
       if (!currentData.productsIsEmpty) {
-        if (currentData.publishedAt != newArticles.first.publishedAt) {
+        if (currentData.publishedAt == newArticles.first.publishedAt &&
+            currentData.title == newArticles.first.title &&
+            currentData.description == newArticles.first.description) {
           return currentData.copyWith(
             products: newArticles,
             currentIndex: newArticles.length,
             hasMore: newArticles.isNotEmpty,
-            page: newArticles.isNotEmpty ? currentPage! + 1 : currentPage,
+            page: newArticles.isNotEmpty ? currentData.page + 1 : currentData
+                .page,
           );
         }
       }

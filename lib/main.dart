@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'app/my_app.dart';
 import 'config/bloc_observer.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +6,6 @@ import 'errors/mappers/error_handler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'data/data_sources/local/cacheHelper.dart';
 import 'data/data_sources/remote/dio_helper.dart';
-import 'domain/services/connectivity_service/connectivity_service.dart';
 
 
 void main() async {
@@ -16,18 +14,11 @@ void main() async {
   Bloc.observer = MyBlocObserver();
   final cacheHelper = CacheHelper();
   final hiveOperations = HiveOperations(cacheHelper: cacheHelper);
-  final connectivityService = ConnectivityService();
 
   try {
     await dio.init();
     await cacheHelper.init();
     await hiveOperations.init();
-
-    final hasInternet = await connectivityService.checkInternetConnection();
-
-    if (!hasInternet) {
-      throw SocketException;
-    }
 
     runApp(const MyApp());
   }
