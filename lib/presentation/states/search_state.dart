@@ -20,7 +20,7 @@ class SearchState implements CategoryDataWhenStrategy {
   factory SearchState.initial(){
     return SearchState(
       categoryData: const CategoryData(),
-      subState: InitialState(),
+      subState: const InitialState(),
       query: AppStrings.empty,
     );
   }
@@ -47,12 +47,12 @@ class SearchState implements CategoryDataWhenStrategy {
   R when<R>({
     required R Function() onInitial,
     required R Function() onLoading,
-    required R Function(CategoryData) onLoaded,
+    required R Function(CategoryData, {String? query}) onLoaded,
     required R Function(AppException) onError}) {
     return subState.when(
       onInitial: onInitial,
       onLoading: onLoading,
-      onLoaded: () => onLoaded(categoryData),
+      onLoaded: () => onLoaded(categoryData, query: query),
       onError: (error) => onError(error),
     );
   }

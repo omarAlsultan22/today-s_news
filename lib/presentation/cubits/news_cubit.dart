@@ -5,45 +5,37 @@ import '../../constants/app_durations.dart';
 import '../mixins/error_handler_mixin.dart';
 import '../../data/models/category_data.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../domain/useCases/update_date_useCase.dart';
 import '../../domain/useCases/tab_useCases/change_tab_useCase.dart';
 import 'package:todays_news/presentation/mixins/debounce_mixin.dart';
 import 'package:todays_news/presentation/states/base/app_states.dart';
 import '../../domain/useCases/tab_useCases/load_tab_data_useCase.dart';
 import 'package:todays_news/presentation/navigation/screen_items.dart';
-import '../../domain/services/connectivity_service/connectivity_provider.dart';
 import 'package:todays_news/presentation/navigation/bottom_navigation_bar_items.dart';
 
 
 class NewsCubit extends Cubit<NewsState> with ErrorHandlerMixin<NewsState>, DebounceMixin {
   final LoadDataUseCase _loadDataUseCase;
   final ChangeTabUseCase _changeTabUseCase;
-  final ConnectivityProvider _connectivityProvider;
+  final UpdateDateUseCase _updateDateUseCase;
 
   NewsCubit({
     required LoadDataUseCase loadDataUseCase,
     required ChangeTabUseCase changeTabUseCase,
-    required ConnectivityProvider connectivityProvider
+    required UpdateDateUseCase updateDateUseCase
   })
       : _loadDataUseCase = loadDataUseCase,
         _changeTabUseCase = changeTabUseCase,
-        _connectivityProvider = connectivityProvider,
+        _updateDateUseCase = updateDateUseCase,
         super(
         NewsState.initial(),
-      ) {
-    _connectivityProvider.addListener(_updateConnectionStatus);
-  }
+      );
 
   static NewsCubit get(context) => BlocProvider.of<NewsCubit>(context);
 
   List<Widget> get screenItems => ScreenItems.screenItems;
 
   List<BottomNavigationBarItem> get barItems => BottomNavigationBarItems.items;
-
-  void _updateConnectionStatus() {
-    if (_connectivityProvider.isConnected) {
-      changeScreen(index: state.currentTabIndex);
-    }
-  }
 
   void _successState({
     required CategoryData currentTabData
@@ -54,6 +46,26 @@ class NewsCubit extends Cubit<NewsState> with ErrorHandlerMixin<NewsState>, Debo
             state.currentTabIndex, newTabData
         )
     );
+  }
+
+  Future<void> updateData(int index) async {
+    final currentTabData = state.getCurrentCategoryData(index);
+    final currentCategory = state.getCurrentCategoryKey(index);
+
+    if (!currentTabData!.productsIsEmpty) {
+      try {
+        final newTabData = await _updateDateUseCase.execute(
+          page: 1,
+          category: currentCategory,
+          currentData: currentTabData,
+        );
+        emit(state.updateTab(index, newTabData));
+      }
+      catch (e) {
+        runDebounced(AppDurations.seconds, () =>
+            updateData(index));
+      }
+    }
   }
 
   Future<void> changeScreen({required int index}) async {
@@ -79,6 +91,7 @@ class NewsCubit extends Cubit<NewsState> with ErrorHandlerMixin<NewsState>, Debo
         emit(state.updateTab(index, newTabData));
       }
 
+      print('im here second>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.');
       _successState(currentTabData: currentTabData);
     }
     catch (e, stackTrace) {
@@ -113,15 +126,8 @@ class NewsCubit extends Cubit<NewsState> with ErrorHandlerMixin<NewsState>, Debo
     }
   }
 
-  void restLock() {
-    final index = state.currentTabIndex;
-    final newTabData = state.tabsData[index]!;
-    emit(state.updateTab(index, newTabData.copyWith(hasMore: true)));
-  }
-
-  @override
-  Future<void> close() {
-    _connectivityProvider.removeListener(_updateConnectionStatus);
-    return super.close();
+  void restLock(int index) {
+    final newTabData = state.getCurrentCategoryData(index);
+    emit(state.updateTab(index, newTabData!.copyWith(hasMore: true)));
   }
 }

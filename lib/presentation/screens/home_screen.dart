@@ -7,9 +7,12 @@ import '../utils/helpers/pagination_state_manager.dart';
 import 'package:todays_news/presentation/cubits/news_cubit.dart';
 import '../../domain/useCases/tab_useCases/change_tab_useCase.dart';
 import '../../data/repositories_impl/hybrid_articles_repository.dart';
+import 'package:todays_news/data/data_sources/remote/dio_helper.dart';
+import 'package:todays_news/domain/useCases/update_date_useCase.dart';
 import '../../domain/useCases/tab_useCases/load_tab_data_useCase.dart';
 import '../../domain/services/connectivity_service/connectivity_service.dart';
 import '../../domain/services/connectivity_service/connectivity_provider.dart';
+import 'package:todays_news/data/repositories_impl/api_articles_repository.dart';
 
 
 class HomeScreen extends StatelessWidget {
@@ -17,26 +20,30 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final connectivityService = ConnectivityService();
 
-    final repository = HybridArticlesRepository(
+    final hybridRepository = HybridArticlesRepository(
         connectivityService: connectivityService
     );
-
     final paginationHandler = PaginationHandler();
-    final connectivityProvider = ConnectivityProvider();
     final loadDataUseCase = LoadDataUseCase(
-        repository: repository, paginationHandler: paginationHandler);
+        repository: hybridRepository, paginationHandler: paginationHandler);
     final changeTabUseCase = ChangeTabUseCase(loadDataUseCase: loadDataUseCase);
+
+    final dioHelper = DioHelper();
+    final apiRepository = ApiArticlesRepository(
+        dioHelper: dioHelper
+    );
+    final updateDateUseCase = UpdateDateUseCase(repository: apiRepository);
 
     return BlocProvider<NewsCubit>(
         create: (context) =>
-            NewsCubit(
-                loadDataUseCase: loadDataUseCase,
-                changeTabUseCase: changeTabUseCase,
-                connectivityProvider: connectivityProvider
-            ),
+        NewsCubit(
+            loadDataUseCase: loadDataUseCase,
+            changeTabUseCase: changeTabUseCase,
+            updateDateUseCase: updateDateUseCase
+        )
+          ..changeScreen(index: 0),
         child: BlocBuilder<NewsCubit, NewsState>(
             builder: (context, state) {
               final cubit = NewsCubit.get(context);

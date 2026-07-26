@@ -33,7 +33,9 @@ class ConnectivityAwareScreenForCategories extends StatelessWidget {
         final newsCubit = BlocProvider.of<NewsCubit>(context);
         final currentState = newsCubit.state;
         if (currentState.currentTabIndex == screenIndex) {
-          newsCubit.restLock();
+          newsCubit.restLock(screenIndex);
+          newsCubit.updateData(screenIndex);
+          print('im here first>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.');
         }
       } catch (e) {
         debugPrint('Error calling restLock: $e');

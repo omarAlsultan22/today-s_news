@@ -37,6 +37,10 @@ class NewsState implements CategoryDataWhenStrategy {
 
   bool get hasMore => currentTabData!.hasMore;
 
+  String getCurrentCategoryKey(int index) => _categoriesKeys[index];
+
+  CategoryData? getCurrentCategoryData(int index) => tabsData[index];
+
   NewsState updateTab(int index, CategoryData newTabData) {
     return copyWith(
         tabsData: {

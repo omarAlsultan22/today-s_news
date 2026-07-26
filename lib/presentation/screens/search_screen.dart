@@ -50,8 +50,8 @@ class _SearchScreenState extends State<SearchScreen> with DebounceMixin {
   }
 
   void _onSearchChanged(String query) {
-      runDebounced(const Duration(milliseconds: _debounceMs), () =>
-          _searchCubit.getSearch(query: query));
+    runDebounced(const Duration(milliseconds: _debounceMs), () =>
+        _searchCubit.getSearch(query: query));
   }
 
   @override
@@ -81,8 +81,8 @@ class _SearchScreenState extends State<SearchScreen> with DebounceMixin {
     return state.when(
       onInitial: () => const Center(child: Text('Type to start searching')),
       onLoading: () => const LoadingStateWidget(),
-      onLoaded: (data) {
-        if (_searchController.text.isNotEmpty && data.productsIsEmpty) {
+      onLoaded: (data, {query}) {
+          if (_searchController.text.isNotEmpty && data.productsIsEmpty) {
           return const Center(child: Text('No news found'));
         }
         return ListBuilder(
