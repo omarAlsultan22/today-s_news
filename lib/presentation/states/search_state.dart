@@ -8,7 +8,7 @@ import 'package:todays_news/data/models/message_result.dart';
 import 'package:todays_news/presentation/states/base/loaded_states.dart';
 
 
-class SearchState implements CategoryDataWhenStrategy {
+class SearchState implements MainAppSupState {
   final String query;
   final MainAppState subState;
   final CategoryData categoryData;
@@ -30,6 +30,7 @@ class SearchState implements CategoryDataWhenStrategy {
     );
   }
 
+  @override
   TripleModelSuccessState get dataModels =>
       TripleModelSuccessState(
           query: query,

@@ -6,7 +6,7 @@ import 'package:todays_news/data/models/message_result.dart';
 import 'package:todays_news/presentation/states/base/category_data_when_strategy.dart';
 
 
-class NewsState implements CategoryDataWhenStrategy {
+class NewsState implements MainAppSupState {
   final int currentTabIndex;
   final List<String> categories;
   final MessageResult? messageResult;
@@ -42,6 +42,7 @@ class NewsState implements CategoryDataWhenStrategy {
 
   bool get hasMore => currentTabData.hasMore;
 
+  @override
   DoubleModelSuccessState get dataModels =>
       DoubleModelSuccessState(
       categoryData: currentTabData,
