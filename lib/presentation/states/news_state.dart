@@ -1,9 +1,9 @@
 import 'base/loaded_states.dart';
-import 'base/main_app_state.dart';
+import 'base/main_app_sub_state.dart';
 import '../../data/models/category_data.dart';
 import '../../errors/exceptions/base/app_exception.dart';
 import 'package:todays_news/data/models/message_result.dart';
-import 'package:todays_news/presentation/states/base/category_data_when_strategy.dart';
+import 'package:todays_news/presentation/states/base/main_app_sup_state.dart';
 
 
 class NewsState implements MainAppSupState {

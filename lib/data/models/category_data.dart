@@ -1,6 +1,6 @@
 import 'article_Model.dart';
 import '../../presentation/states/base/app_sub_states.dart';
-import '../../presentation/states/base/main_app_state.dart';
+import '../../presentation/states/base/main_app_sub_state.dart';
 
 
 class CategoryData {
