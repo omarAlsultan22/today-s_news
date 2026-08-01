@@ -38,7 +38,7 @@ dependencies:
   flutter_bloc: ^9.1.1
   flutter_lints: ^3.0.0
   cached_network_image: ^3.4.1
-  conditional_builder_null_safety: ^0.0.6
+  flutter_cache_manager: ^3.4.2
   shared_preferences: ^2.5.5
   url_launcher: ^6.3.2
   date_format: ^2.0.9

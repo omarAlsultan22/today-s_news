@@ -5,6 +5,7 @@ import '../../utils/helpers/image_helpers.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../constants/app_durations.dart';
 import 'package:flutter/material.dart';
+import '../news_image.dart';
 
 
 class BuildNewsItemLayout extends StatelessWidget {
@@ -52,8 +53,9 @@ class BuildNewsItemLayout extends StatelessWidget {
                 borderRadius: BorderRadius.circular(UiSizes.smallSize),
               ),
               child: CachedNetworkImage(
-                imageUrl: article.urlToImage,
                 fit: BoxFit.cover,
+                imageUrl: article.urlToImage,
+                cacheManager: CustomCacheManager(),
                 memCacheHeight: ImageHelpers.calculateOptimalCacheHeight(
                     context,
                     targetHeight: _largeSpacing,
@@ -100,5 +102,7 @@ class BuildNewsItemLayout extends StatelessWidget {
     );
   }
 }
+
+
 
 

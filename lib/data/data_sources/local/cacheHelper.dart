@@ -11,7 +11,7 @@ class CacheHelper {
 
   CacheHelper._internal();
 
-  init() async {
+  Future<void> init() async {
     sharedPreferences = await SharedPreferences.getInstance();
   }
 

@@ -1,16 +1,16 @@
 import 'dart:async';
 import '../states/news_state.dart';
 import 'package:flutter/material.dart';
-import '../../constants/app_durations.dart';
 import '../mixins/error_handler_mixin.dart';
 import '../../data/models/category_data.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/useCases/update_date_useCase.dart';
+import 'package:todays_news/data/models/message_result.dart';
 import '../../domain/useCases/tab_useCases/change_tab_useCase.dart';
 import 'package:todays_news/presentation/mixins/debounce_mixin.dart';
-import 'package:todays_news/presentation/states/base/app_states.dart';
 import '../../domain/useCases/tab_useCases/load_tab_data_useCase.dart';
 import 'package:todays_news/presentation/navigation/screen_items.dart';
+import 'package:todays_news/presentation/states/base/app_sub_states.dart';
 import 'package:todays_news/presentation/navigation/bottom_navigation_bar_items.dart';
 
 
@@ -50,49 +50,52 @@ class NewsCubit extends Cubit<NewsState> with ErrorHandlerMixin<NewsState>, Debo
 
   Future<void> updateData(int index) async {
     final currentTabData = state.getCurrentCategoryData(index);
-    final currentCategory = state.getCurrentCategoryKey(index);
 
     if (!currentTabData!.productsIsEmpty) {
-      try {
-        final newTabData = await _updateDateUseCase.execute(
-          page: 1,
-          category: currentCategory,
-          currentData: currentTabData,
-        );
-        emit(state.updateTab(index, newTabData));
-      }
-      catch (e) {
-        runDebounced(AppDurations.seconds, () =>
-            updateData(index));
-      }
+      final currentCategory = state.getCurrentCategoryKey(index);
+
+      final newTabData = await _updateDateUseCase.execute(
+        page: 1,
+        key: currentCategory,
+        currentData: currentTabData,
+      );
+      final newState = state.updateTab(index, newTabData);
+      emit(newState.copyWith(messageResult: MessageResult.success(
+          message: 'The news has been successfully updated')));
+      return;
+    }
+
+    if (state.productsIsEmpty && state.currentTabIndex == index) {
+      await loadCurrentTabData(state.currentTabIndex);
     }
   }
 
-  Future<void> changeScreen({required int index}) async {
+  void changeTab(int index) {
     emit(state.copyWith(currentTabIndex: index));
-    final currentTabData = state.currentTabData;
-    emit(state.updateTab(index, currentTabData!));
+  }
 
-    final productsIsEmpty = state.productsIsEmpty;
+  Future<void> loadCurrentTabData(index) async {
     if (!state.productsIsEmpty) return;
+
+    final currentTabData = state.currentTabData;
 
     final newTabData = currentTabData.copyWith(subState: const LoadingState());
     emit(state.updateTab(index, newTabData));
 
     try {
-      final currentTabData = await _changeTabUseCase.execute(
+      final categoryData = await _changeTabUseCase.execute(
         category: state.categoryStatus,
-        currentData: state.currentTabData!,
+        currentData: state.currentTabData,
       );
 
-      if (productsIsEmpty && currentTabData.productsIsEmpty) {
-        final newTabData = currentTabData.copyWith(
+      if (state.productsIsEmpty && categoryData.productsIsEmpty) {
+        final newTabData = categoryData.copyWith(
             subState: const InitialState());
         emit(state.updateTab(index, newTabData));
+        return;
       }
 
-      print('im here second>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.');
-      _successState(currentTabData: currentTabData);
+      _successState(currentTabData: categoryData);
     }
     catch (e, stackTrace) {
       handleError(
@@ -108,20 +111,29 @@ class NewsCubit extends Cubit<NewsState> with ErrorHandlerMixin<NewsState>, Debo
     }
   }
 
+  Future<void> switchTabAndLoadData({required int index}) async {
+    changeTab(index);
+    await loadCurrentTabData(index);
+  }
+
   Future<void> loadMoreData() async {
     if (!state.hasMore) return;
 
     try {
       final newTabData = await _loadDataUseCase.execute(
         category: state.categoryStatus,
-        currentData: state.currentTabData!,
+        currentData: state.currentTabData,
       );
 
       _successState(currentTabData: newTabData);
     }
-    catch (e) {
-      runDebounced(AppDurations.seconds, () =>
-          loadMoreData()
+    catch (e, stackTrace) {
+      handleError(
+          error: e,
+          stackTrace: stackTrace,
+          onError: (failure) =>
+              state.copyWith(messageResult: MessageResult.error(
+                  message: 'Failed to fetch more data'))
       );
     }
   }

@@ -29,16 +29,18 @@ class SportsScreen extends StatelessWidget {
                       icon: Icons.sports, category: 'sports'),
                   onLoading: () =>
                   const LoadingStateWidget(),
-                  onLoaded: (newTabData) =>
+                  onLoaded: (data) =>
                       ListBuilder(
                           isLocked: false,
-                          list: newTabData.products,
-                          hasMore: newTabData.hasMore,
+                          list: data.products,
+                          hasMore: data.hasMore,
+                          messageResult: data.messageResult,
                           onScroll: () => currentCubit.loadMoreData()),
                   onError: (error) =>
                       error.buildErrorWidget(
                           onRetry: () =>
-                              currentCubit.changeScreen(index: _screenIndex)
+                              currentCubit.switchTabAndLoadData(
+                                  index: _screenIndex)
                       )
               );
             }

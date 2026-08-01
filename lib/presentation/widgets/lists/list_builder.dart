@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import '../layouts/build_news_item_layout.dart';
 import '../../../data/models/article_Model.dart';
+import 'package:todays_news/data/config/news_config.dart';
+import 'package:todays_news/data/models/message_result.dart';
 import 'package:todays_news/presentation/constants/ui_sizes.dart';
 
 
@@ -9,12 +12,14 @@ class ListBuilder extends StatefulWidget {
   final bool hasMore;
   final List<Article> list;
   final VoidCallback onScroll;
+  final MessageResult? messageResult;
   ListBuilder({
     super.key,
     required this.list,
     required this.hasMore,
     required this.onScroll,
-    required this.isLocked
+    required this.isLocked,
+    required this.messageResult
   });
 
   @override
@@ -29,6 +34,24 @@ class _ListBuilderState extends State<ListBuilder> {
   void initState() {
     super.initState();
     _scrollController.addListener(_onScrollData);
+  }
+
+  @override
+  void didUpdateWidget(covariant ListBuilder oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.messageResult != null) {
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        _showMessageResult(widget.messageResult!);
+      });
+      setState(() {});
+    }
+  }
+
+  void _showMessageResult(MessageResult messageResult) {
+    ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(messageResult.message!),
+            backgroundColor: messageResult.color)
+    );
   }
 
   void _onScrollData() {
@@ -70,7 +93,7 @@ class _ListBuilderState extends State<ListBuilder> {
           return BuildNewsItemLayout(data[index]);
         } else {
           return Center(
-            child: hasMore!
+            child: hasMore! && data.length > NewsConfig.pageSize
                 ? const CircularProgressIndicator() :
             const SizedBox(),
           );

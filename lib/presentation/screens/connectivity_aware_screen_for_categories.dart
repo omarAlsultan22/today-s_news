@@ -28,14 +28,13 @@ class ConnectivityAwareScreenForCategories extends StatelessWidget {
   }
 
   void _callRestLockIfNeeded(BuildContext context, int screenIndex) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       try {
         final newsCubit = BlocProvider.of<NewsCubit>(context);
         final currentState = newsCubit.state;
         if (currentState.currentTabIndex == screenIndex) {
           newsCubit.restLock(screenIndex);
-          newsCubit.updateData(screenIndex);
-          print('im here first>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.');
+          await newsCubit.updateData(screenIndex);
         }
       } catch (e) {
         debugPrint('Error calling restLock: $e');

@@ -81,15 +81,16 @@ class _SearchScreenState extends State<SearchScreen> with DebounceMixin {
     return state.when(
       onInitial: () => const Center(child: Text('Type to start searching')),
       onLoading: () => const LoadingStateWidget(),
-      onLoaded: (data, {query}) {
-          if (_searchController.text.isNotEmpty && data.productsIsEmpty) {
+      onLoaded: (data) {
+        if (data.queryIsNotEmpty && data.productsIsEmpty) {
           return const Center(child: Text('No news found'));
         }
         return ListBuilder(
-          isLocked: false,
-          list: data.products,
-          hasMore: data.hasMore,
-          onScroll: _searchCubit.loadMoreSearch,
+            isLocked: false,
+            list: data.products,
+            hasMore: data.hasMore,
+            messageResult: data.messageResult,
+            onScroll: _searchCubit.loadMoreSearch
         );
       },
       onError: (error) =>

@@ -1,6 +1,6 @@
+import '../../config/news_config.dart';
 import '../../models/article_Model.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:todays_news/data/config/news_config.dart';
 import 'package:todays_news/data/data_sources/local/cacheHelper.dart';
 
 
@@ -35,7 +35,7 @@ class HiveOperations {
     return _sportsBox!;
   }
 
-  static final Map<String,Box<Article>> _boxes = {
+  static final Map<String, Box<Article>> _boxes = {
     'business': businessBox,
     'science': scienceBox,
     'sports': sportsBox
@@ -56,27 +56,33 @@ class HiveOperations {
 
   Future<void> putLocalData({
     required String key,
-    required int currentIndex,
+    required int itemsCount,
     required List<Article> articles
   }) async {
     try {
       final currentBox = _boxes[key];
-      for (int i = currentIndex; i < articles.length; i++) {
-        await currentBox!.put('item_$i', articles[i]);
+      for (int i = 0; i < articles.length; i++) {
+        final number = itemsCount + i;
+        await currentBox!.put('item_$number', articles[i]);
       }
     } catch (e) {
       rethrow;
     }
   }
 
-  Future<List<Article>> getLocalData({required String key, required int currentIndex}) async {
+  Future<List<Article>> getLocalData({
+    required String key,
+    required int currentIndex
+  }) async {
     try {
       List<Article> articles = [];
       final currentBox = _boxes[key];
-      final itemsCount = await _cacheHelper.getInt(key: key) ?? 0;
-      final length = NewsConfig.pageSize < itemsCount
-          ? NewsConfig.pageSize
+      final itemsCount = await _cacheHelper.getInt(key: '$key-itemsCount') ?? 0;
+      final currentPage = currentIndex + NewsConfig.pageSize;
+      final length = currentPage < itemsCount
+          ? currentPage
           : itemsCount;
+
       for (int i = currentIndex; i < length; i++) {
         final article = currentBox!.get('item_$i');
         if (article != null) {

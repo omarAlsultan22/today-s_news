@@ -1,5 +1,5 @@
 import 'article_Model.dart';
-import '../../presentation/states/base/app_states.dart';
+import '../../presentation/states/base/app_sub_states.dart';
 import '../../presentation/states/base/main_app_state.dart';
 
 
@@ -18,11 +18,7 @@ class CategoryData {
     this.page = 1
   });
 
-  String get title => products.first.title;
-
   bool get productsIsEmpty => products.isEmpty;
-
-  String get description => products.first.description;
 
   String get publishedAt => products.first.publishedAt;
 

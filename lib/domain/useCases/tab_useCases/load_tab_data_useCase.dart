@@ -16,7 +16,6 @@ class LoadDataUseCase {
         _paginationHandler = paginationHandler;
 
   Future<CategoryData> execute({
-    int? page,
     String? query,
     String? category,
     required CategoryData currentData,
@@ -24,11 +23,13 @@ class LoadDataUseCase {
     try {
       final key = query ?? category ?? AppStrings.empty;
 
+      print(currentData.page);
       final newArticles = await _repository.fetchArticles(
           key: key,
-          currentPage: page ?? currentData.page,
+          currentPage: currentData.page,
           currentIndex: currentData.currentIndex
       );
+      print(newArticles.length);
 
       return _paginationHandler.updateWithNewData(currentData, newArticles);
     }

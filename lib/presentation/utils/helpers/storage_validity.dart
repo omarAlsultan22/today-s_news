@@ -12,10 +12,10 @@ class StorageValidity {
   static const _dayHours = 24;
 
   Future<bool> has24HoursPassed() async {
-    String? savedTimeString = await _cacheHelper.getString(
-        key: StorageKeys.savedTime);
+    final savedTimeString = await _cacheHelper.getString(
+        key: StorageKeys.savedTime) ?? '';
 
-    if (savedTimeString == null) {
+    if (savedTimeString.isEmpty) {
       return true;
     }
 

@@ -51,17 +51,21 @@ class HiveArticlesRepository implements DataRepository, DataOperations {
   @override
   Future<void> saveArticles({
     required String key,
-    required int currentIndex,
-    required List<Article> articles}) async {
+    required List<Article> articles
+  }) async {
     try {
-      _saveTimeStamp.saveTime();
-      final itemsCount = await _cacheHelper.getInt(key: key) ?? 0;
-      _cacheHelper.setInt(
-          key: 'itemsCount', value: itemsCount + articles.length);
+      await _saveTimeStamp.saveTime();
+      final itemsCount = await _cacheHelper.getInt(key: '$key-itemsCount') ?? 0;
+      final length = articles.length + itemsCount;
+
+      await _cacheHelper.setInt(
+          key: '$key-itemsCount', value: length
+      );
+
       return await _hiveOperations.putLocalData(
         key: key,
         articles: articles,
-        currentIndex: currentIndex,
+        itemsCount: itemsCount,
       );
     }
     catch (e) {

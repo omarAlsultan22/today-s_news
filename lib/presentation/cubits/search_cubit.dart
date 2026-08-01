@@ -8,7 +8,7 @@ import 'package:todays_news/constants/app_strings.dart';
 import 'package:todays_news/constants/app_durations.dart';
 import '../../domain/useCases/tab_useCases/change_tab_useCase.dart';
 import 'package:todays_news/presentation/mixins/debounce_mixin.dart';
-import 'package:todays_news/presentation/states/base/app_states.dart';
+import 'package:todays_news/presentation/states/base/app_sub_states.dart';
 import '../../domain/useCases/tab_useCases/load_tab_data_useCase.dart';
 import '../../domain/services/connectivity_service/connectivity_provider.dart';
 
@@ -37,7 +37,7 @@ class SearchCubit extends Cubit<SearchState> with ErrorHandlerMixin<SearchState>
 
   void _updateConnectionStatus() {
     if (_connectivityProvider.isConnected) {
-      if (!state.queryIsEmpty && state.productsIsEmpty) {
+      if (!state.queryIsNotEmpty && state.productsIsEmpty) {
         getSearch(query: state.query);
       }
     }
@@ -86,6 +86,7 @@ class SearchCubit extends Cubit<SearchState> with ErrorHandlerMixin<SearchState>
             categoryData: const CategoryData()
         )
     );
+
     try {
       final newTabData = await _changeTabUseCase.execute(
         category: query,
