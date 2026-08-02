@@ -15,7 +15,7 @@ import '../../data/repositories_impl/hybrid_articles_repository.dart';
 import 'package:todays_news/data/data_sources/remote/dio_helper.dart';
 import 'package:todays_news/domain/useCases/update_date_useCase.dart';
 import '../../domain/useCases/tab_useCases/load_tab_data_useCase.dart';
-import '../../domain/services/connectivity_service/connectivity_provider.dart';
+import '../providers/connectivity_provider.dart';
 import 'package:todays_news/data/repositories_impl/api_articles_repository.dart';
 
 

@@ -8,7 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../widgets/states/loading_state_widget.dart';
 import '../../domain/useCases/tab_useCases/change_tab_useCase.dart';
 import '../../domain/useCases/tab_useCases/load_tab_data_useCase.dart';
-import '../../domain/services/connectivity_service/connectivity_provider.dart';
+import '../providers/connectivity_provider.dart';
 
 
 class SearchScreen extends StatefulWidget {

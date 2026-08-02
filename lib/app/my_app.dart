@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../data/data_sources/local/cacheHelper.dart';
 import 'package:todays_news/presentation/screens/home_screen.dart';
-import '../domain/services/connectivity_service/connectivity_provider.dart';
+import '../presentation/providers/connectivity_provider.dart';
 
 
 class MyApp extends StatelessWidget {

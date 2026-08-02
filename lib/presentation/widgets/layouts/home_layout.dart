@@ -10,7 +10,7 @@ import '../../../data/repositories_impl/search_repository.dart';
 import 'package:todays_news/presentation/constants/ui_sizes.dart';
 import '../../../domain/useCases/tab_useCases/change_tab_useCase.dart';
 import '../../../domain/useCases/tab_useCases/load_tab_data_useCase.dart';
-import '../../../domain/services/connectivity_service/connectivity_provider.dart';
+import '../../providers/connectivity_provider.dart';
 import 'package:todays_news/presentation/utils/helpers/pagination_state_manager.dart';
 
 

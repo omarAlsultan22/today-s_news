@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todays_news/presentation/cubits/news_cubit.dart';
-import '../../domain/services/connectivity_service/connectivity_provider.dart';
+import '../providers/connectivity_provider.dart';
 
 
 class ConnectivityAwareScreenForCategories extends StatelessWidget {
