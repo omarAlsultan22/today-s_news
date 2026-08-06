@@ -18,9 +18,11 @@ class CategoryData {
     this.page = 1
   });
 
+  Article get firstArticle => products.first;
+
   bool get productsIsEmpty => products.isEmpty;
 
-  String get publishedAt => products.first.publishedAt;
+  String get publishedAt => firstArticle.publishedAt;
 
   CategoryData copyWith({
     List<Article>? products,

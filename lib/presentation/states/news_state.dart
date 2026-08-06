@@ -7,6 +7,7 @@ import 'package:todays_news/presentation/states/base/main_app_sup_state.dart';
 
 
 class NewsState implements MainAppSupState {
+  final bool? isConnected;
   final int currentTabIndex;
   final List<String> categories;
   final MessageResult? messageResult;
@@ -14,29 +15,28 @@ class NewsState implements MainAppSupState {
   static const List<String> _categoriesKeys = ['business', 'sports', 'science'];
 
   const NewsState({
+    this.isConnected,
     this.messageResult,
     this.tabsData = const{},
     this.categories = const [],
-    required this.currentTabIndex,
+    this.currentTabIndex = 0,
   });
 
   factory NewsState.initial(){
     return NewsState(
-        currentTabIndex: 0,
-        tabsData: {
-          for (var i = 0; i < 3; i++)
-            i: const CategoryData()
-        },
-        categories: _categoriesKeys,
-        messageResult: null
+      tabsData: {
+        for (var i = 0; i < 3; i++)
+          i: const CategoryData()
+      },
+      categories: _categoriesKeys,
     );
   }
 
-  String get categoryStatus => _categoriesKeys[currentTabIndex];
+  String get categoryStatus => categories[currentTabIndex];
 
   CategoryData get currentTabData => tabsData[currentTabIndex] ?? const CategoryData();
 
-  bool get productsIsEmpty => currentTabData.productsIsEmpty;
+  bool get currentTabDataIsEmpty => currentTabData.productsIsEmpty;
 
   MainAppState get subState => currentTabData.subState;
 
@@ -49,9 +49,9 @@ class NewsState implements MainAppSupState {
       messageResult: messageResult
   );
 
-  String getCurrentCategoryKey(int index) => _categoriesKeys[index];
-
   CategoryData? getCurrentCategoryData(int index) => tabsData[index];
+
+  String getCurrentCategoryKey(int index) => categories[index];
 
   NewsState updateTab(int index, CategoryData newTabData) {
     return copyWith(
@@ -63,12 +63,14 @@ class NewsState implements MainAppSupState {
   }
 
   NewsState copyWith({
+    bool? isConnected,
     int? currentTabIndex,
     MessageResult? messageResult,
     Map<int, CategoryData>? tabsData,
   }) {
     return NewsState(
       categories: categories,
+      isConnected: isConnected,
       messageResult: messageResult,
       tabsData: tabsData ?? this.tabsData,
       currentTabIndex: currentTabIndex ?? this.currentTabIndex,

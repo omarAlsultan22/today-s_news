@@ -4,13 +4,12 @@ import 'package:provider/provider.dart';
 import '../../mixins/debounce_mixin.dart';
 import '../../screens/search_screen.dart';
 import '../../../themes/screen_theme.dart';
+import '../../providers/connectivity_provider.dart';
 import 'package:todays_news/constants/app_colors.dart';
 import '../../../data/data_sources/remote/dio_helper.dart';
 import '../../../data/repositories_impl/search_repository.dart';
 import 'package:todays_news/presentation/constants/ui_sizes.dart';
-import '../../../domain/useCases/tab_useCases/change_tab_useCase.dart';
 import '../../../domain/useCases/tab_useCases/load_tab_data_useCase.dart';
-import '../../providers/connectivity_provider.dart';
 import 'package:todays_news/presentation/utils/helpers/pagination_state_manager.dart';
 
 
@@ -36,14 +35,12 @@ class HomeLayout extends StatelessWidget {
     final paginationHandler = PaginationHandler();
     final loadDataUseCase = LoadDataUseCase(
         repository: repository, paginationHandler: paginationHandler);
-    final changeTabUseCase = ChangeTabUseCase(loadDataUseCase: loadDataUseCase);
     final connectivityProvider = ConnectivityProvider();
     Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) => SearchScreen(
                 loadDataUseCase: loadDataUseCase,
-                changeTabUseCase: changeTabUseCase,
                 connectivityProvider: connectivityProvider
             )
         )
@@ -52,8 +49,8 @@ class HomeLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final showOnlineMessage = connectivityService.showOnlineMessage;
-    final showOfflineMessage = connectivityService.showOfflineMessage;
+    final showOnlineMessage = connectivityService.online;
+    final showOfflineMessage = connectivityService.offline;
 
     return Scaffold(
       appBar: AppBar(

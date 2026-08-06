@@ -23,13 +23,11 @@ class LoadDataUseCase {
     try {
       final key = query ?? category ?? AppStrings.empty;
 
-      print(currentData.page);
       final newArticles = await _repository.fetchArticles(
           key: key,
           currentPage: currentData.page,
           currentIndex: currentData.currentIndex
       );
-      print(newArticles.length);
 
       return _paginationHandler.updateWithNewData(currentData, newArticles);
     }

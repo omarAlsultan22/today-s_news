@@ -1,35 +1,46 @@
 import 'dart:async';
 import '../states/news_state.dart';
 import 'package:flutter/material.dart';
+import '../navigation/screen_items.dart';
 import '../mixins/error_handler_mixin.dart';
 import '../../data/models/category_data.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/useCases/update_date_useCase.dart';
 import 'package:todays_news/data/models/message_result.dart';
-import '../../domain/useCases/tab_useCases/change_tab_useCase.dart';
 import 'package:todays_news/presentation/mixins/debounce_mixin.dart';
 import '../../domain/useCases/tab_useCases/load_tab_data_useCase.dart';
-import 'package:todays_news/presentation/navigation/screen_items.dart';
 import 'package:todays_news/presentation/states/base/app_sub_states.dart';
+import 'package:todays_news/presentation/providers/connectivity_provider.dart';
 import 'package:todays_news/presentation/navigation/bottom_navigation_bar_items.dart';
 
 
 class NewsCubit extends Cubit<NewsState> with ErrorHandlerMixin<NewsState>, DebounceMixin {
   final LoadDataUseCase _loadDataUseCase;
-  final ChangeTabUseCase _changeTabUseCase;
   final UpdateDateUseCase _updateDateUseCase;
+  final ConnectivityProvider _connectivityProvider;
+
+  VoidCallback? _connectivityListener;
 
   NewsCubit({
     required LoadDataUseCase loadDataUseCase,
-    required ChangeTabUseCase changeTabUseCase,
-    required UpdateDateUseCase updateDateUseCase
+    required UpdateDateUseCase updateDateUseCase,
+    required ConnectivityProvider connectivityProvider
   })
       : _loadDataUseCase = loadDataUseCase,
-        _changeTabUseCase = changeTabUseCase,
         _updateDateUseCase = updateDateUseCase,
+        _connectivityProvider = connectivityProvider,
         super(
         NewsState.initial(),
-      );
+      ) {
+    bool? isConnected;
+    _connectivityListener = () {
+      if (isConnected != _connectivityProvider.isConnected) {
+        isConnected = _connectivityProvider.isConnected;
+        emit(state.copyWith(isConnected: isConnected));
+      }
+    };
+    _connectivityProvider.addListener(_connectivityListener!);
+  }
 
   static NewsCubit get(context) => BlocProvider.of<NewsCubit>(context);
 
@@ -48,10 +59,12 @@ class NewsCubit extends Cubit<NewsState> with ErrorHandlerMixin<NewsState>, Debo
     );
   }
 
-  Future<void> updateData(int index) async {
+  Future<void> updateData({required int index, required bool isConnected}) async {
     final currentTabData = state.getCurrentCategoryData(index);
 
-    if (!currentTabData!.productsIsEmpty) {
+    if (currentTabData == null) return;
+
+    if (!currentTabData.productsIsEmpty && isConnected) {
       final currentCategory = state.getCurrentCategoryKey(index);
 
       final newTabData = await _updateDateUseCase.execute(
@@ -59,23 +72,28 @@ class NewsCubit extends Cubit<NewsState> with ErrorHandlerMixin<NewsState>, Debo
         key: currentCategory,
         currentData: currentTabData,
       );
+      final firstArticle = newTabData.firstArticle;
+
+      if (currentTabData.publishedAt == firstArticle.publishedAt) {
+        return;
+      }
+
       final newState = state.updateTab(index, newTabData);
       emit(newState.copyWith(messageResult: MessageResult.success(
           message: 'The news has been successfully updated')));
       return;
     }
-
-    if (state.productsIsEmpty && state.currentTabIndex == index) {
-      await loadCurrentTabData(state.currentTabIndex);
-    }
+     await loadCurrentTabData(index);
   }
 
   void changeTab(int index) {
-    emit(state.copyWith(currentTabIndex: index));
+    if(state.currentTabIndex != index) {
+      emit(state.copyWith(currentTabIndex: index));
+    }
   }
 
   Future<void> loadCurrentTabData(index) async {
-    if (!state.productsIsEmpty) return;
+    if (!state.currentTabDataIsEmpty) return;
 
     final currentTabData = state.currentTabData;
 
@@ -83,12 +101,12 @@ class NewsCubit extends Cubit<NewsState> with ErrorHandlerMixin<NewsState>, Debo
     emit(state.updateTab(index, newTabData));
 
     try {
-      final categoryData = await _changeTabUseCase.execute(
+      final categoryData = await _loadDataUseCase.execute(
         category: state.categoryStatus,
         currentData: state.currentTabData,
       );
 
-      if (state.productsIsEmpty && categoryData.productsIsEmpty) {
+      if (state.currentTabDataIsEmpty && categoryData.productsIsEmpty) {
         final newTabData = categoryData.copyWith(
             subState: const InitialState());
         emit(state.updateTab(index, newTabData));
@@ -141,5 +159,13 @@ class NewsCubit extends Cubit<NewsState> with ErrorHandlerMixin<NewsState>, Debo
   void restLock(int index) {
     final newTabData = state.getCurrentCategoryData(index);
     emit(state.updateTab(index, newTabData!.copyWith(hasMore: true)));
+  }
+
+  @override
+  Future<void> close() {
+    if (_connectivityListener != null) {
+      _connectivityProvider.removeListener(_connectivityListener!);
+    }
+    return super.close();
   }
 }

@@ -5,31 +5,34 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 
 class ConnectivityProvider with ChangeNotifier {
   // المتغيرات الأساسية
+  bool _online = false;
+  bool _offline = false;
   bool _isConnected = false;
-  bool _showOnlineMessage = false;
-  bool _showOfflineMessage = false;
-  String _connectionType = 'Unknown';
   bool _isInitialized = false;
+  String _connectionType = 'Unknown';
 
   // الـ Subscriptions والـ Timers
   StreamSubscription<List<ConnectivityResult>>? connectivitySubscription;
-  Timer? _onlineMessageTimer;
-  Timer? _offlineMessageTimer;
+  Timer? _onlineTimer;
+  Timer? _offlineTimer;
   Timer? _checkTimer;
 
   static const _none = 'None';
 
   // Getters
+  bool get online => _online;
+
+  bool get offline => _offline;
+
   bool get isConnected => _isConnected;
-  bool get showOnlineMessage => _showOnlineMessage;
-  bool get showOfflineMessage => _showOfflineMessage;
-  String get connectionType => _connectionType;
-  bool get isInitialized => _isInitialized;
 
   final Connectivity _connectivity = Connectivity();
 
-  // Constructor
-  ConnectivityProvider() {
+  static final ConnectivityProvider _instance = ConnectivityProvider._internal();
+
+  factory ConnectivityProvider() => _instance;
+
+  ConnectivityProvider._internal() {
     _initConnectivity();
     _startPeriodicCheck();
   }
@@ -53,14 +56,13 @@ class ConnectivityProvider with ChangeNotifier {
 
       // عرض الرسالة المناسبة بعد التأكد من الحالة
       if (_isConnected) {
-        _showTemporaryOnlineMessage();
+        _showOnline();
       } else {
-        _showTemporaryOfflineMessage();
+        _showOffline();
       }
 
       // بدء الاستماع للتغيرات
       connectivitySubscription = listenToStatus(updateConnectionStatus);
-
     } catch (e) {
       print('Error initializing connectivity: $e');
       _isConnected = false;
@@ -68,8 +70,7 @@ class ConnectivityProvider with ChangeNotifier {
       _isInitialized = true;
       notifyListeners();
 
-      // عرض رسالة عدم الاتصال
-      _showTemporaryOfflineMessage();
+      _showOffline();
     }
   }
 
@@ -126,18 +127,16 @@ class ConnectivityProvider with ChangeNotifier {
       if (wasConnected && !newStatus) {
         // فقدان الاتصال
         print('Connection lost');
-        _hideOnlineMessage();
-        _showTemporaryOfflineMessage();
+        _hideOnline();
+        _showOffline();
         _notifyWithDelay();
-
       } else if (!wasConnected && newStatus) {
         // استعادة الاتصال
         print('Connection restored');
-        _hideOfflineMessage();
-        _showTemporaryOnlineMessage();
+        _hideOffline();
+        _showOnline();
         notifyListeners();
         _tryReloadData();
-
       } else {
         // تغيير في نوع الاتصال فقط
         notifyListeners();
@@ -174,39 +173,39 @@ class ConnectivityProvider with ChangeNotifier {
     return _none;
   }
 
-  // ==================== عرض وإخفاء الرسائل ====================
+  // ==================== عرض وإخفاء الحالات ====================
 
-  void _showTemporaryOnlineMessage() {
-    _onlineMessageTimer?.cancel();
-    _showOnlineMessage = true;
+  void _showOnline() {
+    _onlineTimer?.cancel();
+    _online = true;
     notifyListeners();
 
-    _onlineMessageTimer = Timer(const Duration(seconds: 5), () {
-      _showOnlineMessage = false;
+    _onlineTimer = Timer(const Duration(seconds: 5), () {
+      _online = false;
       notifyListeners();
     });
   }
 
-  void _showTemporaryOfflineMessage() {
-    _offlineMessageTimer?.cancel();
-    _showOfflineMessage = true;
+  void _showOffline() {
+    _offlineTimer?.cancel();
+    _offline = true;
     notifyListeners();
 
-    _offlineMessageTimer = Timer(const Duration(seconds: 5), () {
-      _showOfflineMessage = false;
+    _offlineTimer = Timer(const Duration(seconds: 5), () {
+      _offline = false;
       notifyListeners();
     });
   }
 
-  void _hideOnlineMessage() {
-    _onlineMessageTimer?.cancel();
-    _showOnlineMessage = false;
+  void _hideOnline() {
+    _onlineTimer?.cancel();
+    _online = false;
     notifyListeners();
   }
 
-  void _hideOfflineMessage() {
-    _offlineMessageTimer?.cancel();
-    _showOfflineMessage = false;
+  void _hideOffline() {
+    _offlineTimer?.cancel();
+    _offline = false;
     notifyListeners();
   }
 
@@ -242,8 +241,8 @@ class ConnectivityProvider with ChangeNotifier {
   @override
   void dispose() {
     connectivitySubscription?.cancel();
-    _onlineMessageTimer?.cancel();
-    _offlineMessageTimer?.cancel();
+    _onlineTimer?.cancel();
+    _offlineTimer?.cancel();
     _checkTimer?.cancel();
     super.dispose();
   }

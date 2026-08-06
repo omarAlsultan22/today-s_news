@@ -4,27 +4,23 @@ import '../states/search_state.dart';
 import '../mixins/error_handler_mixin.dart';
 import '../../data/models/category_data.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../providers/connectivity_provider.dart';
 import 'package:todays_news/constants/app_strings.dart';
 import 'package:todays_news/constants/app_durations.dart';
-import '../../domain/useCases/tab_useCases/change_tab_useCase.dart';
 import 'package:todays_news/presentation/mixins/debounce_mixin.dart';
-import 'package:todays_news/presentation/states/base/app_sub_states.dart';
 import '../../domain/useCases/tab_useCases/load_tab_data_useCase.dart';
-import '../providers/connectivity_provider.dart';
+import 'package:todays_news/presentation/states/base/app_sub_states.dart';
 
 
 class SearchCubit extends Cubit<SearchState> with ErrorHandlerMixin<SearchState>, DebounceMixin {
   final LoadDataUseCase _loadDataUseCase;
-  final ChangeTabUseCase _changeTabUseCase;
   final ConnectivityProvider _connectivityProvider;
 
   SearchCubit({
     required LoadDataUseCase loadDataUseCase,
-    required ChangeTabUseCase changeTabUseCase,
     required ConnectivityProvider connectivityProvider
   })
       : _loadDataUseCase = loadDataUseCase,
-        _changeTabUseCase = changeTabUseCase,
         _connectivityProvider = connectivityProvider,
         super(
           SearchState.initial()) {
@@ -88,7 +84,7 @@ class SearchCubit extends Cubit<SearchState> with ErrorHandlerMixin<SearchState>
     );
 
     try {
-      final newTabData = await _changeTabUseCase.execute(
+      final newTabData = await _loadDataUseCase.execute(
         category: query,
         currentData: state.categoryData,
       );
