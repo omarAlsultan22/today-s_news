@@ -11,9 +11,11 @@ import '../../widgets/states/loading_state_widget.dart';
 abstract class BaseTabScreen extends StatefulWidget {
   const BaseTabScreen({super.key});
 
-  int get screenIndex;
   IconData get icon;
+
   String get category;
+
+  int get screenIndex;
 }
 
 abstract class BaseTabScreenState<T extends BaseTabScreen>

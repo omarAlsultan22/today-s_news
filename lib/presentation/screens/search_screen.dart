@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import '../mixins/debounce_mixin.dart';
 import '../widgets/lists/list_builder.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../providers/connectivity_provider.dart';
 import '../widgets/states/loading_state_widget.dart';
 import '../../domain/useCases/tab_useCases/load_tab_data_useCase.dart';
-import '../providers/connectivity_provider.dart';
 
 
 class SearchScreen extends StatefulWidget {
