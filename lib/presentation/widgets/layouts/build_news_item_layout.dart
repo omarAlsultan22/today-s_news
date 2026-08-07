@@ -1,5 +1,7 @@
+import 'package:todays_news/presentation/widgets/build_snack_bar.dart';
 import 'package:todays_news/presentation/constants/ui_sizes.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:todays_news/constants/app_colors.dart';
 import '../../../../data/models/article_Model.dart';
 import '../../utils/helpers/image_helpers.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -15,22 +17,35 @@ class BuildNewsItemLayout extends StatelessWidget {
 
   static const _largeSpacing = 120.0;
 
-  ScaffoldMessenger _scaffoldMessenger(String message) {
-    return ScaffoldMessenger(child: SnackBar(content: Text(message)));
+  ScaffoldFeatureController<SnackBar, SnackBarClosedReason> _scaffoldMessenger({
+    required String message,
+    required BuildContext context,
+    required Color backgroundColor
+  }) {
+    return BuildSnackBar.show(
+        message: message,
+        context: context,
+        backgroundColor: backgroundColor);
   }
 
-  void launchURL(String url) async {
+  void launchURL({required String url, required BuildContext context}) async {
     final Uri uri = Uri.parse(Uri.encodeFull(url));
     try {
       if (await canLaunchUrl(uri)) {
         await launchUrl(uri, mode: LaunchMode.externalApplication).timeout(
             AppDurations.seconds);
       } else {
-        _scaffoldMessenger('Could not launch $url');
+        _scaffoldMessenger(
+            context: context,
+            message: 'Could not launch $url',
+            backgroundColor: AppColors.red);
       }
     }
     catch (e) {
-      _scaffoldMessenger(e.toString());
+      _scaffoldMessenger(
+          context: context,
+          message: e.toString(),
+          backgroundColor: AppColors.red);
     }
   }
 
@@ -39,7 +54,7 @@ class BuildNewsItemLayout extends StatelessWidget {
     return InkWell(
       onTap: () {
         if (article.urlIsNotEmpty) {
-          launchURL(article.url);
+          launchURL(url: article.url, context: context);
         }
       },
       child: Padding(

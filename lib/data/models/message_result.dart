@@ -2,12 +2,12 @@ import 'dart:ui';
 
 
 class MessageResult {
-  final Color? color;
-  final String? message;
+  final Color color;
+  final String message;
 
   MessageResult({
-    this.message,
-    this.color
+    required this.message,
+    required this.color
   });
 
   factory MessageResult.success({required String message}){

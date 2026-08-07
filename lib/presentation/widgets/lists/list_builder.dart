@@ -1,3 +1,4 @@
+import '../build_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import '../layouts/build_news_item_layout.dart';
@@ -41,16 +42,17 @@ class _ListBuilderState extends State<ListBuilder> {
     super.didUpdateWidget(oldWidget);
     if (widget.messageResult != null) {
       SchedulerBinding.instance.addPostFrameCallback((_) {
-        _showMessageResult(widget.messageResult!);
+        _showMessageResult(widget.messageResult);
       });
       setState(() {});
     }
   }
 
-  void _showMessageResult(MessageResult messageResult) {
-    ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(messageResult.message!),
-            backgroundColor: messageResult.color)
+  void _showMessageResult(MessageResult? messageResult) {
+    BuildSnackBar.show(
+        context: context,
+        message: messageResult!.message,
+        backgroundColor: messageResult.color
     );
   }
 
