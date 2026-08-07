@@ -11,33 +11,37 @@ class InitializationController {
 
   InitializationController._internal();
 
-  late final DioHelper dio;
-  late final CacheHelper cacheHelper;
-  late final HiveOperations hiveOperations;
+  late final DioHelper _dio;
+  late final CacheHelper _cacheHelper;
+  late final HiveOperations _hiveOperations;
 
   bool _isInitialized = false;
+
+  Future<void> _initializeServices() async {
+    await Future.wait<void>([
+      _dio.init(),
+      _cacheHelper.init(),
+      _hiveOperations.init()
+    ]);
+  }
 
   Future<void> init() async {
     if (_isInitialized) return;
 
-    dio = DioHelper();
-    cacheHelper = CacheHelper();
-    hiveOperations = HiveOperations(cacheHelper: cacheHelper);
+    _dio = DioHelper();
+    _cacheHelper = CacheHelper();
+    _hiveOperations = HiveOperations(cacheHelper: _cacheHelper);
 
-    await Future.wait<void>([
-      dio.init(),
-      cacheHelper.init(),
-      hiveOperations.init()
-    ]);
+    await _initializeServices();
 
     _isInitialized = true;
   }
 
   Future<void> retryInit() async {
     await Future.wait<void>([
-      dio.init(),
-      cacheHelper.init(),
-      hiveOperations.init(),
+      _dio.init(),
+      _cacheHelper.init(),
+      _hiveOperations.init(),
     ]);
   }
 }
