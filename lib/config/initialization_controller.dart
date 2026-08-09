@@ -1,6 +1,7 @@
-import '../data/data_sources/local/hive.dart';
 import '../data/data_sources/local/cacheHelper.dart';
 import '../data/data_sources/remote/dio_helper.dart';
+import '../data/data_sources/local/hive.dart';
+import '../di/service _locator.dart';
 
 
 class InitializationController {
@@ -28,9 +29,9 @@ class InitializationController {
   Future<void> init() async {
     if (_isInitialized) return;
 
-    _dio = DioHelper();
-    _cacheHelper = CacheHelper();
-    _hiveOperations = HiveOperations(cacheHelper: _cacheHelper);
+    _dio = sl<DioHelper>();
+    _cacheHelper = sl<CacheHelper>();
+    _hiveOperations = sl<HiveOperations>();
 
     await _initializeServices();
 
