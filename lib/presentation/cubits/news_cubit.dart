@@ -59,7 +59,8 @@ class NewsCubit extends Cubit<NewsState> with ErrorHandlerMixin<NewsState>, Debo
     );
   }
 
-  Future<void> updateData({required int index, required bool isConnected}) async {
+  Future<void> updateData(
+      {required int index, required bool isConnected}) async {
     final currentTabData = state.getCurrentCategoryData(index);
 
     if (currentTabData == null) return;
@@ -83,11 +84,11 @@ class NewsCubit extends Cubit<NewsState> with ErrorHandlerMixin<NewsState>, Debo
           message: 'The news has been successfully updated')));
       return;
     }
-     await loadCurrentTabData(index);
+    await loadCurrentTabData(index);
   }
 
   void changeTab(int index) {
-    if(state.currentTabIndex != index) {
+    if (state.currentTabIndex != index) {
       emit(state.copyWith(currentTabIndex: index));
     }
   }
