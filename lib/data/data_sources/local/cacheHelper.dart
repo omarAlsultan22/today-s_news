@@ -1,4 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:todays_news/errors/exceptions/cache_exceptions/shared_prefs_app_exceptions.dart';
 
 
 class CacheHelper {
@@ -12,32 +13,57 @@ class CacheHelper {
   static late SharedPreferences sharedPreferences;
 
   Future<void> init() async {
-    sharedPreferences = await SharedPreferences.getInstance();
+    try {
+      sharedPreferences = await SharedPreferences.getInstance();
+    }
+    catch (e) {
+      throw SharedPrefsInitializeException(error: e);
+    }
   }
 
   Future<bool> setString({
     required String key,
     required String value
   }) async {
-    return await sharedPreferences.setString(key, value);
+    try {
+      return await sharedPreferences.setString(key, value);
+    }
+    catch (e) {
+      throw SharedPrefsSaveException(error: e);
+    }
   }
 
   Future<String?> getString({
     required String key,
   }) async {
-    return sharedPreferences.getString(key);
+    try {
+      return sharedPreferences.getString(key);
+    }
+    catch (e) {
+      throw SharedPrefsReadException(error: e);
+    }
   }
 
   Future<bool> setInt({
     required String key,
     required int value
   }) async {
-    return await sharedPreferences.setInt(key, value);
+    try {
+      return await sharedPreferences.setInt(key, value);
+    }
+    catch (e) {
+      throw SharedPrefsSaveException(error: e);
+    }
   }
 
   Future<int?> getInt({
     required String key,
   }) async {
-    return sharedPreferences.getInt(key);
+    try {
+      return sharedPreferences.getInt(key);
+    }
+    catch (e) {
+      throw SharedPrefsReadException(error: e);
+    }
   }
 }

@@ -152,7 +152,7 @@ class NewsCubit extends Cubit<NewsState> with ErrorHandlerMixin<NewsState>, Debo
           stackTrace: stackTrace,
           onError: (failure) =>
               state.copyWith(messageResult: MessageResult.error(
-                  message: 'Failed to fetch more data'))
+                  message: failure.message!))
       );
     }
   }

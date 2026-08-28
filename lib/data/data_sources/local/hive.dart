@@ -2,6 +2,7 @@ import '../../config/news_config.dart';
 import '../../models/article_Model.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:todays_news/data/data_sources/local/cacheHelper.dart';
+import '../../../errors/exceptions/cache_exceptions/hive_app_exceptions.dart';
 
 
 class HiveOperations {
@@ -16,21 +17,21 @@ class HiveOperations {
 
   static Box<Article> get businessBox {
     if (_businessBox == null) {
-      throw Exception('HiveOperations not initialized. Call init() first.');
+      throw const HiveInitializeException();
     }
     return _businessBox!;
   }
 
   static Box<Article> get scienceBox {
     if (_scienceBox == null) {
-      throw Exception('HiveOperations not initialized. Call init() first.');
+      throw const HiveInitializeException();
     }
     return _scienceBox!;
   }
 
   static Box<Article> get sportsBox {
     if (_sportsBox == null) {
-      throw Exception('HiveOperations not initialized. Call init() first.');
+      throw const HiveInitializeException ();
     }
     return _sportsBox!;
   }
@@ -50,7 +51,7 @@ class HiveOperations {
       _sportsBox = await Hive.openBox<Article>('sportsBox');
     }
     catch (e) {
-      rethrow;
+      throw HiveInitializeException(error: e);
     }
   }
 
@@ -66,7 +67,7 @@ class HiveOperations {
         await currentBox!.put('item_$number', articles[i]);
       }
     } catch (e) {
-      rethrow;
+      throw HiveSaveException(error: e);
     }
   }
 
@@ -92,13 +93,18 @@ class HiveOperations {
       return articles;
     }
     catch (e) {
-      rethrow;
+      throw HiveReadException(error: e);
     }
   }
 
   Future<void> clearData(String key) async {
-    final currentBox = _boxes[key];
-    await currentBox!.clear();
+    try {
+      final currentBox = _boxes[key];
+      await currentBox!.clear();
+    }
+    catch (e) {
+      throw HiveClearException(error: e);
+    }
   }
 }
 

@@ -15,26 +15,9 @@ class DioAppException extends AppException implements ExceptionHandler {
     super.message
   });
 
-  static const String _invalidDataCode = 'BAD_REQUEST';
-  static const String _invalidDataMessage = 'Invalid data';
-
-  static const String _notFoundCode = 'NOT_FOUND';
-  static const String _notFoundMessage = 'Data not found';
-
-  static const String _conflictCode = 'CONFLICT';
-  static const String _conflictMessage = 'Data conflict';
-
-  static const String _serverErrorCode = 'SERVER_ERROR';
-  static const String _serverErrorMessage = 'Server error, please try again later';
-
   static const String _dioError = 'DIO_ERROR';
   static const _noInternetMessage = AppStrings.noInternetMessage;
   static const String _networkTimeoutMessageSuffix = ' or timeout expired';
-
-  static const String _forbiddenCode = 'FORBIDDEN';
-  static const String _unauthorizedCode = 'UNAUTHORIZED';
-  static const String _unauthorizedMessage = 'Please login again';
-  static const String _forbiddenMessage = 'You do not have permission to access';
 
   static final Map<DioExceptionType, String> _dioErrorCodePatterns = {
     DioExceptionType.connectionTimeout: 'CONNECTION_TIMEOUT',
@@ -44,95 +27,35 @@ class DioAppException extends AppException implements ExceptionHandler {
   };
 
   static final Map<int, AppException Function(int?)> _badResponsePatterns = {
-    400: (statusCode) =>
-        ClientAppException(
-          message: _invalidDataMessage,
-          code: _invalidDataCode,
-          statusCode: statusCode,
-        ),
-    422: (statusCode) =>
-        ClientAppException(
-          message: _invalidDataMessage,
-          code: _invalidDataCode,
-          statusCode: statusCode,
-        ),
 
-    401: (statusCode) =>
-        SecurityAppException(
-          message: statusCode == 401
-              ? _unauthorizedMessage
-              : _forbiddenMessage,
-          code: statusCode == 401 ? _unauthorizedCode : _forbiddenCode,
-          statusCode: statusCode,
-        ),
     403: (statusCode) =>
         SecurityAppException(
-          message: statusCode == 401
-              ? _unauthorizedMessage
-              : _forbiddenMessage,
-          code: statusCode == 401 ? _unauthorizedCode : _forbiddenCode,
+          message: 'You do not have permission to access this.',
+          code: 'UNAUTHORIZED',
           statusCode: statusCode,
         ),
 
     404: (statusCode) =>
         ClientAppException(
-          message: _notFoundMessage,
-          code: _notFoundCode,
-          statusCode: statusCode,
-        ),
-    410: (statusCode) =>
-        ClientAppException(
-          message: _notFoundMessage,
-          code: _notFoundCode,
-          statusCode: statusCode,
-        ),
-
-    409: (statusCode) =>
-        ClientAppException(
-          message: _conflictMessage,
-          code: _conflictCode,
-          statusCode: statusCode,
-        ),
-    412: (statusCode) =>
-        ClientAppException(
-          message: _conflictMessage,
-          code: _conflictCode,
+          message: 'Data not found.',
+          code: 'NOT_FOUND',
           statusCode: statusCode,
         ),
 
     429: (statusCode) =>
         ClientAppException(
-          message: 'Request limit exceeded, please try again later',
+          message: 'The number of attempts has been exceeded.',
           code: 'TOO_MANY_REQUESTS',
           statusCode: statusCode,
         ),
 
     500: (statusCode) =>
         ServerAppException(
-          message: _serverErrorMessage,
-          code: _serverErrorCode,
-          statusCode: statusCode,
-        ),
-    502: (statusCode) =>
-        ServerAppException(
-          message: _serverErrorMessage,
-          code: _serverErrorCode,
-          statusCode: statusCode,
-        ),
-    503: (statusCode) =>
-        ServerAppException(
-          message: _serverErrorMessage,
-          code: _serverErrorCode,
-          statusCode: statusCode,
-        ),
-    504: (statusCode) =>
-        ServerAppException(
-          message: _serverErrorMessage,
-          code: _serverErrorCode,
+          message: 'Server Error.',
+          code: 'PLAN_EXPIRED',
           statusCode: statusCode,
         ),
   };
-
 
   static final Map<DioExceptionType,
       AppException Function(DioException)> _dioTypeExceptionHandlers = {
@@ -156,18 +79,13 @@ class DioAppException extends AppException implements ExceptionHandler {
           message: '$_noInternetMessage$_networkTimeoutMessageSuffix',
           code: _dioErrorCodePatterns[error.type] ?? _dioError,
         ),
-    DioExceptionType.badCertificate: (error) =>
-        SecurityAppException(
-          message: 'Invalid security certificate',
-          code: 'BAD_CERTIFICATE',
-        ),
     DioExceptionType.badResponse: (error) {
       final statusCode = error.response?.statusCode;
       final handler = _badResponsePatterns[statusCode];
       return handler != null
           ? handler(statusCode)
           : ServerAppException(
-        message: 'Server error: $statusCode',
+        message: 'Server error: $statusCode.',
         statusCode: statusCode,
       );
     },

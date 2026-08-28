@@ -3,10 +3,10 @@ import 'dart:async';
 import '../states/search_state.dart';
 import '../mixins/error_handler_mixin.dart';
 import '../../data/models/category_data.dart';
+import '../../data/models/message_result.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../providers/connectivity_provider.dart';
 import 'package:todays_news/constants/app_strings.dart';
-import 'package:todays_news/constants/app_durations.dart';
 import 'package:todays_news/presentation/mixins/debounce_mixin.dart';
 import '../../domain/useCases/tab_useCases/load_tab_data_useCase.dart';
 import 'package:todays_news/presentation/states/base/app_sub_states.dart';
@@ -116,9 +116,13 @@ class SearchCubit extends Cubit<SearchState> with ErrorHandlerMixin<SearchState>
       _successState(newTabData: newTabData);
     }
 
-    catch (e) {
-      runDebounced(AppDurations.seconds, () =>
-          loadMoreSearch()
+    catch (e, stackTrace) {
+      handleError(
+          error: e,
+          stackTrace: stackTrace,
+          onError: (failure) =>
+              state.copyWith(messageResult: MessageResult.error(
+                  message: failure.message!))
       );
     }
   }

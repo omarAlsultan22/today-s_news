@@ -1,3 +1,4 @@
+import 'package:todays_news/errors/exceptions/cache_exceptions/hive_app_exceptions.dart';
 import '../exceptions/cache_exceptions/shared_prefs_app_exceptions.dart';
 import '../exceptions/url_launcher_app_exceptions.dart';
 import '../exceptions/unknown_app_exception.dart';
@@ -26,8 +27,9 @@ class ErrorHandler {
 
     return _mapByTypePattern() ??
         _mapByStringPattern() ??
-        _mapBySharedPrefError() ??
         _mapByUrlLauncherError() ??
+        _hiveException() ??
+        _sharedPrefsException() ??
         UnknownAppException(message: error.toString());
   }
 
@@ -38,17 +40,6 @@ class ErrorHandler {
     return errorStr.contains('url_launcher') ||
         error is PlatformException && errorStr.contains('url') ||
         error is MissingPluginException && errorStr.contains('url');
-  }
-
-  bool _isSharedPrefsError() {
-    final errorStr = error.toString().toLowerCase();
-    return error is PlatformException &&
-        (errorStr.contains('shared_preferences') ||
-            errorStr.contains('sharedpreferences')) ||
-        error is MissingPluginException &&
-            errorStr.contains('shared_preferences') ||
-        errorStr.contains('sharedpreferences') ||
-        errorStr.contains('preferences') && errorStr.contains('instance');
   }
 
   AppException? _mapByTypePattern() {
@@ -78,13 +69,16 @@ class ErrorHandler {
     return null;
   }
 
-  AppException? _mapBySharedPrefError() {
-    if (_isSharedPrefsError()) {
-      final prefsException = SharedPrefsAppException(
-        error: error,
-        code: (error as PlatformException).code,
-      );
-      return prefsException.handle();
+  AppException? _hiveException(){
+    if(error is HiveAppExceptions){
+      return error;
+    }
+    return null;
+  }
+
+  AppException? _sharedPrefsException(){
+    if(error is SharedPrefsAppException){
+      return error;
     }
     return null;
   }
