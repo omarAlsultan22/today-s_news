@@ -5,7 +5,7 @@ class MessageResult {
   final Color color;
   final String message;
 
-  MessageResult({
+  const MessageResult({
     required this.message,
     required this.color
   });

@@ -29,10 +29,3 @@ class SharedPrefsReadException extends SharedPrefsAppException {
     message: 'Failed to load key. Try again.',
     code: 'SHARED_PREFS_READ_ERROR');
 }
-
-class SharedPrefsDeleteException extends SharedPrefsAppException {
-  const SharedPrefsDeleteException({super.error}) : super(
-    message: 'Failed to delete key. Try again.',
-    code: 'SHARED_PREFS_DELETE_ERROR',
-  );
-}

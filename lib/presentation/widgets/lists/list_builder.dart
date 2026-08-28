@@ -16,11 +16,11 @@ class ListBuilder extends StatefulWidget {
   final MessageResult? messageResult;
   ListBuilder({
     super.key,
+    this.messageResult,
     required this.list,
     required this.hasMore,
     required this.onScroll,
     required this.isLocked,
-    required this.messageResult
   });
 
   @override
