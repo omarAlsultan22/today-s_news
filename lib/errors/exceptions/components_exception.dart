@@ -6,9 +6,4 @@ class ComponentsException extends AppException {
     message: 'The application component initialization process failed.',
     code: 'INITIALIZE_ERROR',
   );
-
-  @override
-  String toString() {
-    return error.message;
-  }
 }
