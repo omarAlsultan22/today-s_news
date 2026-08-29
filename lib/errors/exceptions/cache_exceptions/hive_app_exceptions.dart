@@ -7,6 +7,11 @@ class HiveAppException extends AppException{
     super.error,
     super.message,
   });
+
+  @override
+  String toString() {
+    return error.message;
+  }
 }
 
 class HiveInitializeException extends HiveAppException {

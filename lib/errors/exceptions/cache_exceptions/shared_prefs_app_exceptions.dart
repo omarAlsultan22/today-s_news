@@ -8,6 +8,11 @@ class SharedPrefsAppException extends AppException {
     super.message,
     super.statusCode,
   });
+
+  @override
+  String toString() {
+    return error.message;
+  }
 }
 
 class SharedPrefsInitializeException extends SharedPrefsAppException {
