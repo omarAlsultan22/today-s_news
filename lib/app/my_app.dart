@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../presentation/cubits/news_cubit.dart';
 import '../domain/useCases/update_date_useCase.dart';
-import '../data/data_sources/local/cacheHelper.dart';
+import '../data/data_sources/local/cache_helper.dart';
 import '../presentation/providers/connectivity_provider.dart';
 import 'package:todays_news/presentation/screens/home_screen.dart';
 import '../domain/useCases/tab_useCases/load_tab_data_useCase.dart';

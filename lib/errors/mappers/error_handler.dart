@@ -2,6 +2,7 @@ import 'package:todays_news/errors/exceptions/cache_exceptions/hive_app_exceptio
 import '../exceptions/cache_exceptions/shared_prefs_app_exceptions.dart';
 import '../exceptions/url_launcher_app_exceptions.dart';
 import '../exceptions/unknown_app_exception.dart';
+import '../exceptions/components_exception.dart';
 import '../exceptions/base/app_exception.dart';
 import 'package:flutter/services.dart';
 import 'exception_mapper.dart';
@@ -28,8 +29,9 @@ class ErrorHandler {
     return _mapByTypePattern() ??
         _mapByStringPattern() ??
         _mapByUrlLauncherError() ??
-        _hiveException() ??
+        _componentsException() ??
         _sharedPrefsException() ??
+        _hiveException() ??
         UnknownAppException(message: error.toString());
   }
 
@@ -69,18 +71,16 @@ class ErrorHandler {
     return null;
   }
 
-  AppException? _hiveException(){
-    if(error is HiveAppExceptions){
-      return error;
-    }
-    return null;
+  AppException? _hiveException() {
+    return error is HiveAppException ? error : null;
   }
 
-  AppException? _sharedPrefsException(){
-    if(error is SharedPrefsAppException){
-      return error;
-    }
-    return null;
+  AppException? _componentsException() {
+    return error is ComponentsException ? error : null;
+  }
+
+  AppException? _sharedPrefsException() {
+    return error is SharedPrefsAppException ? error : null;
   }
 
   void _logError(dynamic error, StackTrace? stackTrace) {

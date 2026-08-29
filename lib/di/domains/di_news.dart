@@ -7,7 +7,7 @@ import '../../presentation/utils/helpers/storage_validity.dart';
 import '../../presentation/providers/connectivity_provider.dart';
 import '../../data/repositories_impl/api_articles_repository.dart';
 import '../../data/repositories_impl/hive_articles_repository.dart';
-import 'package:todays_news/data/data_sources/local/cacheHelper.dart';
+import 'package:todays_news/data/data_sources/local/cache_helper.dart';
 import 'package:todays_news/data/data_sources/remote/dio_helper.dart';
 import '../../data/repositories_impl/hybrid_articles_repository.dart';
 import '../../domain/useCases/tab_useCases/load_tab_data_useCase.dart';

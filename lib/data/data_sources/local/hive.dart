@@ -1,7 +1,7 @@
 import '../../config/news_config.dart';
 import '../../models/article_Model.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:todays_news/data/data_sources/local/cacheHelper.dart';
+import 'package:todays_news/data/data_sources/local/cache_helper.dart';
 import '../../../errors/exceptions/cache_exceptions/hive_app_exceptions.dart';
 
 
@@ -66,7 +66,8 @@ class HiveOperations {
         final number = itemsCount + i;
         await currentBox!.put('item_$number', articles[i]);
       }
-    } catch (e) {
+    }
+    catch (e) {
       throw HiveSaveException(error: e);
     }
   }
