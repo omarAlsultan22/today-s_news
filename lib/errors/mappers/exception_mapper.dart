@@ -3,9 +3,11 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import '../exceptions/dio_app_exception.dart';
 import '../exceptions/base/app_exception.dart';
+import '../exceptions/components_exception.dart';
 import '../exceptions/client_app_exception.dart';
 import '../exceptions/network_app_exception.dart';
-import 'package:todays_news/constants/app_strings.dart';
+import '../exceptions/cache_exceptions/hive_app_exceptions.dart';
+import '../exceptions/cache_exceptions/shared_prefs_app_exceptions.dart';
 
 
 class ExceptionMapper {
@@ -13,14 +15,13 @@ class ExceptionMapper {
 
   ExceptionMapper({required this.error});
 
-  static const _noInternetMessage = AppStrings.noInternetMessage;
   static const String _msgServerError = 'Cannot reach the server';
 
   static final Map<String, AppException> _networkPatterns = {
-    'socket': NetworkAppException(message: _noInternetMessage),
-    'connection': NetworkAppException(message: _noInternetMessage),
-    'network': NetworkAppException(message: _noInternetMessage),
-    'timeout': NetworkAppException(message: _noInternetMessage),
+    'socket': NetworkAppException(),
+    'network': NetworkAppException(),
+    'timeout': NetworkAppException(),
+    'connection': NetworkAppException(),
     'host': NetworkAppException(message: _msgServerError),
     'dns': NetworkAppException(message: _msgServerError),
     'unable to resolve': NetworkAppException(message: _msgServerError),
@@ -28,21 +29,27 @@ class ExceptionMapper {
 
   static final Map<Type,
       AppException Function(dynamic)> _exceptionTypeHandlers = {
+    HiveAppException: (error) => error,
+
+    ComponentsException: (error) => error,
+
+    SharedPrefsAppException: (error) => error,
+
+    NetworkAppException: (error) => error,
+
     DioException: (error) {
       final dioException = DioAppException(
           message: (error as DioException).message ?? 'DIO_ERROR'
       );
       return dioException.handle();
     },
-    SocketException: (error) =>
-        NetworkAppException(
-          message: _noInternetMessage,
-        ),
-    TimeoutException: (error) =>
+    SocketException: (_) =>
+        NetworkAppException(),
+    TimeoutException: (_) =>
         NetworkAppException(
           message: 'Timeout expired, please try again later',
         ),
-    FormatException: (error) =>
+    FormatException: (_) =>
         ClientAppException(
           message: 'An error occurred while loading the data. Please try again',
         ),

@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:async';
 import '../states/search_state.dart';
 import '../mixins/error_handler_mixin.dart';
@@ -10,6 +9,7 @@ import 'package:todays_news/constants/app_strings.dart';
 import 'package:todays_news/presentation/mixins/debounce_mixin.dart';
 import '../../domain/useCases/tab_useCases/load_tab_data_useCase.dart';
 import 'package:todays_news/presentation/states/base/app_sub_states.dart';
+import 'package:todays_news/errors/exceptions/network_app_exception.dart';
 
 
 class SearchCubit extends Cubit<SearchState> with ErrorHandlerMixin<SearchState>, DebounceMixin {
@@ -54,17 +54,7 @@ class SearchCubit extends Cubit<SearchState> with ErrorHandlerMixin<SearchState>
     required String query,
   }) async {
     if (!_connectivityProvider.isConnected) {
-      handleError(
-          stackTrace: StackTrace.current,
-          error: SocketException,
-          onError: (failure) =>
-              state.copyWith(
-                  subState: ErrorState(
-                      exception: failure
-                  )
-              )
-      );
-      return;
+      throw NetworkAppException();
     }
 
     if (query.isEmpty) {
