@@ -22,8 +22,8 @@ class ExceptionMapper {
     'network': NetworkAppException(),
     'timeout': NetworkAppException(),
     'connection': NetworkAppException(),
-    'host': NetworkAppException(message: _msgServerError),
     'dns': NetworkAppException(message: _msgServerError),
+    'host': NetworkAppException(message: _msgServerError),
     'unable to resolve': NetworkAppException(message: _msgServerError),
   };
 
