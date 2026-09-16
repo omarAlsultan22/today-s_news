@@ -48,7 +48,9 @@ class MyApp extends StatelessWidget {
               create: (context) => sl<ConnectivityProvider>()),
           ChangeNotifierProvider<ThemeNotifier>(
               create: (context) =>
-                  ThemeNotifier(cacheHelper: sl<CacheHelper>())),
+                  ThemeNotifier(cacheHelper: sl<CacheHelper>()
+                  )
+          ),
           BlocProvider<NewsCubit>(
               create: (context) =>
                   NewsCubit(
