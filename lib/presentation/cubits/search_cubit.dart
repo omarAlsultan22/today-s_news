@@ -7,7 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../providers/connectivity_provider.dart';
 import 'package:todays_news/constants/app_strings.dart';
 import 'package:todays_news/presentation/mixins/debounce_mixin.dart';
-import '../../domain/useCases/tab_useCases/load_tab_data_useCase.dart';
+import '../../domain/use_cases/tab_use_cases/load_tab_data_use_case.dart';
 import 'package:todays_news/presentation/states/base/app_sub_states.dart';
 import 'package:todays_news/errors/exceptions/network_app_exception.dart';
 

@@ -9,7 +9,7 @@ import 'package:todays_news/constants/app_colors.dart';
 import '../../../data/data_sources/remote/dio_helper.dart';
 import '../../../data/repositories_impl/search_repository.dart';
 import 'package:todays_news/presentation/constants/ui_sizes.dart';
-import '../../../domain/useCases/tab_useCases/load_tab_data_useCase.dart';
+import '../../../domain/use_cases/tab_use_cases/load_tab_data_use_case.dart';
 import 'package:todays_news/presentation/utils/helpers/pagination_state_manager.dart';
 
 
