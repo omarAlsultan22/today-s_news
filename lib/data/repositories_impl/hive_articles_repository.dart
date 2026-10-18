@@ -1,13 +1,12 @@
-import '../data_sources/local/hive.dart';
-import '../data_sources/local/cache_helper.dart';
+import '../../domain/services/hive.dart';
+import '../../domain/services/cache_helper.dart';
+import '../../domain/repositories/hive_repository.dart';
 import 'package:todays_news/data/models/article_Model.dart';
 import '../../presentation/utils/helpers/storage_validity.dart';
-import 'package:todays_news/domain/repositories/data_operations.dart';
-import 'package:todays_news/domain/repositories/data_repository.dart';
 import 'package:todays_news/presentation/utils/helpers/save_time_stamp.dart';
 
 
-class HiveArticlesRepository implements DataRepository, DataOperations {
+class HiveArticlesRepository implements HiveRepository {
   final CacheHelper _cacheHelper;
   final SaveTimeStamp _saveTimeStamp;
   final HiveOperations _hiveOperations;
@@ -30,22 +29,18 @@ class HiveArticlesRepository implements DataRepository, DataOperations {
     required int currentPage,
     required int currentIndex,
   }) async {
-    try {
-      final isTimeUp = await _storageValidity.has24HoursPassed();
-      if (isTimeUp) {
-        clearArticles(key);
-        return [];
-      }
-
-      final value = await _hiveOperations.getLocalData(
-          key: key, currentIndex: currentIndex);
-
-      if (value.isEmpty) return [];
-
-      return value;
-    } catch (e) {
+    final isTimeUp = await _storageValidity.has24HoursPassed();
+    if (isTimeUp) {
+      clearArticles(key);
       return [];
     }
+
+    final value = await _hiveOperations.getLocalData(
+        key: key, currentIndex: currentIndex);
+
+    if (value.isEmpty) return [];
+
+    return value;
   }
 
   @override
@@ -53,24 +48,19 @@ class HiveArticlesRepository implements DataRepository, DataOperations {
     required String key,
     required List<Article> articles
   }) async {
-    try {
-      await _saveTimeStamp.saveTime();
-      final itemsCount = await _cacheHelper.getInt(key: '$key-itemsCount') ?? 0;
-      final length = articles.length + itemsCount;
+    await _saveTimeStamp.saveTime();
+    final itemsCount = await _cacheHelper.getInt(key: '$key-itemsCount') ?? 0;
+    final length = articles.length + itemsCount;
 
-      await _cacheHelper.setInt(
-          key: '$key-itemsCount', value: length
-      );
+    await _cacheHelper.setInt(
+        key: '$key-itemsCount', value: length
+    );
 
-      return await _hiveOperations.putLocalData(
-        key: key,
-        articles: articles,
-        itemsCount: itemsCount,
-      );
-    }
-    catch (e) {
-      rethrow;
-    }
+    return await _hiveOperations.putLocalData(
+      key: key,
+      articles: articles,
+      itemsCount: itemsCount,
+    );
   }
 
   @override

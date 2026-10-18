@@ -1,15 +1,15 @@
 import '../../../data/models/category_data.dart';
-import '../../repositories/data_repository.dart';
+import '../../repositories/articles_repository.dart';
 import 'package:todays_news/constants/app_strings.dart';
 import 'package:todays_news/presentation/utils/helpers/pagination_state_manager.dart';
 
 
 class LoadDataUseCase {
-  final DataRepository _repository;
+  final ArticlesRepository _repository;
   final PaginationHandler _paginationHandler;
 
   const LoadDataUseCase({
-    required DataRepository repository,
+    required ArticlesRepository repository,
     required PaginationHandler paginationHandler
   })
       : _repository = repository,
@@ -20,19 +20,14 @@ class LoadDataUseCase {
     String? category,
     required CategoryData currentData,
   }) async {
-    try {
-      final key = query ?? category ?? AppStrings.empty;
+    final key = query ?? category ?? AppStrings.empty;
 
-      final newArticles = await _repository.fetchArticles(
-          key: key,
-          currentPage: currentData.page,
-          currentIndex: currentData.currentIndex
-      );
+    final newArticles = await _repository.fetchArticles(
+        key: key,
+        currentPage: currentData.page,
+        currentIndex: currentData.currentIndex
+    );
 
-      return _paginationHandler.updateWithNewData(currentData, newArticles);
-    }
-    catch (e) {
-      rethrow;
-    }
+    return _paginationHandler.updateWithNewData(currentData, newArticles);
   }
 }

@@ -1,17 +1,19 @@
+import '../../../domain/services/cache_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todays_news/errors/exceptions/cache_exceptions/shared_prefs_app_exceptions.dart';
 
 
-class CacheHelper {
+class CacheHelperImpl implements CacheHelper{
 
-  static final CacheHelper _instance = CacheHelper._internal();
+  static final CacheHelperImpl _instance = CacheHelperImpl._internal();
 
-  factory CacheHelper() => _instance;
+  factory CacheHelperImpl() => _instance;
 
-  CacheHelper._internal();
+  CacheHelperImpl._internal();
 
   static late SharedPreferences sharedPreferences;
 
+  @override
   Future<void> init() async {
     try {
       sharedPreferences = await SharedPreferences.getInstance();
@@ -21,6 +23,7 @@ class CacheHelper {
     }
   }
 
+  @override
   Future<bool> setString({
     required String key,
     required String value
@@ -33,6 +36,7 @@ class CacheHelper {
     }
   }
 
+  @override
   Future<String?> getString({
     required String key,
   }) async {
@@ -44,6 +48,7 @@ class CacheHelper {
     }
   }
 
+  @override
   Future<bool> setInt({
     required String key,
     required int value
@@ -56,6 +61,7 @@ class CacheHelper {
     }
   }
 
+  @override
   Future<int?> getInt({
     required String key,
   }) async {

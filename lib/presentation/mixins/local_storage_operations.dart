@@ -1,9 +1,9 @@
 import '../../data/models/article_Model.dart';
-import 'package:todays_news/data/repositories_impl/hive_articles_repository.dart';
+import '../../domain/repositories/hive_repository.dart';
 
 
 mixin LocalStorageOperations {
-  HiveArticlesRepository get localRepository;
+  HiveRepository get localRepository;
 
   Future<void> clearLocalStorage(String key) async {
     await localRepository.clearArticles(key);

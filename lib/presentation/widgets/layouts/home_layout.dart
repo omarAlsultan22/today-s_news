@@ -6,7 +6,7 @@ import '../../screens/search_screen.dart';
 import '../../../themes/screen_theme.dart';
 import '../../providers/connectivity_provider.dart';
 import 'package:todays_news/constants/app_colors.dart';
-import '../../../data/data_sources/remote/dio_helper.dart';
+import '../../../data/data_sources/remote/dio_helper_impl.dart';
 import '../../../data/repositories_impl/search_repository.dart';
 import 'package:todays_news/presentation/constants/ui_sizes.dart';
 import '../../../domain/use_cases/tab_use_cases/load_tab_data_use_case.dart';
@@ -30,7 +30,7 @@ class HomeLayout extends StatelessWidget {
   });
 
   void _navPushSearchScreen(BuildContext context) {
-    final dioHelper = DioHelper();
+    final dioHelper = DioHelperImpl();
     final repository = SearchRepository(dioHelper: dioHelper);
     final paginationHandler = PaginationHandler();
     final loadDataUseCase = LoadDataUseCase(

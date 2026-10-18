@@ -1,7 +1,7 @@
 import 'package:todays_news/errors/exceptions/components_exception.dart';
-import '../data/data_sources/local/cache_helper.dart';
-import '../data/data_sources/remote/dio_helper.dart';
-import '../data/data_sources/local/hive.dart';
+import '../data/data_sources/local/cache_helper_impl.dart';
+import '../data/data_sources/remote/dio_helper_impl.dart';
+import '../data/data_sources/local/hive_operations_impl.dart';
 import '../di/service _locator.dart';
 
 
@@ -13,9 +13,9 @@ class InitializationController {
 
   InitializationController._internal();
 
-  late final DioHelper _dio;
-  late final CacheHelper _cacheHelper;
-  late final HiveOperations _hiveOperations;
+  late final DioHelperImpl _dio;
+  late final CacheHelperImpl _cacheHelper;
+  late final HiveOperationsImpl _hiveOperations;
 
   bool _isInitialized = false;
 
@@ -30,9 +30,9 @@ class InitializationController {
   Future<void> init() async {
     if (_isInitialized) return;
 
-    _dio = sl<DioHelper>();
-    _cacheHelper = sl<CacheHelper>();
-    _hiveOperations = sl<HiveOperations>();
+    _dio = sl<DioHelperImpl>();
+    _cacheHelper = sl<CacheHelperImpl>();
+    _hiveOperations = sl<HiveOperationsImpl>();
 
     try {
       await _initializeServices();

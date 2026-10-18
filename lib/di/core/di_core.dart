@@ -1,8 +1,8 @@
 import '../service _locator.dart';
 import '../../themes/screen_theme.dart';
-import '../../data/data_sources/local/hive.dart';
-import '../../data/data_sources/remote/dio_helper.dart';
-import '../../data/data_sources/local/cache_helper.dart';
+import '../../data/data_sources/local/hive_operations_impl.dart';
+import '../../data/data_sources/remote/dio_helper_impl.dart';
+import '../../data/data_sources/local/cache_helper_impl.dart';
 import '../../presentation/utils/helpers/save_time_stamp.dart';
 import '../../presentation/utils/helpers/storage_validity.dart';
 import '../../presentation/providers/connectivity_provider.dart';
@@ -14,15 +14,15 @@ class CoreDependencies {
     sl.registerLazySingleton(() => ConnectivityProvider());
 
     //services
-    sl.registerLazySingleton(() => DioHelper());
-    sl.registerLazySingleton(() => CacheHelper());
+    sl.registerLazySingleton(() => DioHelperImpl());
+    sl.registerLazySingleton(() => CacheHelperImpl());
     sl.registerLazySingleton(() =>
-        ThemeNotifier(cacheHelper: sl<CacheHelper>()));
+        ThemeNotifier(cacheHelper: sl<CacheHelperImpl>()));
     sl.registerLazySingleton(() =>
-        HiveOperations(cacheHelper: sl<CacheHelper>()));
+        HiveOperationsImpl(cacheHelper: sl<CacheHelperImpl>()));
     sl.registerLazySingleton(() =>
-        SaveTimeStamp(cacheHelper: sl<CacheHelper>()));
+        SaveTimeStamp(cacheHelper: sl<CacheHelperImpl>()));
     sl.registerLazySingleton(() =>
-        StorageValidity(cacheHelper: sl<CacheHelper>()));
+        StorageValidity(cacheHelper: sl<CacheHelperImpl>()));
   }
 }

@@ -1,12 +1,12 @@
 import '../../constants/storage_keys.dart';
-import '../../../data/data_sources/local/cache_helper.dart';
+import '../../../data/data_sources/local/cache_helper_impl.dart';
 
 
 class StorageValidity {
-  final CacheHelper _cacheHelper;
+  final CacheHelperImpl _cacheHelper;
 
   StorageValidity({
-    required CacheHelper cacheHelper})
+    required CacheHelperImpl cacheHelper})
       : _cacheHelper = cacheHelper;
 
   static const _dayHours = 24;

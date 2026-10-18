@@ -1,14 +1,14 @@
 import '../../config/news_config.dart';
 import '../../models/article_Model.dart';
+import '../../../domain/services/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:todays_news/data/data_sources/local/cache_helper.dart';
+import 'package:todays_news/data/data_sources/local/cache_helper_impl.dart';
 import '../../../errors/exceptions/cache_exceptions/hive_app_exceptions.dart';
 
 
-class HiveOperations {
-  final CacheHelper _cacheHelper;
-
-  HiveOperations({required CacheHelper cacheHelper})
+class HiveOperationsImpl implements HiveOperations{
+  final CacheHelperImpl _cacheHelper;
+  HiveOperationsImpl({required CacheHelperImpl cacheHelper})
       : _cacheHelper = cacheHelper;
 
   static late Box<Article>? _businessBox;
@@ -42,6 +42,7 @@ class HiveOperations {
     'sports': sportsBox
   };
 
+  @override
   Future<void> init() async {
     try {
       await Hive.initFlutter();
@@ -55,6 +56,7 @@ class HiveOperations {
     }
   }
 
+  @override
   Future<void> putLocalData({
     required String key,
     required int itemsCount,
@@ -72,6 +74,7 @@ class HiveOperations {
     }
   }
 
+  @override
   Future<List<Article>> getLocalData({
     required String key,
     required int currentIndex
@@ -98,6 +101,7 @@ class HiveOperations {
     }
   }
 
+  @override
   Future<void> clearData(String key) async {
     try {
       final currentBox = _boxes[key];

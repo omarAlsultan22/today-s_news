@@ -1,13 +1,13 @@
 import 'package:todays_news/data/constants/data_strings.dart';
 import '../../presentation/utils/helpers/list_convertor.dart';
-import '../../domain/repositories/data_repository.dart';
-import '../data_sources/remote/dio_helper.dart';
+import '../../domain/repositories/articles_repository.dart';
+import '../../domain/services/dio_helper.dart';
 import '../constants/config_keys.dart';
 import '../models/article_Model.dart';
 import '../config/news_config.dart';
 
 
-class ApiArticlesRepository implements DataRepository {
+class ApiArticlesRepository implements ArticlesRepository {
   final DioHelper _dioHelper;
 
   ApiArticlesRepository({required DioHelper dioHelper})
@@ -20,25 +20,20 @@ class ApiArticlesRepository implements DataRepository {
     required int currentIndex,
 
   }) async {
-    try {
-      final response = await _dioHelper.getData(
-        url: 'v2/top-headlines',
-        query: {
-          'category': key,
-          'country': 'us',
-          ConfigKeys.page: currentPage,
-          ConfigKeys.sortBy: NewsConfig.sortBy,
-          ConfigKeys.apiKey: NewsConfig.apiKey,
-          ConfigKeys.pageSize: NewsConfig.pageSize,
-        },
-      );
+    final response = await _dioHelper.getData(
+      url: 'v2/top-headlines',
+      query: {
+        'category': key,
+        'country': 'us',
+        ConfigKeys.page: currentPage,
+        ConfigKeys.sortBy: NewsConfig.sortBy,
+        ConfigKeys.apiKey: NewsConfig.apiKey,
+        ConfigKeys.pageSize: NewsConfig.pageSize,
+      },
+    );
 
-      return ArticleListParser
-          .fromJson(response.data[DataStrings.articles])
-          .data;
-    }
-    catch (e) {
-      rethrow;
-    }
+    return ArticleListParser
+        .fromJson(response.data[DataStrings.articles])
+        .data;
   }
 }

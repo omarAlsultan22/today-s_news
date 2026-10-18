@@ -1,7 +1,7 @@
 import '../../data/models/article_Model.dart';
 
 
-abstract class DataRepository {
+abstract class ArticlesRepository {
   Future<List<Article>> fetchArticles({
     required String key,
     required int currentPage,

@@ -1,11 +1,11 @@
 import '../../constants/storage_keys.dart';
-import '../../../data/data_sources/local/cache_helper.dart';
+import '../../../data/data_sources/local/cache_helper_impl.dart';
 
 
 class SaveTimeStamp {
-  final CacheHelper _cacheHelper;
+  final CacheHelperImpl _cacheHelper;
 
-  SaveTimeStamp({required CacheHelper cacheHelper})
+  SaveTimeStamp({required CacheHelperImpl cacheHelper})
       : _cacheHelper = cacheHelper;
 
   Future<void> saveTime() async {
