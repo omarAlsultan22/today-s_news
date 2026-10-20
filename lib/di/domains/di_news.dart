@@ -1,9 +1,9 @@
 import '../service _locator.dart';
 import '../../presentation/cubits/news_cubit.dart';
+import '../../providers/connectivity_provider.dart';
 import '../../domain/use_cases/update_date_use_case.dart';
 import '../../presentation/utils/helpers/save_time_stamp.dart';
 import '../../presentation/utils/helpers/storage_validity.dart';
-import '../../presentation/providers/connectivity_provider.dart';
 import '../../data/data_sources/local/hive_operations_impl.dart';
 import '../../data/repositories_impl/api_articles_repository.dart';
 import '../../data/repositories_impl/hive_articles_repository.dart';

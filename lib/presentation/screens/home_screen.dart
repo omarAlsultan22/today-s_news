@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../widgets/layouts/home_layout.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../providers/connectivity_provider.dart';
+import '../../providers/connectivity_provider.dart';
 import '../../../presentation/states/news_state.dart';
 import 'package:todays_news/presentation/cubits/news_cubit.dart';
 

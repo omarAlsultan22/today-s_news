@@ -1,11 +1,11 @@
 import '../service _locator.dart';
 import '../../themes/screen_theme.dart';
-import '../../data/data_sources/local/hive_operations_impl.dart';
+import '../../providers/connectivity_provider.dart';
 import '../../data/data_sources/remote/dio_helper_impl.dart';
 import '../../data/data_sources/local/cache_helper_impl.dart';
 import '../../presentation/utils/helpers/save_time_stamp.dart';
 import '../../presentation/utils/helpers/storage_validity.dart';
-import '../../presentation/providers/connectivity_provider.dart';
+import '../../data/data_sources/local/hive_operations_impl.dart';
 
 
 class CoreDependencies {

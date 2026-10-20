@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../presentation/cubits/news_cubit.dart';
+import '../providers/connectivity_provider.dart';
 import '../domain/use_cases/update_date_use_case.dart';
 import '../data/data_sources/local/cache_helper_impl.dart';
-import '../presentation/providers/connectivity_provider.dart';
 import 'package:todays_news/presentation/screens/home_screen.dart';
 import '../domain/use_cases/tab_use_cases/load_tab_data_use_case.dart';
 

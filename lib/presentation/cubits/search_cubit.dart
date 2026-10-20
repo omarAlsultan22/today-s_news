@@ -4,7 +4,7 @@ import '../mixins/error_handler_mixin.dart';
 import '../../data/models/category_data.dart';
 import '../../data/models/message_result.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../providers/connectivity_provider.dart';
+import '../../providers/connectivity_provider.dart';
 import 'package:todays_news/constants/app_strings.dart';
 import 'package:todays_news/presentation/mixins/debounce_mixin.dart';
 import '../../domain/use_cases/tab_use_cases/load_tab_data_use_case.dart';

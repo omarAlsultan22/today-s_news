@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import '../../mixins/debounce_mixin.dart';
 import '../../screens/search_screen.dart';
 import '../../../themes/screen_theme.dart';
-import '../../providers/connectivity_provider.dart';
+import '../../../providers/connectivity_provider.dart';
 import 'package:todays_news/constants/app_colors.dart';
 import '../../../data/data_sources/remote/dio_helper_impl.dart';
 import '../../../data/repositories_impl/search_repository.dart';
