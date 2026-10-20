@@ -1,7 +1,7 @@
 import 'package:todays_news/data/constants/data_strings.dart';
 import '../../presentation/utils/helpers/list_convertor.dart';
 import '../../domain/repositories/articles_repository.dart';
-import '../../domain/services/dio_helper.dart';
+import '../../domain/data_sources/dio_helper.dart';
 import '../constants/config_keys.dart';
 import '../models/article_Model.dart';
 import '../config/news_config.dart';

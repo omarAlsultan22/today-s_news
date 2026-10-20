@@ -1,4 +1,4 @@
-import '../../../domain/services/cache_helper.dart';
+import '../../../domain/data_sources/cache_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todays_news/errors/exceptions/cache_exceptions/shared_prefs_app_exceptions.dart';
 

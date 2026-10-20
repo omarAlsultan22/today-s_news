@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import '../../../constants/app_durations.dart';
-import '../../../domain/services/dio_helper.dart';
+import '../../../domain/data_sources/dio_helper.dart';
 
 
 class DioHelperImpl implements DioHelper {

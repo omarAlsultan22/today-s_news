@@ -1,5 +1,5 @@
-import '../../domain/services/hive.dart';
-import '../../domain/services/cache_helper.dart';
+import '../../domain/data_sources/hive.dart';
+import '../../domain/data_sources/cache_helper.dart';
 import '../../domain/repositories/hive_repository.dart';
 import 'package:todays_news/data/models/article_Model.dart';
 import '../../presentation/utils/helpers/storage_validity.dart';
