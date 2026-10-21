@@ -1,7 +1,10 @@
 import 'package:todays_news/errors/exceptions/components_exception.dart';
+import '../data/data_sources/local/hive_operations_impl.dart';
 import '../data/data_sources/local/cache_helper_impl.dart';
 import '../data/data_sources/remote/dio_helper_impl.dart';
-import '../data/data_sources/local/hive_operations_impl.dart';
+import '../domain/data_sources/cache_helper.dart';
+import '../domain/data_sources/dio_helper.dart';
+import '../domain/data_sources/hive.dart';
 import '../di/service _locator.dart';
 
 
@@ -13,9 +16,9 @@ class InitializationController {
 
   InitializationController._internal();
 
-  late final DioHelperImpl _dio;
-  late final CacheHelperImpl _cacheHelper;
-  late final HiveOperationsImpl _hiveOperations;
+  late final DioHelper _dio;
+  late final CacheHelper _cacheHelper;
+  late final HiveOperations _hiveOperations;
 
   bool _isInitialized = false;
 
@@ -37,7 +40,7 @@ class InitializationController {
     try {
       await _initializeServices();
     }
-    catch(e){
+    catch (e) {
       throw ComponentsException(error: e);
     }
 
