@@ -2,9 +2,11 @@ import '../service _locator.dart';
 import '../../presentation/cubits/news_cubit.dart';
 import '../../providers/connectivity_provider.dart';
 import '../../domain/use_cases/update_date_use_case.dart';
+import '../../data/repositories_impl/search_repository.dart';
 import '../../presentation/utils/helpers/save_time_stamp.dart';
 import '../../presentation/utils/helpers/storage_validity.dart';
 import '../../data/data_sources/local/hive_operations_impl.dart';
+import 'package:todays_news/presentation/cubits/search_cubit.dart';
 import '../../data/repositories_impl/api_articles_repository.dart';
 import '../../data/repositories_impl/hive_articles_repository.dart';
 import '../../data/repositories_impl/hybrid_articles_repository.dart';
@@ -20,14 +22,21 @@ class NewsDependencies {
     sl.registerLazySingleton(() =>
         ApiArticlesRepository(
             dioHelper: sl<DioHelperImpl>()
-        ));
+        )
+    );
+
+    sl.registerLazySingleton(() =>
+        SearchRepository(
+            dioHelper: sl<DioHelperImpl>()
+        )
+    );
 
     sl.registerLazySingleton(() =>
         HiveArticlesRepository(
             cacheHelper: sl<CacheHelperImpl>(),
             saveTimeStamp: sl<SaveTimeStamp>(),
-            hiveOperations: sl<HiveOperationsImpl>(),
-            storageValidity: sl<StorageValidity>()
+            storageValidity: sl<StorageValidity>(),
+            hiveOperations: sl<HiveOperationsImpl>()
         ));
 
     sl.registerLazySingleton(() =>
@@ -41,7 +50,18 @@ class NewsDependencies {
     sl.registerLazySingleton(() =>
         LoadDataUseCase(
             repository: sl<HybridArticlesRepository>(),
-            paginationHandler: sl<PaginationHandler>()));
+            paginationHandler: sl<PaginationHandler>()
+        ),
+        instanceName: 'hybrid'
+    );
+
+    sl.registerLazySingleton(() =>
+        LoadDataUseCase(
+            repository: sl<SearchRepository>(),
+            paginationHandler: sl<PaginationHandler>()
+        ),
+        instanceName: 'search'
+    );
 
     sl.registerLazySingleton(() =>
         UpdateDateUseCase(
@@ -51,9 +71,17 @@ class NewsDependencies {
     // Cubit
     sl.registerFactory(() =>
         NewsCubit(
-            loadDataUseCase: sl<LoadDataUseCase>(),
             updateDateUseCase: sl<UpdateDateUseCase>(),
-            connectivityProvider: sl<ConnectivityProvider>()
-        ));
+            connectivityProvider: sl<ConnectivityProvider>(),
+            loadDataUseCase: sl<LoadDataUseCase>(instanceName: 'hybrid')
+        )
+    );
+
+    sl.registerFactory(() =>
+        SearchCubit(
+            connectivityProvider: sl<ConnectivityProvider>(),
+            loadDataUseCase: sl<LoadDataUseCase>(instanceName: 'search')
+        )
+    );
   }
 }

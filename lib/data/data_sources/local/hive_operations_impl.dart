@@ -2,13 +2,13 @@ import '../../config/news_config.dart';
 import '../../models/article_Model.dart';
 import '../../../domain/data_sources/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:todays_news/data/data_sources/local/cache_helper_impl.dart';
+import '../../../domain/data_sources/cache_helper.dart';
 import '../../../errors/exceptions/cache_exceptions/hive_app_exceptions.dart';
 
 
 class HiveOperationsImpl implements HiveOperations{
-  final CacheHelperImpl _cacheHelper;
-  HiveOperationsImpl({required CacheHelperImpl cacheHelper})
+  final CacheHelper _cacheHelper;
+  HiveOperationsImpl({required CacheHelper cacheHelper})
       : _cacheHelper = cacheHelper;
 
   static late Box<Article>? _businessBox;

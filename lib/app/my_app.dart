@@ -54,9 +54,9 @@ class MyApp extends StatelessWidget {
           BlocProvider<NewsCubit>(
               create: (context) =>
                   NewsCubit(
-                      loadDataUseCase: sl<LoadDataUseCase>(),
                       updateDateUseCase: sl<UpdateDateUseCase>(),
-                      connectivityProvider: sl<ConnectivityProvider>()
+                      connectivityProvider: sl<ConnectivityProvider>(),
+                      loadDataUseCase: sl<LoadDataUseCase>(instanceName: 'hybrid')
                   )
           ),
         ],
