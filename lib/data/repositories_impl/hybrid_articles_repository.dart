@@ -12,8 +12,8 @@ class HybridArticlesRepository with LocalStorageOperations implements ArticlesRe
   final ConnectivityProvider _connectivityProvider;
 
   HybridArticlesRepository({
+    required HiveRepository localRepository,
     required ArticlesRepository apiRepository,
-    required HiveArticlesRepository localRepository,
     required ConnectivityProvider connectivityProvider,
   })
       :
