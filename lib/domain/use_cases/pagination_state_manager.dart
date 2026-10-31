@@ -1,5 +1,5 @@
-import '../../../data/models/article_Model.dart';
-import '../../../data/models/category_data.dart';
+import '../../data/models/article_Model.dart';
+import '../../data/models/category_data.dart';
 
 
 class PaginationHandler {

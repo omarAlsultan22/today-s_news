@@ -3,7 +3,7 @@ import 'package:todays_news/presentation/constants/ui_sizes.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:todays_news/constants/app_colors.dart';
 import '../../../../data/models/article_Model.dart';
-import '../../utils/helpers/image_helpers.dart';
+import '../../../utils/image_helpers.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../constants/app_durations.dart';
 import 'package:flutter/material.dart';

@@ -1,4 +1,4 @@
-import '../../../data/models/article_Model.dart';
+import '../models/article_Model.dart';
 
 
 class ArticleListParser {

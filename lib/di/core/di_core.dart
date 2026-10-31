@@ -6,8 +6,8 @@ import '../../providers/connectivity_provider.dart';
 import '../../domain/data_sources/cache_helper.dart';
 import '../../data/data_sources/remote/dio_helper_impl.dart';
 import '../../data/data_sources/local/cache_helper_impl.dart';
-import '../../presentation/utils/helpers/save_time_stamp.dart';
-import '../../presentation/utils/helpers/storage_validity.dart';
+import '../../utils/save_time_stamp.dart';
+import '../../data/services/storage_validity.dart';
 import '../../data/data_sources/local/hive_operations_impl.dart';
 
 

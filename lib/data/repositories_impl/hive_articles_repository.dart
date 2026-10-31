@@ -2,8 +2,8 @@ import '../../domain/data_sources/hive.dart';
 import '../../domain/data_sources/cache_helper.dart';
 import '../../domain/repositories/hive_repository.dart';
 import 'package:todays_news/data/models/article_Model.dart';
-import '../../presentation/utils/helpers/storage_validity.dart';
-import 'package:todays_news/presentation/utils/helpers/save_time_stamp.dart';
+import '../services/storage_validity.dart';
+import 'package:todays_news/utils/save_time_stamp.dart';
 
 
 class HiveArticlesRepository implements HiveRepository {

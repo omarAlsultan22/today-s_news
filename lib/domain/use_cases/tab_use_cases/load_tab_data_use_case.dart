@@ -1,7 +1,7 @@
 import '../../../data/models/category_data.dart';
 import '../../repositories/articles_repository.dart';
 import 'package:todays_news/constants/app_strings.dart';
-import 'package:todays_news/presentation/utils/helpers/pagination_state_manager.dart';
+import 'package:todays_news/domain/use_cases/pagination_state_manager.dart';
 
 
 class LoadDataUseCase {

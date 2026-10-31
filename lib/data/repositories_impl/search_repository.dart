@@ -2,7 +2,7 @@ import '../config/news_config.dart';
 import '../constants/config_keys.dart';
 import '../../domain/data_sources/dio_helper.dart';
 import 'package:todays_news/data/models/article_Model.dart';
-import '../../presentation/utils/helpers/list_convertor.dart';
+import '../parsers/article_list_parser.dart';
 import 'package:todays_news/data/constants/data_strings.dart';
 import 'package:todays_news/domain/repositories/articles_repository.dart';
 

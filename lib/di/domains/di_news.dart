@@ -8,13 +8,13 @@ import '../../domain/repositories/hive_repository.dart';
 import '../../domain/use_cases/update_date_use_case.dart';
 import '../../domain/repositories/articles_repository.dart';
 import '../../data/repositories_impl/search_repository.dart';
-import '../../presentation/utils/helpers/save_time_stamp.dart';
-import '../../presentation/utils/helpers/storage_validity.dart';
+import '../../utils/save_time_stamp.dart';
+import '../../data/services/storage_validity.dart';
 import 'package:todays_news/presentation/cubits/search_cubit.dart';
 import '../../data/repositories_impl/api_articles_repository.dart';
 import '../../data/repositories_impl/hive_articles_repository.dart';
 import '../../data/repositories_impl/hybrid_articles_repository.dart';
-import '../../presentation/utils/helpers/pagination_state_manager.dart';
+import '../../domain/use_cases/pagination_state_manager.dart';
 import '../../domain/use_cases/tab_use_cases/load_tab_data_use_case.dart';
 
 

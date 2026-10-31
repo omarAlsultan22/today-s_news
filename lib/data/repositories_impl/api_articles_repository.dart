@@ -1,5 +1,5 @@
 import 'package:todays_news/data/constants/data_strings.dart';
-import '../../presentation/utils/helpers/list_convertor.dart';
+import '../parsers/article_list_parser.dart';
 import '../../domain/repositories/articles_repository.dart';
 import '../../domain/data_sources/dio_helper.dart';
 import '../constants/config_keys.dart';
