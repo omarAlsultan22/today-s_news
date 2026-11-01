@@ -28,23 +28,29 @@ class ConnectivityProvider with ChangeNotifier {
 
   final Connectivity _connectivity = Connectivity();
 
-  static final ConnectivityProvider _instance = ConnectivityProvider._internal();
+  static ConnectivityProvider? _instance;
 
-  factory ConnectivityProvider() => _instance;
+  factory ConnectivityProvider() {
+    _instance ??= ConnectivityProvider._internal();
+    return _instance!;
+  }
 
-  ConnectivityProvider._internal() {
-    _initConnectivity();
-    _startPeriodicCheck();
+  ConnectivityProvider._internal({bool autoStart = true}) {
+    if (autoStart) {
+      _initConnectivity();
+      _startPeriodicCheck();
+    }
   }
 
   // ==================== التهيئة ====================
+
 
   void _initConnectivity() async {
     try {
       // التحقق من الحالة الأولية
       final result = await _connectivity.checkConnectivity();
-      final bool initialStatus = _hasConnection(result);
-      final String initialType = _getConnectionType(result);
+      final bool initialStatus = hasConnection(result);
+      final String initialType = getConnectionType(result);
 
       // تحديث القيم مباشرة
       _isConnected = initialStatus;
@@ -72,6 +78,11 @@ class ConnectivityProvider with ChangeNotifier {
 
       _showOffline();
     }
+  }
+
+  @visibleForTesting
+  void setConnectedForTesting(bool value) {
+    _isConnected = value;
   }
 
   // ==================== التحقق من الاتصال ====================
@@ -114,8 +125,8 @@ class ConnectivityProvider with ChangeNotifier {
     // تجاهل التحديثات قبل التهيئة
     if (!_isInitialized) return;
 
-    final bool newStatus = _hasConnection(results);
-    final String newType = _getConnectionType(results);
+    final bool newStatus = hasConnection(results);
+    final String newType = getConnectionType(results);
 
     print('Connection status: $newStatus, Type: $newType');
 
@@ -146,7 +157,22 @@ class ConnectivityProvider with ChangeNotifier {
 
   // ==================== دوال المساعدة ====================
 
-  bool _hasConnection(List<ConnectivityResult> results) {
+  @visibleForTesting
+  factory ConnectivityProvider.forTesting() =>
+      ConnectivityProvider._internal(autoStart: false);
+
+  /// للاختبار فقط: يوقف الـ Singleton ويسمح بإنشاء نسخة جديدة.
+  @visibleForTesting
+  static void resetForTesting() {
+    _instance!.dispose();
+    _instance = null;
+  }
+
+  // ... (باقي الكود كما هو، مع استبدال _hasConnection → hasConnection
+  //      و _getConnectionType → getConnectionType)
+
+  @visibleForTesting
+  bool hasConnection(List<ConnectivityResult> results) {
     if (results.isEmpty) return false;
 
     for (var result in results) {
@@ -161,7 +187,8 @@ class ConnectivityProvider with ChangeNotifier {
     return false;
   }
 
-  String _getConnectionType(List<ConnectivityResult> results) {
+  @visibleForTesting
+  String getConnectionType(List<ConnectivityResult> results) {
     if (results.isEmpty) return _none;
 
     if (results.contains(ConnectivityResult.wifi)) return 'WiFi';

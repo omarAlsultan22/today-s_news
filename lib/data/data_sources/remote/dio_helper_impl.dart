@@ -4,16 +4,16 @@ import '../../../domain/data_sources/dio_helper.dart';
 
 
 class DioHelperImpl implements DioHelper {
-  static Dio dio = Dio();
+  final Dio _dio;
+  DioHelperImpl({Dio? dio}) : _dio = dio ?? Dio();
 
   @override
   Future <void> init() async {
-    dio = Dio(
+    _dio.options =
         BaseOptions(
             baseUrl: 'https://newsapi.org/',
             receiveDataWhenStatusError: true
-        )
-    );
+        );
   }
 
   @override
@@ -21,7 +21,7 @@ class DioHelperImpl implements DioHelper {
     required String url,
     required Map<String, dynamic> query,
   }) async {
-    return await dio.get(
+    return await _dio.get(
         url,
         queryParameters: query).timeout(AppDurations.seconds);
   }

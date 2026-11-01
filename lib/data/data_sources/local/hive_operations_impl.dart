@@ -6,50 +6,57 @@ import '../../../domain/data_sources/cache_helper.dart';
 import '../../../errors/exceptions/cache_exceptions/hive_app_exceptions.dart';
 
 
-class HiveOperationsImpl implements HiveOperations{
+class HiveOperationsImpl implements HiveOperations {
+  final HiveInterface _hive;
   final CacheHelper _cacheHelper;
-  HiveOperationsImpl({required CacheHelper cacheHelper})
-      : _cacheHelper = cacheHelper;
 
-  static late Box<Article>? _businessBox;
-  static late Box<Article>? _scienceBox;
-  static late Box<Article>? _sportsBox;
+  HiveOperationsImpl({
+    HiveInterface? hive,
+    required CacheHelper cacheHelper,
+  })
+      : _hive = hive ?? Hive,
+        _cacheHelper = cacheHelper;
 
-  static Box<Article> get businessBox {
+  Box<Article>? _businessBox;
+  Box<Article>? _scienceBox;
+  Box<Article>? _sportsBox;
+
+  Box<Article> get businessBox {
     if (_businessBox == null) {
       throw const HiveInitializeException();
     }
     return _businessBox!;
   }
 
-  static Box<Article> get scienceBox {
+  Box<Article> get scienceBox {
     if (_scienceBox == null) {
       throw const HiveInitializeException();
     }
     return _scienceBox!;
   }
 
-  static Box<Article> get sportsBox {
+  Box<Article> get sportsBox {
     if (_sportsBox == null) {
       throw const HiveInitializeException ();
     }
     return _sportsBox!;
   }
 
-  static final Map<String, Box<Article>> _boxes = {
-    'business': businessBox,
-    'science': scienceBox,
-    'sports': sportsBox
-  };
+  Map<String, Box<Article>> get _boxes =>
+      {
+        'business': businessBox,
+        'science': scienceBox,
+        'sports': sportsBox
+      };
 
   @override
   Future<void> init() async {
     try {
-      await Hive.initFlutter();
-      Hive.registerAdapter(ArticleAdapter());
-      _businessBox = await Hive.openBox<Article>('businessBox');
-      _scienceBox = await Hive.openBox<Article>('scienceBox');
-      _sportsBox = await Hive.openBox<Article>('sportsBox');
+      await _hive.initFlutter();
+      _hive.registerAdapter(ArticleAdapter());
+      _businessBox = await _hive.openBox<Article>('businessBox');
+      _scienceBox = await _hive.openBox<Article>('scienceBox');
+      _sportsBox = await _hive.openBox<Article>('sportsBox');
     }
     catch (e) {
       throw HiveInitializeException(error: e);

@@ -1,13 +1,16 @@
-import '../../presentation/constants/storage_keys.dart';
 import '../../domain/data_sources/cache_helper.dart';
+import '../../presentation/constants/storage_keys.dart';
 
 
 class StorageValidity {
   final CacheHelper _cacheHelper;
+  final DateTime Function() _now;
 
   StorageValidity({
-    required CacheHelper cacheHelper})
-      : _cacheHelper = cacheHelper;
+    required CacheHelper cacheHelper,
+    DateTime Function()? now,
+  })  : _cacheHelper = cacheHelper,
+        _now = now ?? DateTime.now;
 
   static const _dayHours = 24;
 
@@ -20,7 +23,7 @@ class StorageValidity {
     }
 
     DateTime savedTime = DateTime.parse(savedTimeString);
-    DateTime currentTime = DateTime.now();
+    DateTime currentTime = _now();
 
     Duration difference = currentTime.difference(savedTime);
 

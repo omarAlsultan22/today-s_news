@@ -3,7 +3,6 @@ import '../../domain/repositories/hive_repository.dart';
 import '../../domain/repositories/articles_repository.dart';
 import 'package:todays_news/data/models/article_Model.dart';
 import 'package:todays_news/presentation/mixins/local_storage_operations.dart';
-import 'package:todays_news/data/repositories_impl/hive_articles_repository.dart';
 
 
 class HybridArticlesRepository with LocalStorageOperations implements ArticlesRepository {
@@ -50,10 +49,10 @@ class HybridArticlesRepository with LocalStorageOperations implements ArticlesRe
     if (!isConnected) return articles;
 
     if (currentPage == 1) {
-      clearLocalStorage(key);
+      await clearLocalStorage(key);
     }
 
-    saveLocalStorage(key, articles);
+    await saveLocalStorage(key, articles);
 
     return articles;
   }

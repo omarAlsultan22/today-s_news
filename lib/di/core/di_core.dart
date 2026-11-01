@@ -1,13 +1,14 @@
 import '../service _locator.dart';
 import '../../themes/screen_theme.dart';
+import '../../utils/save_time_stamp.dart';
 import '../../domain/data_sources/hive.dart';
+import '../../data/services/storage_validity.dart';
 import '../../domain/data_sources/dio_helper.dart';
 import '../../providers/connectivity_provider.dart';
 import '../../domain/data_sources/cache_helper.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../data/data_sources/remote/dio_helper_impl.dart';
 import '../../data/data_sources/local/cache_helper_impl.dart';
-import '../../utils/save_time_stamp.dart';
-import '../../data/services/storage_validity.dart';
 import '../../data/data_sources/local/hive_operations_impl.dart';
 
 
@@ -19,7 +20,10 @@ class CoreDependencies {
 
     //services
     sl.registerLazySingleton<DioHelper>(() => DioHelperImpl());
-    sl.registerLazySingleton<CacheHelper>(() => CacheHelperImpl());
+
+    sl.registerLazySingleton<CacheHelper>(
+            () => CacheHelperImpl(prefs: sl<SharedPreferences>()));
+
     sl.registerLazySingleton<ThemeNotifier>(() =>
         ThemeNotifier(cacheHelper: sl<CacheHelper>())
     );

@@ -1,5 +1,4 @@
 import 'package:todays_news/errors/exceptions/components_exception.dart';
-import '../domain/data_sources/cache_helper.dart';
 import '../domain/data_sources/dio_helper.dart';
 import '../domain/data_sources/hive.dart';
 import '../di/service _locator.dart';
@@ -14,7 +13,6 @@ class InitializationController {
   InitializationController._internal();
 
   late final DioHelper _dio;
-  late final CacheHelper _cacheHelper;
   late final HiveOperations _hiveOperations;
 
   bool _isInitialized = false;
@@ -22,7 +20,6 @@ class InitializationController {
   Future<void> _initializeServices() async {
     await Future.wait<void>([
       _dio.init(),
-      _cacheHelper.init(),
       _hiveOperations.init()
     ]);
   }
@@ -31,7 +28,6 @@ class InitializationController {
     if (_isInitialized) return;
 
     _dio = sl<DioHelper>();
-    _cacheHelper = sl<CacheHelper>();
     _hiveOperations = sl<HiveOperations>();
 
     try {
@@ -47,7 +43,6 @@ class InitializationController {
   Future<void> retryInit() async {
     await Future.wait<void>([
       _dio.init(),
-      _cacheHelper.init(),
       _hiveOperations.init(),
     ]);
   }
