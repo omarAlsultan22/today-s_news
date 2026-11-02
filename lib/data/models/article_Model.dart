@@ -21,12 +21,11 @@ class Article {
   final String publishedAt;
 
   Article({
-    required this.title,
     required this.url,
+    required this.title,
     required this.urlToImage,
     required this.publishedAt,
-    required this.description,
-
+    required this.description
   });
 
   bool get urlIsNotEmpty => url.isNotEmpty;

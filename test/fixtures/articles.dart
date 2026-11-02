@@ -16,3 +16,4 @@ final articleB = Article(
   urlToImage: 'https://example.com/b.jpg',
   publishedAt: '2024-05-02',
 );
+
