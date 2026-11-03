@@ -19,8 +19,8 @@ class FakeCacheHelper implements CacheHelper {
   }
 
   @override
-  Future<String?> getString({required String key}) async {
-    return _storage[key] as String?;
+  Future<String> getString({required String key}) async {
+    return _storage[key] as String;
   }
 
   @override
